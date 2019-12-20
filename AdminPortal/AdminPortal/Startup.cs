@@ -9,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
+
 namespace AdminPortal
 {
     public class Startup
@@ -24,6 +25,8 @@ namespace AdminPortal
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+            services.AddMvc().SetCompatibilityVersion(Microsoft.AspNetCore.Mvc.CompatibilityVersion.Version_3_0);
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -41,8 +44,6 @@ namespace AdminPortal
             }
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
-     
 
             app.UseRouting();
 

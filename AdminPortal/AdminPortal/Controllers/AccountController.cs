@@ -8,6 +8,7 @@ using AdminPortal.Models;
 
 namespace AdminPortal.Controllers
 {
+
     public class AccountController : Controller
     {
         SqlConnection con = new SqlConnection();
