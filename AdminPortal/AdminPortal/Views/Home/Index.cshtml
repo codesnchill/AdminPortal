@@ -1,73 +1,23 @@
 ﻿@{
-    Layout = null;
+    Layout = "../Shared/_Layout.cshtml";
 }
 
-<!DOCTYPE html>
-<html lang="en">
+@section Scripts {
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <!-- Latest compiled and minified CSS -->
+}
+
+@section CSS {
     <link href="~/styles/dashboard.css" rel="stylesheet" />
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <title>Admin Panel</title>
-</head>
+}
 
-<body>
-    <div class="black-overlay" onclick="showBG()">
 
-        <div class="top-section blue-bar blue-background">
-            <div class="hamburger" onclick="showBG()">
-                <div class="line"></div>
-                <div class="line"></div>
-                <div class="line"></div>
-            </div>
-            <img src="../images/user.png" alt="user logo">
-        </div>
+<div class="right-section white-background">
+    <div class="title">
+        <p class="title-control">Dashboard</p>
+    </div>
 
-        <div class="bottom-section">
-            <div class="left-section blue-background">
-                <div class="image-banner">
-                    <img src="../images/logo.png" alt="wartsilla logo">
-                </div>
-                <div class="features">
-                    <div class="manage-users">
-                        <img src="../images/users.png" alt="manage user logo">
-                        <button>Manage Users</button>
-
-                    </div>
-                    <div class="manage-games">
-                        <img src="../images/game.png" alt="manage game logo">
-                        <button>Manage Games</button>
-                    </div>
-                    <div class="manage-events">
-                        <img src="../images/calendar.png" alt="manage event logo">
-                        <button>Manage Events</button>
-                    </div>
-
-                    <div class="manage-points">
-                        <img src="../images/points.png" alt="manage points logo">
-                        <button>Manage Points</button>
-                    </div>
-
-                </div>
-            </div>
-
-            <div class="right-section white-background">
-                <div class="title">
-                    <p class="title-control">Dashboard</p>
-                </div>
-
-                <hr class="divider">
-            </div>
-        </div>
-
-</body>
-
-</html>
-
+    <hr class="divider">
+</div>
 <!-- <script>
 
     let show = true;

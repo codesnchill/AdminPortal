@@ -214,233 +214,152 @@ p.title-control {
         flex: 1;
     }
 
-.right-section .search-bar {
-    border-radius: 10px 10px 0px 0px;
+.edit-container {
     margin-top: 20px;
-    margin-left: 13px;
-    width: 95%;
-    height: 50px;
-    border: 1px solid darkgray;
-    display: flex;
-    flex-direction: row;
-}
-
-    .right-section .search-bar .input-field-search {
-        display: flex;
-        flex: 5;
-        padding-top: 5px;
-        padding-left: 20px;
-    }
-
-        .right-section .search-bar .input-field-search img {
-            height: 22px;
-            margin-top: 5px;
-        }
-
-        .right-section .search-bar .input-field-search input {
-            width: 250px;
-            height: 30px;
-            border: none;
-            padding-top: 5px;
-            padding-left: 12px;
-            font-size: 15px;
-        }
-
-    .right-section .search-bar .input-field-search2 {
-        display: flex;
-        flex: 1.5;
-        padding-top: 7px;
-        padding-right: 20px;
-    }
-
-        .right-section .search-bar .input-field-search2 input {
-            height: 22px;
-            margin-top: 5px;
-        }
-
-        .right-section .search-bar .input-field-search2 label {
-            height: 30px;
-            padding-top: 7px;
-            padding-left: 10px;
-            font-size: 15px;
-            color: darkblue;
-        }
-
-    .right-section .search-bar .new-user-button {
-        flex: 1;
-    }
-
-    .right-section .search-bar button {
-        height: 40px;
-        width: 120px;
-        margin-top: 5px;
-        border-radius: 5px;
-        border: 1px solid transparent;
-        color: #fff;
-        font-weight: bold;
-    }
-
-.orange-background {
-    background: #ff7321;
-}
-
-.right-section .search-fields {
-    width: 95%;
-    margin-left: 13px;
-    height: 250px;
+    margin-left: 20px;
+    width: 600px;
+    height: 450px;
     display: flex;
     flex-direction: column;
-    border: 1px solid darkgray;
+    border: 1px solid lightgray;
     border-top: 1px solid transparent;
 }
 
-    .right-section .search-fields .first-row {
-        display: flex;
-        flex: 1;
-        align-items: center;
-        padding-left: 60px;
-    }
+.title-bar {
+    display: flex;
+    flex: 1.25;
+}
 
-.first-row label {
-    font-size: 16px;
+p.panel-header {
+    padding-top: 16px;
+    padding-left: 15px;
+    color: #fff;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.row1-employeeID {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    padding-left: 120px;
+}
+
+.normal-weight {
     font-weight: normal;
 }
 
-.employeeColumn label,
+.row1-employeeID label,
 input {
     display: inline-block;
     vertical-align: middle;
 }
 
-.departmentColumn label,
-select {
-    display: inline-block;
-    vertical-align: middle;
+.row1-employeeID input {
+    width: 45%;
+    height: 35px;
+    margin-left: 50px;
 }
 
-.search-fields .first-row .employeeColumn {
-    flex: 1;
-}
-
-    .search-fields .first-row .employeeColumn input {
-        height: 40px;
-        width: 15vw;
-        margin-left: 30px;
-        border: none;
-        border-bottom: 1px solid lightgray;
-    }
-
-.search-fields .first-row .departmentColumn {
-    flex: 1;
-    display: flex;
-}
-
-    .search-fields .first-row .departmentColumn label {
-        padding-top: 10px;
-    }
-
-.departmentColumn select {
-    width: 40%;
-    height: 40px;
-    margin-left: 49px;
-}
-
-.right-section .search-fields .second-row {
+.row2-employeeName {
     display: flex;
     flex: 1;
     align-items: center;
-    padding-left: 60px;
+    padding-left: 120px;
 }
 
-.rightsColumn label,
-select {
-    display: inline-block;
-    vertical-align: middle;
-}
-
-.statusColumn label,
-select {
-    display: inline-block;
-    vertical-align: middle;
-}
-
-.second-row label {
-    font-size: 16px;
-    font-weight: normal;
-    padding-top: 10px;
-}
-
-.rightsColumn {
-    display: flex;
-    flex: 1;
-}
-
-.statusColumn {
-    display: flex;
-    flex: 1;
-}
-
-    .statusColumn select {
-        width: 40%;
-        height: 40px;
-        margin-left: 25px;
+    .row2-employeeName label,
+    input {
+        display: inline-block;
+        vertical-align: middle;
     }
 
-.rightsColumn select {
-    width: 40%;
-    height: 40px;
-    margin-left: 25px;
-}
+    .row2-employeeName input {
+        width: 45%;
+        height: 35px;
+        margin-left: 26.5px;
+    }
 
-.button-row {
+.row3-department {
     display: flex;
     flex: 1;
-    justify-content: center;
+    align-items: center;
+    padding-left: 120px;
 }
 
-.searchButton {
-    width: 25%;
-    height: 45px;
-    border: 1px solid transparent;
-    border-radius: 8px;
-    margin-top: 10px;
-    margin-right: 5px;
-}
-
-.button-row button {
-    color: #fff;
-    font-weight: bold;
-    font-size: 15px;
-}
-
-#datatable {
-    width: 95%;
-    margin-left: 13px;
-}
-
-    #datatable thead {
-        color: #fff;
+    .row3-department label,
+    select {
+        display: inline-block;
+        vertical-align: middle;
     }
 
-    #datatable th {
-        text-align: center;
+    .row3-department select {
+        width: 45%;
+        height: 35px;
+        margin-left: 56px;
     }
 
-    #datatable td {
-        text-align: center;
+.row4-rights {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    padding-left: 120px;
+}
+
+    .row4-rights label,
+    select {
+        display: inline-block;
+        vertical-align: middle;
+    }
+
+    .row4-rights select {
+        width: 45%;
+        height: 35px;
+        margin-left: 41px;
+    }
+
+.row5-status {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    padding-left: 120px;
+}
+
+    .row5-status label,
+    select {
+        display: inline-block;
+        vertical-align: middle;
+    }
+
+    .row5-status select {
+        width: 45%;
+        height: 35px;
+        margin-left: 35px;
+    }
+
+.row6-buttons {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    flex: 2;
+}
+
+    .row6-buttons button {
+        width: 30%;
+        height: 35px;
     }
 
 /* 
-  .black-overlay {
-    background-color: rgba(0, 0, 0, 0.7);
-    top: 6vh;
-    left: 0;
-    height: 94vh;
-    width: 100vw;
-    position: absolute;
-    display: none;
-    z-index: 4; 
-  }*/
+      .black-overlay {
+        background-color: rgba(0, 0, 0, 0.7);
+        top: 6vh;
+        left: 0;
+        height: 94vh;
+        width: 100vw;
+        position: absolute;
+        display: none;
+        z-index: 4; 
+      }*/
 
 @media only screen and (max-width: 800px) {
     .bottom-section .left-section {
