@@ -40,7 +40,7 @@
             </div>
 
             <div class="new-user-button">
-                <button class="orange-background" name="Add">Add new user</button>
+                <button onclick="add()" class="orange-background" name="Add">Add new user</button>
             </div>
         </div>
 
@@ -133,7 +133,7 @@
     </table>
 </div>
 <script>
-    $(document).ready(function () {
+ /* $(document).ready(function () {
         display = true;
         $("#plus").click(function () {
             if (display) {
@@ -144,7 +144,7 @@
                 $("#advSearch").show();
             }
         });
-    })
+    }) */
 
     function edit(id) {
        location.href = "/User/EditUser/" + id;
@@ -153,6 +153,11 @@
     function changePassword(id){
         location.href = "/User/ChangePassword/" + id;
     }
+
+    function add() {
+        location.href = "/User/AddUser/";
+    }
+
 </script>
 
 

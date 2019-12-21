@@ -13,6 +13,7 @@ namespace AdminPortal.Controllers
         public IActionResult ManageUser()
         {
             IEnumerable<Employee> employee = null;
+           
 
             using (var client = new HttpClient())
             {
@@ -47,6 +48,16 @@ namespace AdminPortal.Controllers
         }
 
         public IActionResult AddUser()
+        {
+            return View();
+        }
+
+        public IActionResult EditUser()
+        {
+            return View();
+        }
+
+        public IActionResult ChangePassword()
         {
             return View();
         }

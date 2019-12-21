@@ -14,7 +14,9 @@ namespace AdminPortal.Models
         public int DepartmentId { get; set; }
         public string EmployeeName { get; set; }
         public string EmployeeBio { get; set; }
-        public string Roles { get; set; } 
+        public string Roles { get; set; }
+
+        public int RolesId { get; set; }
         public string ImageUrl { get; set; }
 
         public string IsDisabled { get; set; }
