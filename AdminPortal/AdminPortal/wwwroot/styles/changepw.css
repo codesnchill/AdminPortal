@@ -217,7 +217,7 @@ p.title-control {
 .edit-container {
     margin-top: 20px;
     margin-left: 20px;
-    width: 600px;
+    width: 95%;
     height: 450px;
     display: flex;
     flex-direction: column;
@@ -225,9 +225,13 @@ p.title-control {
     border-top: 1px solid transparent;
 }
 
+.orange-background {
+    background: #ff7321;
+}
+
 .title-bar {
     display: flex;
-    flex: 1.25;
+    flex: 1;
 }
 
 p.panel-header {
@@ -242,7 +246,7 @@ p.panel-header {
     display: flex;
     flex: 1;
     align-items: center;
-    padding-left: 120px;
+    justify-content: center;
 }
 
 .normal-weight {
@@ -256,7 +260,6 @@ input {
 }
 
 .row1-employeeID input {
-    width: 45%;
     height: 35px;
     margin-left: 50px;
 }
@@ -265,7 +268,7 @@ input {
     display: flex;
     flex: 1;
     align-items: center;
-    padding-left: 120px;
+    justify-content: center;
 }
 
     .row2-employeeName label,
@@ -275,7 +278,6 @@ input {
     }
 
     .row2-employeeName input {
-        width: 45%;
         height: 35px;
         margin-left: 28px;
     }
@@ -284,7 +286,7 @@ input {
     display: flex;
     flex: 1;
     align-items: center;
-    padding-left: 120px;
+    justify-content: center;
 }
 
     .row3-currentPassword label,
@@ -294,7 +296,6 @@ input {
     }
 
     .row3-currentPassword input {
-        width: 45%;
         height: 35px;
         margin-left: 20px;
     }
@@ -303,7 +304,7 @@ input {
     display: flex;
     flex: 1;
     align-items: center;
-    padding-left: 120px;
+    justify-content: center;
 }
 
     .row4-newPassword label,
@@ -313,23 +314,31 @@ input {
     }
 
     .row4-newPassword input {
-        width: 45%;
         height: 35px;
         margin-left: 39px;
     }
 
+.edit-container input {
+    width: 35%;
+}
+
 
 .row5-buttons {
     display: flex;
-    justify-content: space-evenly;
+    justify-content: center;
     align-items: center;
     flex: 2;
 }
 
+
     .row5-buttons button {
-        width: 30%;
+        width: 20%;
         height: 35px;
     }
+
+.save {
+    margin-right: 40px;
+}
 
 /* 
       .black-overlay {

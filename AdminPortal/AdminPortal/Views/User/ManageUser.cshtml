@@ -5,6 +5,61 @@
 @model IEnumerable<AdminPortal.Models.Employee>
 
 @section Scripts {
+    <script>
+        function edit(id) {
+            location.href = "/User/EditUser/" + id;
+        }
+
+        function changePassword(id) {
+            location.href = "/User/ChangePassword/" + id;
+        }
+
+        function addUser() {
+            location.href = "/User/AddUser/";
+        }
+
+        var display = true;
+        function show() {
+            if (display) {
+                $("#advSearch").hide();
+                display = false;
+            } else {
+                $("#advSearch").show();
+                display = true;
+            }
+        }
+
+        function jsonP() {
+            var url = "https://localhost:44300/api/v1/departments"
+            var $loadhandler = jQuery.ajax({
+                type: 'GET',
+                url: url,
+                contentType: "application/json",
+                dataType: 'json',
+                crossDomain: true,
+            });
+            $loadhandler.done(function (data, textStatus, jqXHR) {
+                console.log(data);
+                $.each(data, function (key, obj) {
+                    //console.log(key)
+                    console.log(obj)
+                    console.log(obj.departmentName)
+                    $("#department").append($("<option></option>")
+                        .attr("value", obj.departmentId)
+                        .text(obj.departmentName));
+                });
+            });
+
+        }
+        jsonP();
+
+        function filter() {
+            var value = $("#employeeName").val().toLowerCase();
+            $("#datatable tbody tr").filter(function() {
+              $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        }
+    </script>
 
 }
 
@@ -26,64 +81,58 @@
 
     </div>
     <hr class="divider">
-    <form>
-        <div class="search-bar">
-            <div class="input-field-search">
-                <img src="../images/search.png" alt="Magnifying Glass logo">
-                <input type='text' name='employeeName' size='15' placeholder='Search by Employee Name...' />
-            </div>
-
-
-            <div class="input-field-search2">
-                <input type="image" id="plus" src="../images/plus.png" name="plus" alt="Plus Button">
-                <label for="plus">Advanced Search</label>
-            </div>
-
-            <div class="new-user-button">
-                <button onclick="add()" class="orange-background" name="Add">Add new user</button>
-            </div>
+    <div class="search-bar">
+        <div class="input-field-search">
+            <img src="../images/search.png" alt="Magnifying Glass logo">
+            <input onkeyup="filter()" id="employeeName" type='text' name='employeeName' size='15' placeholder='Search by Employee Name...' />
         </div>
 
-        <div id="advSearch" class="search-fields">
-            <div class="first-row">
-                <div class="employeeColumn">
-                    <label for="employeeID">Employee ID:</label>
-                    <input type="text" name="employeeID" size='15' placeholder='Search by Employee ID...'>
-                </div>
-                <div class="departmentColumn">
-                    <label for="department">Department:</label>
-                    <select class="form-control" id="department">
-                        <option>Information Technology</option>
-                        <option>Human Resource</option>
-                        <option>Engineering</option>
-                        <option>Finance</option>
-                    </select>
-                </div>
+
+        <div class="input-field-search2">
+            <input onclick="show()" type="image" id="plus" src="../images/plus.png" name="plus" alt="Plus Button">
+            <label for="plus">Advanced Search</label>
+        </div>
+
+        <div class="new-user-button">
+            <button onclick="addUser()" class="orange-background" name="Add">Add new user</button>
+        </div>
+    </div>
+
+    <div id="advSearch" class="search-fields">
+        <div class="first-row">
+            <div class="employeeColumn">
+                <label for="employeeID">Employee ID:</label>
+                <input type="text" name="employeeID" size='15' placeholder='Search by Employee ID...'>
             </div>
-            <div class="second-row">
-                <div class="rightsColumn">
-                    <label for="rights">Access Rights:</label>
-                    <select class="form-control" id="rights">
-                        <option>Admin</option>
-                        <option>Department Head</option>
-                        <option>Employee</option>
-                    </select>
-                </div>
-                <div class="statusColumn">
-                    <label for="status">Account Status:</label>
-                    <select class="form-control" id="status">
-                        <option>Active</option>
-                        <option>Inactive</option>
-                    </select>
-                </div>
-            </div>
-            <div class="button-row">
-                <button class="searchButton orange-background">
-                    Search
-                </button>
+            <div class="departmentColumn">
+                <label for="department">Department:</label>
+                <select class="form-control" id="department">
+                </select>
             </div>
         </div>
-    </form>
+        <div class="second-row">
+            <div class="rightsColumn">
+                <label for="rights">Access Rights:</label>
+                <select class="form-control" id="rights">
+                    <option>Admin</option>
+                    <option>Department Head</option>
+                    <option>Employee</option>
+                </select>
+            </div>
+            <div class="statusColumn">
+                <label for="status">Account Status:</label>
+                <select class="form-control" id="status">
+                    <option>Active</option>
+                    <option>Inactive</option>
+                </select>
+            </div>
+        </div>
+        <div class="button-row">
+            <button class="searchButton orange-background">
+                Search
+            </button>
+        </div>
+    </div>
     <table id="datatable" class="table table-bordered">
         <thead class="blue-background">
             <tr>
@@ -96,69 +145,45 @@
                 <th>Actions</th>
             </tr>
         </thead>
-        @foreach (var item in Model)
-        {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.EmployeeId)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.EmployeeName)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.DepartmentName)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Roles)
-        </td>
-        <td>
-            @if (item.IsDisabled == "true")
+        <tbody>
+            @foreach (var item in Model)
             {
-                <span>Inactive</span>
-            } else
-            {
-                <span>Active</span>
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.EmployeeId)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.EmployeeName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.DepartmentName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Roles)
+                    </td>
+                    <td>
+                        @if (item.IsDisabled == "true")
+                        {
+                            <span>Inactive</span>
+                        }
+                        else
+                        {
+                            <span>Active</span>
+                        }
+
+
+                    </td>
+                    <td>
+                        <button onclick="edit(@item.EmployeeId)">Edit</button>
+                    </td>
+                    <td>
+                        <button onclick="changePassword(@item.EmployeeId)">Change Password</button>
+                    </td>
+                </tr>
             }
-   
-            
-        </td>
-        <td>
-            <button onclick="edit(@item.EmployeeId)">Edit</button>
-        </td>
-        <td>
-            <button onclick="changePassword(@item.EmployeeId)">Change Password</button>
-        </td>
-    </tr>
-        }
+        </tbody>
     </table>
 </div>
-<script>
- /* $(document).ready(function () {
-        display = true;
-        $("#plus").click(function () {
-            if (display) {
-                $("#advSearch").hide();
-                display = false;
-            } else {
-                display = true;
-                $("#advSearch").show();
-            }
-        });
-    }) */
-
-    function edit(id) {
-       location.href = "/User/EditUser/" + id;
-    } 
-
-    function changePassword(id){
-        location.href = "/User/ChangePassword/" + id;
-    }
-
-    function add() {
-        location.href = "/User/AddUser/";
-    }
-
-</script>
 
 
 

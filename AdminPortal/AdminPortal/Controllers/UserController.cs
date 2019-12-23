@@ -10,11 +10,9 @@ namespace AdminPortal.Controllers
 {
     public class UserController : Controller
     {
+        IEnumerable<Employee> employee = null;
         public IActionResult ManageUser()
         {
-            IEnumerable<Employee> employee = null;
-           
-
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri("https://localhost:44300/api/v1/");
@@ -42,10 +40,10 @@ namespace AdminPortal.Controllers
                 
             }
 
-
-
             return View(employee);
         }
+
+
 
         public IActionResult AddUser()
         {
