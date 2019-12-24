@@ -7,7 +7,7 @@ namespace AdminPortal.Models
     {
         public Question()
         {
-            QuestionChoice = new HashSet<QuestionChoice>();
+            Choices = new HashSet<QuestionChoice>();
         }
 
         public int QuestionId { get; set; }
@@ -24,6 +24,6 @@ namespace AdminPortal.Models
         public string DeletedBy { get; set; }
 
         public Game Game { get; set; }
-        public ICollection<QuestionChoice> QuestionChoice { get; set; }
+        public ICollection<QuestionChoice> Choices { get; set; }
     }
 }

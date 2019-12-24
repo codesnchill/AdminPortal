@@ -10,7 +10,7 @@ namespace AdminPortal.Controllers
 {
     public class GameController : Controller
     {
-        IEnumerable<QuestionChoice> questions = null;
+        IEnumerable<Question> questions = null;
         public IActionResult ManageGames()
         {
             using (var client = new HttpClient())
@@ -23,7 +23,7 @@ namespace AdminPortal.Controllers
                 var result = responseTask.Result;
                 if (result.IsSuccessStatusCode)
                 {
-                    var readTask = result.Content.ReadAsAsync<IList<QuestionChoice>>();
+                    var readTask = result.Content.ReadAsAsync<IList<Question>>();
                     readTask.Wait();
 
                     questions = readTask.Result;
@@ -33,7 +33,7 @@ namespace AdminPortal.Controllers
                 {
                     //log response status here..
 
-                    questions = Enumerable.Empty<QuestionChoice>();
+                    questions = Enumerable.Empty<Question>();
 
                     ModelState.AddModelError(string.Empty, "Server error. Please contact administrator.");
                 }

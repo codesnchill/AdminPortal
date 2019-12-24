@@ -2,7 +2,7 @@
     Layout = "../Shared/_Layout.cshtml";
 }
 
-@model IEnumerable<AdminPortal.Models.QuestionChoice>
+@model IEnumerable<AdminPortal.Models.Question>
 
 @section Scripts {
     <script>
@@ -84,19 +84,19 @@
             {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Question)
+                    @Html.DisplayFor(modelItem => item.Question1)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Choice)
+                    @Html.DisplayFor(modelItem => item.Choices.ElementAt(0).Choice)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Choice)
+                    @Html.DisplayFor(modelItem => item.Choices.ElementAt(1).Choice)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Choice)
+                    @Html.DisplayFor(modelItem => item.Choices.ElementAt(2).Choice)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Choice)
+                    @Html.DisplayFor(modelItem => item.Choices.ElementAt(3).Choice)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Answer)
