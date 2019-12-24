@@ -45,7 +45,7 @@
 
                 <div class="manage-points">
                     <img src="/images/points.png" alt="manage points logo">
-                    <button>Manage Points</button>
+                    <button id="managePoints">Manage Points</button>
                 </div>
 
             </div>
@@ -72,8 +72,10 @@
                 location.href = "/Event/ManageEvents";
             })
 
-
-
+         
+               $("#managePoints").click(function () {
+                location.href = "/Point/ManagePoints";
+            })
 
         })
     </script>

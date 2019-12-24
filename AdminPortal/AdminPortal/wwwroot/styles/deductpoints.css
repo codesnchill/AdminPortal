@@ -1,0 +1,400 @@
+﻿* {
+    margin: 0;
+    padding: 0;
+    font-family: "Sunflower", sans-serif;
+    outline: none;
+    text-decoration: none;
+}
+
+.top-section {
+    width: 100%;
+    height: 6vh;
+}
+
+.blue-bar {
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between; /* horizontal settings */
+    align-items: center; /* vertical settings */
+}
+
+.top-section img {
+    height: 40px;
+    padding: 2px;
+    padding-right: 20px;
+    float: right;
+}
+
+.hamburger {
+    height: 28px;
+    justify-content: space-between;
+    flex-direction: column;
+    display: flex;
+    padding-left: 20px;
+    /* display:none; */
+}
+
+.line {
+    height: 6px;
+    width: 30px;
+    background-color: #fff;
+    border-radius: 2.5px;
+}
+
+.blue-background {
+    background: #086795;
+}
+
+.white-background {
+    background: #fff;
+}
+
+.bottom-section {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    height: 700px;
+}
+
+    .bottom-section .left-section {
+        flex: 1;
+        z-index: 5;
+        box-shadow: 4px 1px 5px 0px rgba(50, 50, 50, 0.3);
+    }
+
+        .bottom-section .left-section .image-banner {
+            height: 220px;
+            background: #fff;
+            border: 1px solid #fff;
+        }
+
+.left-section .image-banner img {
+    width: 300px;
+    height: 200px;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+}
+
+.left-section .features button {
+    font-size: 17px;
+    font-weight: bold;
+    color: #fff;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+}
+
+    .left-section .features button:hover {
+        text-decoration: underline;
+    }
+
+.left-section .features {
+    width: 100%;
+    height: 400px;
+    padding-top: 7%;
+}
+
+    .left-section .features .manage-users {
+        display: flex;
+        height: 80px;
+        padding-left: 45px;
+        padding-top: 15px;
+        margin-bottom: 12px;
+    }
+
+        .left-section .features .manage-users img {
+            height: 35px;
+        }
+
+        .left-section .features .manage-users button {
+            flex: 1;
+            padding-bottom: 30px;
+            padding-right: 60px;
+        }
+
+    .left-section .features .manage-games {
+        display: flex;
+        height: 80px;
+        padding-left: 45px;
+    }
+
+        .left-section .features .manage-games img {
+            height: 35px;
+        }
+
+        .left-section .features .manage-games button {
+            flex: 1;
+            padding-bottom: 42px;
+            padding-right: 50px;
+        }
+
+    .left-section .features .manage-events {
+        display: flex;
+        height: 80px;
+        padding-left: 45px;
+    }
+
+        .left-section .features .manage-events img {
+            height: 35px;
+        }
+
+        .left-section .features .manage-events button {
+            flex: 1;
+            padding-bottom: 42px;
+            padding-right: 50px;
+        }
+
+    .left-section .features .manage-points {
+        display: flex;
+        height: 80px;
+        padding-left: 45px;
+    }
+
+        .left-section .features .manage-points img {
+            height: 35px;
+        }
+
+        .left-section .features .manage-points button {
+            flex: 1;
+            padding-bottom: 40px;
+            padding-right: 52px;
+        }
+
+.right-section {
+    flex: 4;
+    z-index: 0;
+}
+
+    .right-section .title {
+        padding-left: 16px;
+        padding-top: 9px;
+        font-size: 25px;
+        font-weight: bold;
+    }
+
+p.title-control {
+    margin: 0;
+}
+
+.right-section hr.divider {
+    border: 1px solid lightgray;
+    border-bottom: none;
+    margin-top: 55px;
+}
+
+.right-section .view-buttons {
+    height: 55px;
+    width: 300px;
+    display: flex;
+    padding-left: 2px;
+}
+
+    .right-section .view-buttons button {
+        color: black;
+        font-weight: bold;
+        text-align: center;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+    }
+
+        .right-section .view-buttons button:hover {
+            border-bottom: 1px solid #086795;
+            color: #086795;
+            border-bottom-width: medium;
+        }
+
+    .right-section .view-buttons .view-details {
+        flex: 1;
+    }
+
+    .right-section .view-buttons .view-deleted {
+        flex: 1;
+    }
+
+.edit-container {
+    margin-top: 20px;
+    margin-left: 20px;
+    width: 95%;
+    height: 500px;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid lightgray;
+    border-top: 1px solid transparent;
+}
+
+.orange-background {
+    background: #ff7321;
+}
+
+.title-bar {
+    display: flex;
+    flex: 1;
+}
+
+p.panel-header {
+    padding-top: 16px;
+    padding-left: 15px;
+    color: #fff;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.row1-employeeID {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+}
+
+.normal-weight {
+    font-weight: normal;
+}
+
+.row1-employeeID label,
+input {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.row1-employeeID input {
+    height: 35px;
+    margin-left: 54px;
+}
+
+.row2-employeeName {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+}
+
+    .row2-employeeName label,
+    input {
+        display: inline-block;
+        vertical-align: middle;
+    }
+
+    .row2-employeeName input {
+        height: 35px;
+        margin-left: 31px;
+    }
+
+.row3-Department {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+}
+
+    .row3-Department label,
+    input {
+        display: inline-block;
+        vertical-align: middle;
+    }
+
+    .row3-Department input {
+        height: 35px;
+        margin-left: 61px;
+    }
+
+.row4-CurrentPoints {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+}
+
+    .row4-CurrentPoints label,
+    input {
+        display: inline-block;
+        vertical-align: middle;
+    }
+
+    .row4-CurrentPoints input {
+        height: 35px;
+        margin-left: 45px;
+    }
+
+.row5-PointsToDeduct {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+}
+
+    .row5-PointsToDeduct label,
+    input {
+        display: inline-block;
+        vertical-align: middle;
+    }
+
+    .row5-PointsToDeduct input {
+        height: 35px;
+        margin-left: 37px;
+    }
+
+.row6-Reason {
+    display: flex;
+    flex: 2.5;
+    align-items: center;
+    justify-content: center;
+}
+
+    .row6-Reason label,
+    input {
+        display: inline-block;
+        vertical-align: middle;
+    }
+
+    .row6-Reason input {
+        height: 100px;
+        margin-left: 6px;
+    }
+
+.edit-container input {
+    width: 35%;
+}
+
+
+.row7-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 2;
+}
+
+
+    .row7-buttons button {
+        width: 20%;
+        height: 35px;
+    }
+
+.save {
+    margin-right: 40px;
+}
+
+/* 
+      .black-overlay {
+        background-color: rgba(0, 0, 0, 0.7);
+        top: 6vh;
+        left: 0;
+        height: 94vh;
+        width: 100vw;
+        position: absolute;
+        display: none;
+        z-index: 4; 
+      }*/
+
+@media only screen and (max-width: 800px) {
+    .bottom-section .left-section {
+        display: none;
+        z-index: 5;
+    }
+
+    .hamburger {
+        display: flex;
+    }
+}

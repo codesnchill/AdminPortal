@@ -1,0 +1,150 @@
+﻿@{
+    Layout = "../Shared/_Layout.cshtml";
+}
+
+@model IEnumerable<AdminPortal.Models.Employee>
+
+@section Scripts {
+    <script>
+        function award(id) {
+            location.href = "/Point/AwardPoint/" + id;
+        }
+
+        function deduct(id) {
+            location.href = "/Point/DeductPoint/" + id;
+        }
+
+
+        var display = true;
+        function show() {
+            if (display) {
+                $("#advSearch").hide();
+                display = false;
+            } else {
+                $("#advSearch").show();
+                display = true;
+            }
+        }
+
+        function loadDepartments() {
+            var url = "https://localhost:44300/api/v1/departments"
+            var $loadhandler = jQuery.ajax({
+                type: 'GET',
+                url: url,
+                contentType: "application/json",
+                dataType: 'json',
+                crossDomain: true,
+            });
+            $loadhandler.done(function (data, textStatus, jqXHR) {
+                console.log(data);
+                $.each(data, function (key, obj) {
+                    //console.log(key)
+                    console.log(obj)
+                    console.log(obj.departmentName)
+                    $("#department").append($("<option></option>")
+                        .attr("value", obj.departmentId)
+                        .text(obj.departmentName));
+                });
+            });
+
+        }
+        loadDepartments();
+
+        function filter() {
+            var value = $("#employeeName").val().toLowerCase();
+            $("#datatable tbody tr").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        }
+    </script>
+
+}
+
+@section CSS {
+    <link rel="stylesheet" href="~/styles/managepoints.css">
+}
+
+<div class="right-section white-background">
+    <div class="title">
+        <p class="title-control">Manage Points</p>
+    </div>
+
+    <hr class="divider">
+
+    <div class="search-bar">
+        <div class="input-field-search">
+            <img src="../images/search.png" alt="Magnifying Glass logo">
+            <input onkeyup="filter()" id="employeeName" type='text' name='employeeName' size='15' placeholder='Search by Employee Name...' />
+        </div>
+
+
+        <div class="input-field-search2">
+            <input onclick="show()" type="image" src="../images/plus.png" name="plus" alt="Plus Button">
+            <label for="plus">Advanced Search</label>
+        </div>
+
+
+    </div>
+
+    <div id="advSearch" class="search-fields">
+        <div class="first-row">
+            <div class="employeeColumn">
+                <label for="employeeID">Employee ID:</label>
+                <input type="text" name="employeeID" size='15' placeholder='Search by Employee ID...'>
+            </div>
+
+        </div>
+        <div class="second-row">
+            <div class="departmentColumn">
+                <label for="department">Department:</label>
+                <select class="form-control" id="department">
+                </select>
+            </div>
+
+        </div>
+        <div class="button-row">
+            <button class="searchButton orange-background">
+                Search
+            </button>
+        </div>
+    </div>
+
+    <table id="datatable" class="table table-bordered">
+        <thead class="blue-background">
+            <tr>
+                <th>Employee ID</th>
+                <th>Employee</th>
+                <th>Department</th>
+                <th>Total Points</th>
+                <th>Actions</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.EmployeeId)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.EmployeeName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.DepartmentName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Points)
+                    </td>
+                   
+                    <td>
+                        <button onclick="award(@item.EmployeeId)">Award</button>
+                    </td>
+                    <td>
+                        <button onclick="deduct(@item.EmployeeId)">Deduct</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
