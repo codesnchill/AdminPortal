@@ -1,0 +1,147 @@
+﻿@{
+    Layout = "../Shared/_Layout.cshtml";
+}
+
+@model IEnumerable<AdminPortal.Models.Event>
+
+@section Scripts {
+    <script>
+        function edit(id) {
+            location.href = "/Event/EditEvent/" + id;
+        }
+
+        function add() {
+            location.href = "/Event/AddEvent/";
+        }
+
+
+        var display = true;
+        function show() {
+            if (display) {
+                $("#advSearch").hide();
+                display = false;
+            } else {
+                $("#advSearch").show();
+                display = true;
+            }
+        }
+
+
+        function loadDepartments() {
+            var url = "https://localhost:44300/api/v1/departments"
+            var $loadhandler = jQuery.ajax({
+                type: 'GET',
+                url: url,
+                contentType: "application/json",
+                dataType: 'json',
+                crossDomain: true,
+            });
+            $loadhandler.done(function (data, textStatus, jqXHR) {
+                console.log(data);
+                $.each(data, function (key, obj) {
+                    //console.log(key)
+                    console.log(obj)
+                    console.log(obj.departmentName)
+                    $("#department").append($("<option></option>")
+                        .attr("value", obj.departmentId)
+                        .text(obj.departmentName));
+                });
+            });
+
+        }
+        loadDepartments();
+
+    </script>
+
+}
+
+@section CSS {
+    <link rel="stylesheet" href="~/styles/manageevents.css">
+}
+
+
+<div class="right-section white-background">
+    <div class="title">
+        <p class="title-control">Manage Events</p>
+    </div>
+
+    <hr class="divider">
+
+    <div class="search-bar">
+        <div class="input-field-search">
+            <img src="../images/search.png" alt="Magnifying Glass logo">
+            <input type='text' name='eventName' size='15' placeholder='Search by Event Name...' />
+        </div>
+
+
+        <div class="input-field-search2">
+            <input onclick="show()" type="image" src="../images/plus.png" name="plus" alt="Plus Button">
+            <label for="plus">Advanced Search</label>
+        </div>
+
+        <div class="new-event-button">
+            <button onclick="add()" class="orange-background" name="Add">Add new event</button>
+        </div>
+    </div>
+
+    <div id="advSearch" class="search-fields">
+        <div class="first-row">
+            <div class="startDateColumn">
+                <label for="startDate">Start Date:</label>
+                <input type="date" class="form-control" name="startDate">
+            </div>
+            <div class="departmentColumn">
+                <label for="department">Department:</label>
+                <select class="form-control" id="department">
+                </select>
+            </div>
+        </div>
+        <div class="second-row">
+            <div class="endDateColumn">
+                <label for="endDate">End Date:</label>
+                <input type="date" class="form-control" name="endDate">
+            </div>
+
+        </div>
+        <div class="button-row">
+            <button class="searchButton orange-background">
+                Search
+            </button>
+        </div>
+    </div>
+
+    <table id="datatable" class="table table-bordered">
+        <thead class="blue-background">
+            <tr>
+                <th>Event Name</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Department</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.EventName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.StartDateTime)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.EndDateTime)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.DepartmentName)
+                    </td>
+                
+                    <td>
+                        <button onclick="edit(@item.EventId)">Edit</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

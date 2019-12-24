@@ -1,0 +1,66 @@
+﻿@{
+    Layout = "../Shared/_Layout.cshtml";
+}
+
+@*@model IEnumerable<AdminPortal.Models.Employee>*@
+
+@section Scripts {
+
+}
+
+@section CSS {
+    <link rel="stylesheet" href="~/styles/editquestion.css">
+}
+
+<div class="right-section white-background">
+    <div class="title">
+        <p class="title-control">Manage Games</p>
+    </div>
+
+    <hr class="divider">
+
+    <div class="edit-container">
+        <div class="title-bar orange-background">
+            <p class="panel-header">Edit Question</p>
+
+        </div>
+        <div class="row1-question">
+            <label class="normal-weight" for="question">Question:</label>
+            <input type="text" name="question">
+        </div>
+        <div class="row2-choice1">
+            <label class="normal-weight" for="choice1">Choice 1:</label>
+            <input type='text' name='choice1' />
+        </div>
+        <div class="row3-choice2">
+            <label class="normal-weight" for="choice2">Choice 2:</label>
+            <input type='text' name='choice2' />
+
+        </div>
+        <div class="row4-choice3">
+            <label class="normal-weight" for="choice3">Choice 3:</label>
+            <input type='text' name='choice3' />
+        </div>
+        <div class="row5-choice4">
+            <label class="normal-weight" for="choice4">Choice 4:</label>
+            <input type='text' name='choice4' />
+        </div>
+        <div class="row6-answer">
+            <label class="normal-weight" for="answer">Answer:</label>
+            <select class="form-control" id="answer">
+                <option>Choice 1</option>
+                <option>Choice 2</option>
+                <option>Choice 3</option>
+                <option>Choice 4</option>
+            </select>
+        </div>
+
+        <div class="row7-buttons">
+            <button class="delete">Delete</button>
+            <button class="save">Save</button>
+            <button class="cancel">Cancel</button>
+        </div>
+    </div>
+
+</div>
+

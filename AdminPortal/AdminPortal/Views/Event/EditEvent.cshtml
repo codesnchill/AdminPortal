@@ -1,0 +1,67 @@
+﻿@{
+    Layout = "../Shared/_Layout.cshtml";
+}
+
+@*@model IEnumerable<AdminPortal.Models.Employee>*@
+
+@section Scripts {
+
+}
+
+@section CSS {
+    <link rel="stylesheet" href="~/styles/editevent.css">
+}
+
+<div class="right-section white-background">
+    <div class="title">
+        <p class="title-control">Manage Events</p>
+    </div>
+
+    <hr class="divider">
+
+    <div class="edit-container">
+        <div class="title-bar orange-background">
+            <p class="panel-header">Edit Event</p>
+
+        </div>
+        <div class="row1-startDate">
+            <label class="normal-weight" for="startDate">Start Date:</label>
+            <input type="date" class="form-control" name="startDate">
+        </div>
+        <div class="row2-endDate">
+            <label class="normal-weight" for="endDate">End Date:</label>
+            <input type="date" class="form-control" name="endDate">
+        </div>
+
+        <div class="row3-startTime">
+            <label class="normal-weight" for="startTime">Start Time:</label>
+            <input type="time" class="form-control" name="startTime">
+        </div>
+        <div class="row4-endTime">
+            <label class="normal-weight" for="endTime">End Time:</label>
+            <input type="time" class="form-control" name="endTime">
+        </div>
+        <div class="row5-eventName">
+            <label class="normal-weight" for="eventName">Event Name:</label>
+            <input type="text" class="form-control" name="eventName">
+        </div>
+        <div class="row6-eventDescription">
+            <label class="normal-weight" for="eventDescription">Event Description:</label>
+            <input type="text" class="form-control" name="eventDescription">
+        </div>
+
+
+        <div class="row7-department">
+            <label class="normal-weight" for="department">Department:</label>
+            <select class="form-control" id="department">
+            </select>
+        </div>
+        <div class="row8-buttons">
+            <button class="delete">Delete</button>
+            <button class="save">Save</button>
+            <button class="cancel">Cancel</button>
+        </div>
+    </div>
+
+
+</div>

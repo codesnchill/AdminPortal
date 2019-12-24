@@ -1,0 +1,112 @@
+﻿@{
+    Layout = "../Shared/_Layout.cshtml";
+}
+
+@model IEnumerable<AdminPortal.Models.QuestionChoice>
+
+@section Scripts {
+    <script>
+        function edit(id) {
+            location.href = "/Game/EditQuestion/" + id;
+        }
+
+        function add(id) {
+            location.href = "/Game/AddQuestion/" + id;
+        }
+
+
+
+
+        function loadGames() {
+            var url = "https://localhost:44300/api/v1/games"
+            var $loadhandler = jQuery.ajax({
+                type: 'GET',
+                url: url,
+                contentType: "application/json",
+                dataType: 'json',
+                crossDomain: true,
+            });
+            $loadhandler.done(function (data, textStatus, jqXHR) {
+                console.log(data);
+                $.each(data, function (key, obj) {
+                    //console.log(key)
+                    console.log(obj)
+                    console.log(obj.gameName)
+                    $("#games").append($("<option></option>")
+                        .attr("value", obj.gameId)
+                        .text(obj.gameName));
+                });
+            });
+
+        }
+        loadGames();
+
+    </script>
+
+}
+
+@section CSS {
+    <link rel="stylesheet" href="~/styles/managegames.css">
+}
+
+<div class="right-section white-background">
+    <div class="title">
+        <p class="title-control">Manage Games</p>
+    </div>
+
+    <hr class="divider">
+
+    <div class="selection-bar">
+        <div class="left-selection">
+            <label for="games">Select a game</label>
+            <select class="form-control" id="games">
+            </select>
+        </div>
+
+        <div class="new-game-button">
+            <button class="orange-background" name="Add">Add new question</button>
+        </div>
+    </div>
+    <table id="datatable" class="table table-bordered">
+        <thead class="blue-background">
+            <tr>
+                <th>Question</th>
+                <th>Choice 1</th>
+                <th>Choice 2</th>
+                <th>Choice 3</th>
+                <th>Choice 4</th>
+                <th>Answer</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Question)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Choice)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Choice)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Choice)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Choice)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Answer)
+                </td>
+
+                <td>
+                    <button onclick="edit(@item.QuestionId)">Edit</button>
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+</div>

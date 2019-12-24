@@ -20,7 +20,7 @@
             <div class="line"></div>
             <div class="line"></div>
         </div>
-        <img src="../images/user.png" alt="user logo">
+        <img src="/images/user.png" alt="user logo">
     </div>
 
     <div class="bottom-section">
@@ -36,11 +36,11 @@
                 </div>
                 <div class="manage-games">
                     <img src="/images/game.png" alt="manage game logo">
-                    <button>Manage Games</button>
+                    <button id="manageGames">Manage Games</button>
                 </div>
                 <div class="manage-events">
                     <img src="/images/calendar.png" alt="manage event logo">
-                    <button>Manage Events</button>
+                    <button id="manageEvents">Manage Events</button>
                 </div>
 
                 <div class="manage-points">
@@ -63,6 +63,15 @@
             $("#manageUser").click(function () {
                 location.href = "/User/ManageUser";
             });
+
+            $("#manageGames").click(function () {
+                location.href = "/Game/ManageGames";
+            })
+
+              $("#manageEvents").click(function () {
+                location.href = "/Event/ManageEvents";
+            })
+
 
 
 
