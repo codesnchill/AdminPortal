@@ -3,7 +3,58 @@
 }
 
 @section Scripts {
+    <script>
+        function loadDepartments() {
+            var url = "https://localhost:44300/api/v1/departments"
+            var $loadhandler = jQuery.ajax({
+                type: 'GET',
+                url: url,
+                contentType: "application/json",
+                dataType: 'json',
+                crossDomain: true,
+            });
+            $loadhandler.done(function (data, textStatus, jqXHR) {
+                console.log(data);
+                $.each(data, function (key, obj) {
+                    //console.log(key)
+                    console.log(obj)
+                    console.log(obj.departmentName)
+                    $("#department").append($("<option></option>")
+                        .attr("value", obj.departmentId)
+                        .text(obj.departmentName));
+                });
+            });
 
+        }
+        loadDepartments();
+
+
+        function loadRoles() {
+            var url = "https://localhost:44300/api/v1/roles"
+            var $loadhandler = jQuery.ajax({
+                type: 'GET',
+                url: url,
+                contentType: "application/json",
+                dataType: 'json',
+                crossDomain: true,
+            });
+            $loadhandler.done(function (data, textStatus, jqXHR) {
+                console.log(data);
+                $.each(data, function (key, obj) {
+                    //console.log(key)
+                    console.log(obj)
+                    console.log(obj.roleName)
+                    $("#rights").append($("<option></option>")
+                        .attr("value", obj.roleId)
+                        .text(obj.roleName));
+                });
+            });
+
+        }
+        loadRoles();
+
+ 
+    </script>
 }
 
 @section CSS {
@@ -24,7 +75,7 @@
 
     </div>
     <hr class="divider">
-    <form>
+  
         <div class="edit-container">
             <div class="title-bar orange-background">
                 <p class="panel-header">Add User</p>
@@ -41,23 +92,19 @@
             <div class="row3-department">
                 <label class="normal-weight" for="department">Department:</label>
                 <select class="form-control" id="department">
-                    <option>Information Technology</option>
-                    <option>Human Resource</option>
-                    <option>Engineering</option>
-                    <option>Finance</option>
+                    <option value="" selected disabled hidden>Select...</option>
                 </select>
             </div>
             <div class="row4-rights">
                 <label class="normal-weight" for="rights">Access Rights:</label>
                 <select class="form-control" id="rights">
-                    <option>Admin</option>
-                    <option>Department Head</option>
-                    <option>Employee</option>
+                    <option value="" selected disabled hidden>Select...</option>
                 </select>
             </div>
             <div class="row5-status">
                 <label class="normal-weight" for="status">Account Status:</label>
                 <select class="form-control" id="status">
+                    <option value="" selected disabled hidden>Select...</option>
                     <option>Active</option>
                     <option>Inactive</option>
                 </select>
@@ -68,6 +115,6 @@
                 <button class="cancel">Cancel</button>
             </div>
         </div>
-    </form>
+  
 
 </div>

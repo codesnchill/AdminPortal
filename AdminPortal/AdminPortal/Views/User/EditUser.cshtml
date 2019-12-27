@@ -5,7 +5,99 @@
 @model IEnumerable<AdminPortal.Models.Employee>
 
 @section Scripts {
+    <script>
+       
 
+
+        function loadDepartments() {
+            var url = "https://localhost:44300/api/v1/departments"
+            var $loadhandler = jQuery.ajax({
+                type: 'GET',
+                url: url,
+                contentType: "application/json",
+                dataType: 'json',
+                crossDomain: true,
+            });
+            $loadhandler.done(function (data, textStatus, jqXHR) {
+                console.log(data);
+                $.each(data, function (key, obj) {
+                    //console.log(key)
+                    console.log(obj)
+                    console.log(obj.departmentName)
+                    $("#department").append($("<option></option>")
+                        .attr("value", obj.departmentId)
+                        .text(obj.departmentName));
+                });
+            });
+
+        }
+        loadDepartments();
+
+
+        function loadRoles() {
+            var url = "https://localhost:44300/api/v1/roles"
+            var $loadhandler = jQuery.ajax({
+                type: 'GET',
+                url: url,
+                contentType: "application/json",
+                dataType: 'json',
+                crossDomain: true,
+            });
+            $loadhandler.done(function (data, textStatus, jqXHR) {
+                console.log(data);
+                $.each(data, function (key, obj) {
+                    //console.log(key)
+                    console.log(obj)
+                    console.log(obj.roleName)
+                    $("#rights").append($("<option></option>")
+                        .attr("value", obj.roleId)
+                        .text(obj.roleName));
+                });
+            });
+
+        }
+        loadRoles();
+
+
+        // Start of getting userId from addressbar
+        var g_userId = getIdFromAddressBar();
+        function getIdFromAddressBar() {
+            var urlArray = windows.location.href.split('/');
+            var id = urlArray[urlArray.length - 1];
+            return id;
+        }
+
+        getUserDetails();
+
+        function getUserDetails() {
+            var url = "https://localhost:44300/api/v1/users/" + g_userId
+            $loadUserDataHandler = jQuery.ajax({
+                type: 'GET',
+                url: url,
+                contentType: "application/json",
+                dataType: 'json',
+                crossDomain: true,
+            })
+            $loadUserDataHandler.done(function (data, textStatus, jqXHR) {
+                console.log(data);
+                var user = data;
+                employeeId = user.employeeId
+                employeeName = user.employeeName;
+                departmentName = user.departmentName;
+                roles = user.roleName;
+                isDisabled = user.isDisabled;
+
+                $('#employeeId').val(employeeId);
+                $('#employeeName').val(employeeName);
+                $('#department').val(departmentName);
+                $('#rights').val(roles);
+                $('#status').val(isDisabled);
+
+            }) //end of done
+
+        }
+        
+    </script>
 }
 
 @section CSS {
@@ -26,50 +118,45 @@
 
     </div>
     <hr class="divider">
-    <form>
-        <div class="edit-container">
-            <div class="title-bar orange-background">
-                <p class="panel-header">Edit User</p>
 
-            </div>
-            <div class="row1-employeeID">
-                <label class="normal-weight" for="employeeID">Employee ID:</label>
-                <input type="text" name="employeeID" readonly>
-            </div>
-            <div class="row2-employeeName">
-                <label class="normal-weight" for="employeeName">Employee Name:</label>
-                <input type='text' name='employeeName' />
-            </div>
-            <div class="row3-department">
-                <label class="normal-weight" for="department">Department:</label>
-                <select class="form-control" id="department">
-                    <option>Information Technology</option>
-                    <option>Human Resource</option>
-                    <option>Engineering</option>
-                    <option>Finance</option>
-                </select>
-            </div>
-            <div class="row4-rights">
-                <label class="normal-weight" for="rights">Access Rights:</label>
-                <select class="form-control" id="rights">
-                    <option>Admin</option>
-                    <option>Department Head</option>
-                    <option>Employee</option>
-                </select>
-            </div>
-            <div class="row5-status">
-                <label class="normal-weight" for="status">Account Status:</label>
-                <select class="form-control" id="status">
-                    <option>Active</option>
-                    <option>Inactive</option>
-                </select>
-            </div>
-            <div class="row6-buttons">
-                <button class="delete">Delete</button>
-                <button class="save">Save</button>
-                <button class="cancel">Cancel</button>
-            </div>
+    <div class="edit-container">
+        <div class="title-bar orange-background">
+            <p class="panel-header">Edit User</p>
+
         </div>
-    </form>
+        <div class="row1-employeeID">
+            <label class="normal-weight" for="employeeID">Employee ID:</label>
+            <input type="text" name="employeeID" id="employeeId" readonly>
+        </div>
+        <div class="row2-employeeName">
+            <label class="normal-weight" for="employeeName">Employee Name:</label>
+            <input type='text' name='employeeName' id="employeeName"/>
+        </div>
+        <div class="row3-department">
+            <label class="normal-weight" for="department">Department:</label>
+            <select class="form-control" id="department">
+
+            </select>
+        </div>
+        <div class="row4-rights">
+            <label class="normal-weight" for="rights">Access Rights:</label>
+            <select class="form-control" id="rights">
+    
+            </select>
+        </div>
+        <div class="row5-status">
+            <label class="normal-weight" for="status">Account Status:</label>
+            <select class="form-control" id="status">
+                <option>Active</option>
+                <option>Inactive</option>
+            </select>
+        </div>
+        <div class="row6-buttons">
+            <button class="delete">Delete</button>
+            <button class="save">Save</button>
+            <button class="cancel">Cancel</button>
+        </div>
+    </div>
+
 
 </div>

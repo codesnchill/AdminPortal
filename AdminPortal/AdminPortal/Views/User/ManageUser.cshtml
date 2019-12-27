@@ -4,6 +4,7 @@
 
 @model IEnumerable<AdminPortal.Models.Employee>
 
+
 @section Scripts {
     <script>
         function edit(id) {
@@ -52,6 +53,31 @@
 
         }
         loadDepartments();
+
+
+          function loadRoles() {
+            var url = "https://localhost:44300/api/v1/roles"
+            var $loadhandler = jQuery.ajax({
+                type: 'GET',
+                url: url,
+                contentType: "application/json",
+                dataType: 'json',
+                crossDomain: true,
+            });
+            $loadhandler.done(function (data, textStatus, jqXHR) {
+                console.log(data);
+                $.each(data, function (key, obj) {
+                    //console.log(key)
+                    console.log(obj)
+                    console.log(obj.roleName)
+                    $("#rights").append($("<option></option>")
+                        .attr("value", obj.roleId)
+                        .text(obj.roleName));
+                });
+            });
+
+        }
+        loadRoles();
 
         function filter() {
             var value = $("#employeeName").val().toLowerCase();
@@ -114,9 +140,7 @@
             <div class="rightsColumn">
                 <label for="rights">Access Rights:</label>
                 <select class="form-control" id="rights">
-                    <option>Admin</option>
-                    <option>Department Head</option>
-                    <option>Employee</option>
+                   
                 </select>
             </div>
             <div class="statusColumn">
