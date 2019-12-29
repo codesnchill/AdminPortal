@@ -53,7 +53,48 @@
         }
         loadRoles();
 
- 
+      //Using a function technique to define a JavaScript class, WebFormData
+        function WebFormData(inCollectedEmployeeId, inCollectedEmployeeName, inCollectedDepartmentId, inCollectedRole, inCollectedStatus) {
+            this.EmployeeId = inCollectedEmployeeId;
+        	this.EmployeeName = inCollectedEmployeeName;
+            this.DepartmentId = inCollectedDepartmentId;
+            this.RolesId = inCollectedRole;
+            this.IsDisabled = inCollectedStatus;
+        }
+
+        function clickSave() {
+            var collectedEmployeeId = $('#employeeId').val();
+            var collectedEmployeeName = $('#employeeName').val();
+            var collectedDepartmentId = $('#department').val();
+            var collectedRole = $('#rights').val();
+            var collectedStatus = $('#status').val();
+            //Create a WebFormData object, webFormData. Have its field values
+            //populated with the collected course data
+            var webFormData = new WebFormData(collectedEmployeeId, collectedEmployeeName,
+                collectedDepartmentId, collectedRole, collectedStatus);
+            //Convert the webFromData into a JSON string
+            var webFormDataInString = JSON.stringify(webFormData);
+
+            console.log(webFormDataInString);
+
+            var url = "https://localhost:44300/api/v1/users"
+
+            $updateCourseHandler = jQuery.ajax({
+                type: 'POST',
+                url: url,
+                dataType: 'json',
+                contentType: 'application/json;',
+                data: "'" + webFormDataInString + "'"
+            })//end of jQuery.ajax() call
+            $updateCourseHandler.done(function (data, textStatus, jqXHR) {
+                $("#messageAlert").show();
+            });//end of $updateCourseHandler.done()
+
+            $updateCourseHandler.error(function (data, textStatus, jqXHR) {
+                console.log(data.responseJSON.message);
+            });//end of $updateCourseHandler.error()*/
+
+        }
     </script>
 }
 
@@ -76,45 +117,48 @@
     </div>
     <hr class="divider">
   
-        <div class="edit-container">
-            <div class="title-bar orange-background">
-                <p class="panel-header">Add User</p>
+    <div class="edit-container">
+        <div class="title-bar orange-background">
+            <p class="panel-header">Add User</p>
 
-            </div>
-            <div class="row1-employeeID">
-                <label class="normal-weight" for="employeeID">Employee ID:</label>
-                <input type="text" name="employeeID">
-            </div>
-            <div class="row2-employeeName">
-                <label class="normal-weight" for="employeeName">Employee Name:</label>
-                <input type='text' name='employeeName' />
-            </div>
-            <div class="row3-department">
-                <label class="normal-weight" for="department">Department:</label>
-                <select class="form-control" id="department">
-                    <option value="" selected disabled hidden>Select...</option>
-                </select>
-            </div>
-            <div class="row4-rights">
-                <label class="normal-weight" for="rights">Access Rights:</label>
-                <select class="form-control" id="rights">
-                    <option value="" selected disabled hidden>Select...</option>
-                </select>
-            </div>
-            <div class="row5-status">
-                <label class="normal-weight" for="status">Account Status:</label>
-                <select class="form-control" id="status">
-                    <option value="" selected disabled hidden>Select...</option>
-                    <option>Active</option>
-                    <option>Inactive</option>
-                </select>
-            </div>
-            <div class="row6-buttons">
-
-                <button class="save">Save</button>
-                <button class="cancel">Cancel</button>
-            </div>
         </div>
+        <div id="messageAlert" style="display:none" class="alert alert-success" role="alert">
+            Updated Successfully
+        </div>
+        <div class="row1-employeeID">
+            <label class="normal-weight" for="employeeID">Employee ID:</label>
+            <input type="text" name="employeeID" id="employeeId">
+        </div>
+        <div class="row2-employeeName">
+            <label class="normal-weight" for="employeeName">Employee Name:</label>
+            <input type='text' name='employeeName' id="employeeName" />
+        </div>
+        <div class="row3-department">
+            <label class="normal-weight" for="department">Department:</label>
+            <select class="form-control" id="department">
+                <option value="" selected disabled hidden>Select...</option>
+            </select>
+        </div>
+        <div class="row4-rights">
+            <label class="normal-weight" for="rights">Access Rights:</label>
+            <select class="form-control" id="rights">
+                <option value="" selected disabled hidden>Select...</option>
+            </select>
+        </div>
+        <div class="row5-status">
+            <label class="normal-weight" for="status">Account Status:</label>
+            <select class="form-control" id="status">
+                <option value="" selected disabled hidden>Select...</option>
+                <option value="false">Active</option>
+                <option value="true">Inactive</option>
+            </select>
+        </div>
+        <div class="row6-buttons">
+
+            <button onclick="clickSave()" class="save">Save</button>
+            <button class="cancel">Cancel</button>
+        </div>
+    </div>
   
 
 </div>

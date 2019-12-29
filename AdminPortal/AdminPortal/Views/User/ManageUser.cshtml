@@ -107,8 +107,13 @@
                     //console.log(key)
                     console.log(obj)
                     console.log(obj[0].employeeName)
-                    $("#datatable tbody").html() = "";
-
+                    $("#datatable tbody tr").append(
+                        $('<td>').text(obj[0].employeeID),
+                        $('<td>').text(obj[0].employeeName),
+                        $('<td>').text(obj[0].departmentName),
+                        $('<td>').text(obj[0].roleName),
+                        $('<td>').text(obj[0].status)
+                    );
 
                 });
             });
