@@ -85,6 +85,34 @@
               $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
             });
         }
+
+        function search() {
+            var employeeID = $("#employeeID").val();
+            var employeeName = $("#employeeName").val();
+            var department = $("#department").val();
+            var rights = $("#rights").val();
+            var status = $("#status").val();
+            var url = "https://localhost:44300/api/v1/users/search?EmployeeId=" + employeeID + "&Department=" + department + "&Roles=" + rights
+                + "&IsDisabled=" + status + "&EmployeeName=" + employeeName;
+            var $loadhandler = jQuery.ajax({
+                type: 'GET',
+                url: url,
+                contentType: "application/json",
+                dataType: 'json',
+                crossDomain: true,
+            });
+            $loadhandler.done(function (data, textStatus, jqXHR) {
+                console.log(data);
+                $.each(data, function (key, obj) {
+                    //console.log(key)
+                    console.log(obj)
+                    console.log(obj[0].employeeName)
+                    $("#datatable tbody").html() = "";
+
+
+                });
+            });
+        }
     </script>
 
 }
@@ -128,7 +156,7 @@
         <div class="first-row">
             <div class="employeeColumn">
                 <label for="employeeID">Employee ID:</label>
-                <input type="text" name="employeeID" size='15' placeholder='Search by Employee ID...'>
+                <input id="employeeID" type="text" name="employeeID" size='15' placeholder='Search by Employee ID...'>
             </div>
             <div class="departmentColumn">
                 <label for="department">Department:</label>
@@ -146,13 +174,13 @@
             <div class="statusColumn">
                 <label for="status">Account Status:</label>
                 <select class="form-control" id="status">
-                    <option>Active</option>
-                    <option>Inactive</option>
+                    <option value="false">Active</option>
+                    <option value="true">Inactive</option>
                 </select>
             </div>
         </div>
         <div class="button-row">
-            <button class="searchButton orange-background">
+            <button onclick="search()" class="searchButton orange-background">
                 Search
             </button>
         </div>
