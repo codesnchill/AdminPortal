@@ -5,7 +5,171 @@
 @*@model IEnumerable<AdminPortal.Models.Employee>*@
 
 @section Scripts {
+    <script>
+         // Start of getting gameId from addressbar
+   
+        function getGameIdFromAddressBar() {
+            var urlArray = window.location.href.split('?');
+            var gameId = urlArray[1].split('&')[0].split('=')[1];
+            return gameId;
+        }
 
+        function getQuestionIdFromAddressBar() {
+            var urlArray = window.location.href.split('?');
+            var questionId = urlArray[1].split('&')[1].split('=')[1];
+            return questionId;
+        }
+
+        var gameId = getGameIdFromAddressBar();
+        var questionId = getQuestionIdFromAddressBar();
+
+
+        function getGameDetails() {
+            var url = "https://localhost:44300/api/v1/games/" + gameId + "/questions/" + questionId;
+            $loadUserDataHandler = jQuery.ajax({
+                type: 'GET',
+                url: url,
+                contentType: "application/json",
+                dataType: 'json',
+                crossDomain: true,
+            })
+            $loadUserDataHandler.done(function (data, textStatus, jqXHR) {
+                console.log(data);
+                var game = data;
+                 Question1 = game[0].question1;
+                 answer = game[0].answer;
+                Choices = game[0].choices;
+               
+                console.log("Question: " + Question1);
+                $('#question').val(Question1);
+                
+                $('#choice1').val(Choices[0].choice).attr("value", Choices[0].choiceId);
+
+                $('#choice2').val(Choices[1].choice).attr("value", Choices[1].choiceId);
+                $('#choice3').val(Choices[2].choice).attr("value", Choices[2].choiceId);
+                $('#choice4').val(Choices[3].choice).attr("value", Choices[3].choiceId);
+
+                var i = 0;
+                var answerId;
+                for (i = 0; i < Choices.length; i++) {
+
+                    if (Choices[i].choice == answer) {
+                        answerId = Choices[i].choiceId;
+                    }
+                    $("#answer").append($("<option></option>")
+                        .attr("value", Choices[i].choiceId)
+                        .text("Choice" + (i+1)));
+                      
+                    }
+
+                console.log("answerId " + answerId);
+
+                $('#answer option').filter(function () {
+                    return $(this).val() == answerId;
+                 }).prop('selected', true);
+
+                console.log("Choices: " + Choices);
+                console.log("Answer: " + answer);
+           
+            }) //end of done
+
+          
+        }
+        getGameDetails();
+
+
+        //Using a function technique to define a JavaScript class, WebFormData
+        function WebFormData(inCollectedQuestion1, inCollectedAnswer, inCollectedChoices) {
+            this.Question = inCollectedQuestion1;
+            this.Answer = inCollectedAnswer;
+            this.Choices = inCollectedChoices;
+        }
+
+        function clickForFun() {
+
+              var allChoices = [];
+                 var collectedChoicesArray1 = {
+            choiceId:  $('#choice1').attr("value"),
+                choice: $('#choice1').val()
+            };
+
+                        var collectedChoicesArray2 = {
+            choiceId:  $('#choice2').attr("value"),
+                choice: $('#choice2').val()
+            };
+
+                        var collectedChoicesArray3 = {
+            choiceId:  $('#choice3').attr("value"),
+                choice: $('#choice3').val()
+            };
+
+                        var collectedChoicesArray4 = {
+            choiceId:  $('#choice4').attr("value"),
+                choice: $('#choice4').val()
+};
+            allChoices.push(collectedChoicesArray1, collectedChoicesArray2, collectedChoicesArray3, collectedChoicesArray4);
+
+            console.log(allChoices);
+        }
+
+        function clickSave() {
+
+            var collectedQuestion = $('#question').val();
+            var collectedAnswer = $('#answer').val();
+            var allChoices = [];
+     
+            var collectedChoicesArray1 = {
+            choiceId:  $('#choice1').val(),
+                choice: $('#choice1').text()
+            };
+
+                        var collectedChoicesArray2 = {
+            choiceId:  $('#choice2').val(),
+                choice: $('#choice2').text()
+            };
+
+                        var collectedChoicesArray3 = {
+            choiceId:  $('#choice3').val(),
+                choice: $('#choice3').text()
+            };
+
+                        var collectedChoicesArray4 = {
+            choiceId:  $('#choice4').val(),
+                choice: $('#choice4').text()
+            };
+            allChoices.push(collectedChoicesArray1, collectedChoicesArray2, collectedChoicesArray3, collectedChoicesArray4);
+
+            console.log(allChoices);
+
+            //Create a WebFormData object, webFormData. Have its field values
+            //populated with the collected course data
+            var webFormData = new WebFormData(collectedEmployeeName,
+                collectedDepartmentId, collectedRole, collectedStatus);
+            //Convert the webFromData into a JSON string
+            var webFormDataInString = JSON.stringify(webFormData);
+
+            console.log(webFormDataInString);
+
+            var url = "https://localhost:44300/api/v1/users/" + g_userId
+
+            $updateCourseHandler = jQuery.ajax({
+                type: 'PUT',
+                url: url,
+                dataType: 'json',
+                contentType: 'application/json;',
+                data: "'" + webFormDataInString + "'"
+            })//end of jQuery.ajax() call
+            $updateCourseHandler.done(function (data, textStatus, jqXHR) {
+                $("#messageAlert").show();
+            });//end of $updateCourseHandler.done()
+
+            $updateCourseHandler.error(function (data, textStatus, jqXHR) {
+                console.log(data.responseJSON.message);
+            });//end of $updateCourseHandler.error()*/
+
+        }
+
+    </script>
 }
 
 @section CSS {
@@ -26,39 +190,35 @@
         </div>
         <div class="row1-question">
             <label class="normal-weight" for="question">Question:</label>
-            <input type="text" name="question">
+            <input type="text" name="question" id="question">
         </div>
         <div class="row2-choice1">
             <label class="normal-weight" for="choice1">Choice 1:</label>
-            <input type='text' name='choice1' />
+            <input type='text' name='choice1' id="choice1" />
         </div>
         <div class="row3-choice2">
             <label class="normal-weight" for="choice2">Choice 2:</label>
-            <input type='text' name='choice2' />
+            <input type='text' name='choice2' id="choice2" />
 
         </div>
         <div class="row4-choice3">
             <label class="normal-weight" for="choice3">Choice 3:</label>
-            <input type='text' name='choice3' />
+            <input type='text' name='choice3' id="choice3" />
         </div>
         <div class="row5-choice4">
             <label class="normal-weight" for="choice4">Choice 4:</label>
-            <input type='text' name='choice4' />
+            <input type='text' name='choice4' id="choice4"/>
         </div>
         <div class="row6-answer">
             <label class="normal-weight" for="answer">Answer:</label>
             <select class="form-control" id="answer">
-                <option>Choice 1</option>
-                <option>Choice 2</option>
-                <option>Choice 3</option>
-                <option>Choice 4</option>
             </select>
         </div>
 
         <div class="row7-buttons">
             <button class="delete">Delete</button>
-            <button class="save">Save</button>
-            <button class="cancel">Cancel</button>
+            <button onclick="clickSave()" class="save">Save</button>
+            <button onclick="clickForFun()" class="cancel">Cancel</button>
         </div>
     </div>
 

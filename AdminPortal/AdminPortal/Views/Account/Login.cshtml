@@ -2,7 +2,6 @@
 @{
     Layout = null;
 }
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -11,6 +10,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link href="~/styles/style.css" rel="stylesheet" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <title>Login</title>
 </head>
 
@@ -19,16 +19,63 @@
 
     </div>
     <div class="bottom-section blue-background">
-        <form action="Verify" method="POST">
-            <label class="label">Employee ID</label>
-            <input type="text" name="employeeID" class="input" required="required">
+        <div id="messageAlert" style="display:none" class="alert alert-success" role="alert">
+            Login Successfully
+        </div>
 
-            <label class="label">Password</label>
-            <input type="password" name="password" class="input" required="required">
+        <label class="label">Employee ID</label>
+        <input type="text" name="employeeID" class="input" required="required" id="username">
 
-            <input type="submit" value="login" class="login-button">
-        </form>
+        <label class="label">Password</label>
+        <input type="password" name="password" class="input" required="required" id="password">
+
+        <input type="submit" value="login" class="login-button" onclick="login()">
+        @*<button onclick="login()" class="login-button">Submit</button>*@
     </div>
 </body>
 
 </html>
+
+<script>
+
+    //Using a function technique to define a JavaScript class, WebFormData
+    function WebFormData(inCollectedUsername, inCollectedPassword) {
+        this.Username = inCollectedUsername;
+        this.Password = inCollectedPassword;
+    }
+
+    function login() {
+        var collectedUsername = $('#username').val();
+        var collectedPassword = $('#password').val();
+        //Create a WebFormData object, webFormData. Have its field values
+        //populated with the collected course data
+        var webFormData = new WebFormData(collectedUsername, collectedPassword);
+        //Convert the webFromData into a JSON string
+        var webFormDataInString = JSON.stringify(webFormData);
+
+        console.log(webFormDataInString);
+
+        var url = "https://localhost:44300/api/signin"
+
+        $updateCourseHandler = jQuery.ajax({
+            type: 'POST',
+            url: url,
+            dataType: 'json',
+            contentType: 'application/json;',
+            data: "'" + webFormDataInString + "'"
+        })//end of jQuery.ajax() call
+        $updateCourseHandler.done(function (data, textStatus, jqXHR) {
+            $("#messageAlert").show();
+
+        });//end of $updateCourseHandler.done()
+
+        //$updateCourseHandler.error(function (data, textStatus, jqXHR) {
+        //    console.log(data.responseJSON.message);
+        //});//end of $updateCourseHandler.error()*/
+
+    }
+
+</script>
+
+
+

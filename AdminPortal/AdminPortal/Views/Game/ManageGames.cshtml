@@ -6,15 +6,23 @@
 
 @section Scripts {
     <script>
-        function edit(id) {
-            location.href = "/Game/EditQuestion/" + id;
+
+        // default game id for dropdown
+        var gameId = 1;
+
+    
+        function edit(questionId) {
+            location.href = "/Game/EditQuestion/?gameid=" + gameId  + "&questionid=" + questionId;
         }
 
         function add(id) {
             location.href = "/Game/AddQuestion/" + id;
         }
 
-
+        //when user select a different game for dropdown
+        $("#games").change(function () {
+            gameId = $(this).find(':selected').val();
+        });
 
 
         function loadGames() {
@@ -60,6 +68,7 @@
         <div class="left-selection">
             <label for="games">Select a game</label>
             <select class="form-control" id="games">
+
             </select>
         </div>
 
