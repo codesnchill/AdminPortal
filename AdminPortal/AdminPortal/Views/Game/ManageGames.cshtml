@@ -15,8 +15,8 @@
             location.href = "/Game/EditQuestion/?gameid=" + gameId  + "&questionid=" + questionId;
         }
 
-        function add(id) {
-            location.href = "/Game/AddQuestion/" + id;
+        function add() {
+            location.href = "/Game/AddQuestion/" + gameId;
         }
 
         //when user select a different game for dropdown
@@ -73,7 +73,7 @@
         </div>
 
         <div class="new-game-button">
-            <button class="orange-background" name="Add">Add new question</button>
+            <button class="orange-background" name="Add" onclick="add()">Add new question</button>
         </div>
     </div>
     <table id="datatable" class="table table-bordered">
