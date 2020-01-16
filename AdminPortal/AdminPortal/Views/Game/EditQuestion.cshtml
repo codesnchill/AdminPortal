@@ -7,6 +7,12 @@
 @section Scripts {
     <script>
          // Start of getting gameId from addressbar
+
+        var choiceId1;
+        var choiceId2;
+        var choiceId3;
+        var choiceId4;
+
    
         function getGameIdFromAddressBar() {
             var urlArray = window.location.href.split('?');
@@ -37,17 +43,26 @@
                 console.log(data);
                 var game = data;
                  Question1 = game[0].question1;
-                 answer = game[0].answer;
+                 answer = game[0].answer
                 Choices = game[0].choices;
                
                 console.log("Question: " + Question1);
                 $('#question').val(Question1);
-                
-                $('#choice1').val(Choices[0].choice).attr("value", Choices[0].choiceId);
+                //change the id of the choices input to the real id (from database) of the choices
+                $('#choice1').prop('id', Choices[0].choiceId);
+                $('#choice2').prop('id', Choices[1].choiceId);
+                $('#choice3').prop('id', Choices[2].choiceId);
+                $('#choice4').prop('id', Choices[3].choiceId);
 
-                $('#choice2').val(Choices[1].choice).attr("value", Choices[1].choiceId);
-                $('#choice3').val(Choices[2].choice).attr("value", Choices[2].choiceId);
-                $('#choice4').val(Choices[3].choice).attr("value", Choices[3].choiceId);
+                choiceId1 = Choices[0].choiceId;
+                choiceId2 = Choices[1].choiceId;
+                choiceId3 = Choices[2].choiceId;
+                choiceId4 = Choices[3].choiceId;
+
+                $('#' + choiceId1).val(Choices[0].choice);
+                $('#' + choiceId2).val(Choices[1].choice);
+                $('#' + choiceId3).val(Choices[2].choice);
+                $('#' + choiceId4).val(Choices[3].choice);
 
                 var i = 0;
                 var answerId;
@@ -58,7 +73,7 @@
                     }
                     $("#answer").append($("<option></option>")
                         .attr("value", Choices[i].choiceId)
-                        .text("Choice" + (i+1)));
+                        .text("Choice " + (i+1)));
                       
                     }
 
@@ -79,78 +94,56 @@
 
 
         //Using a function technique to define a JavaScript class, WebFormData
-        function WebFormData(inCollectedQuestion1, inCollectedAnswer, inCollectedChoices) {
+        function WebFormData(inCollectedQuestion1, inCollectedAnswer, inCollectedPoints, inCollectedChoices ) {
             this.Question = inCollectedQuestion1;
             this.Answer = inCollectedAnswer;
+              this.Points = inCollectedPoints;
             this.Choices = inCollectedChoices;
-        }
-
-        function clickForFun() {
-
-              var allChoices = [];
-                 var collectedChoicesArray1 = {
-            choiceId:  $('#choice1').attr("value"),
-                choice: $('#choice1').val()
-            };
-
-                        var collectedChoicesArray2 = {
-            choiceId:  $('#choice2').attr("value"),
-                choice: $('#choice2').val()
-            };
-
-                        var collectedChoicesArray3 = {
-            choiceId:  $('#choice3').attr("value"),
-                choice: $('#choice3').val()
-            };
-
-                        var collectedChoicesArray4 = {
-            choiceId:  $('#choice4').attr("value"),
-                choice: $('#choice4').val()
-};
-            allChoices.push(collectedChoicesArray1, collectedChoicesArray2, collectedChoicesArray3, collectedChoicesArray4);
-
-            console.log(allChoices);
+          
         }
 
         function clickSave() {
 
             var collectedQuestion = $('#question').val();
-            var collectedAnswer = $('#answer').val();
-            var allChoices = [];
-     
-            var collectedChoicesArray1 = {
-            choiceId:  $('#choice1').val(),
-                choice: $('#choice1').text()
+            var collectedPoint = 2;
+            var collectedChoices = [];
+
+            //get the text input of the choice using the val of answer (choiceId)
+            var selectedChoiceId = $('#answer').val();
+            var collectedAnswer = $('#' + selectedChoiceId).val();
+
+                 var collectedChoicesArray1 = {
+                    ChoiceId:  choiceId1,
+                    Choice: $('#' + choiceId1).val()
             };
 
                         var collectedChoicesArray2 = {
-            choiceId:  $('#choice2').val(),
-                choice: $('#choice2').text()
+                                                ChoiceId:  choiceId2,
+                    Choice: $('#' + choiceId2).val()
             };
 
                         var collectedChoicesArray3 = {
-            choiceId:  $('#choice3').val(),
-                choice: $('#choice3').text()
+                                                ChoiceId:  choiceId3,
+                    Choice: $('#' + choiceId3).val()
             };
 
                         var collectedChoicesArray4 = {
-            choiceId:  $('#choice4').val(),
-                choice: $('#choice4').text()
-            };
-            allChoices.push(collectedChoicesArray1, collectedChoicesArray2, collectedChoicesArray3, collectedChoicesArray4);
-
-            console.log(allChoices);
+                                                ChoiceId:  choiceId4,
+                    Choice: $('#' + choiceId4).val()
+};
+            collectedChoices.push(collectedChoicesArray1, collectedChoicesArray2, collectedChoicesArray3, collectedChoicesArray4);
+            console.log(collectedChoices);
 
             //Create a WebFormData object, webFormData. Have its field values
             //populated with the collected course data
-            var webFormData = new WebFormData(collectedEmployeeName,
-                collectedDepartmentId, collectedRole, collectedStatus);
+            var webFormData = new WebFormData(collectedQuestion,
+                collectedAnswer, collectedPoint, collectedChoices);
             //Convert the webFromData into a JSON string
             var webFormDataInString = JSON.stringify(webFormData);
 
             console.log(webFormDataInString);
 
-            var url = "https://localhost:44300/api/v1/users/" + g_userId
+            var url = "https://localhost:44300/api/v1/games/" + gameId + "/questions/" + questionId
 
             $updateCourseHandler = jQuery.ajax({
                 type: 'PUT',
@@ -188,6 +181,9 @@
             <p class="panel-header">Edit Questions</p>
 
         </div>
+        <div id="messageAlert" style="display:none" class="alert alert-success" role="alert">
+            Updated Successfully
+        </div>
         <div class="row1-question">
             <label class="normal-weight" for="question">Question:</label>
             <input type="text" name="question" id="question">
@@ -207,7 +203,7 @@
         </div>
         <div class="row5-choice4">
             <label class="normal-weight" for="choice4">Choice 4:</label>
-            <input type='text' name='choice4' id="choice4"/>
+            <input type='text' name='choice4' id="choice4" />
         </div>
         <div class="row6-answer">
             <label class="normal-weight" for="answer">Answer:</label>
