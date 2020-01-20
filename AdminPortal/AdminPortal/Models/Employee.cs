@@ -16,7 +16,7 @@ namespace AdminPortal.Models
         public string EmployeeBio { get; set; }
         public string Roles { get; set; }
 
-        public int Points { get; set; }
+        public int totalPoints { get; set; }
         public int RolesId { get; set; }
         public string ImageUrl { get; set; }
 
