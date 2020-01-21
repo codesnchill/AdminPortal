@@ -75,7 +75,7 @@
             //Convert the webFromData into a JSON string
             var webFormDataInString = JSON.stringify(webFormData);
 
-            console.log(webFormDataInString);
+            console.log("JSON RESULTS for add: " + webFormDataInString);
 
             var url = "https://localhost:44300/api/v1/users"
 
@@ -87,13 +87,62 @@
                 data: "'" + webFormDataInString + "'"
             })//end of jQuery.ajax() call
             $updateCourseHandler.done(function (data, textStatus, jqXHR) {
-                $("#messageAlert").show();
+                alert("User added Successfully");  
+                
             });//end of $updateCourseHandler.done()
 
             $updateCourseHandler.error(function (data, textStatus, jqXHR) {
                 console.log(data.responseJSON.message);
             });//end of $updateCourseHandler.error()*/
 
+        }
+
+
+          //Using a function technique to define a JavaScript class, WebFormData
+        function WebFormData2(inCollectedUsername, inCollectedPassword, inCollectedEmail) {
+            this.Username = inCollectedUsername;
+        	this.Password = inCollectedPassword;
+            this.Email = inCollectedEmail;
+        }
+
+        function register() {
+            var collectedUsername = $('#employeeId').val();
+            var collectedPassword = $('#employeeId').val();
+            var collectedEmail = $('#email').val();
+            //Create a WebFormData object, webFormData. Have its field values
+            //populated with the collected course data
+            var webFormData2 = new WebFormData2(collectedUsername, collectedPassword,
+                collectedEmail);
+            //Convert the webFromData into a JSON string
+            var webFormDataInString2 = JSON.stringify(webFormData2);
+
+            console.log("JSON RESULTS for register: " + webFormDataInString2);
+
+            var url = "https://localhost:44300/api/signUp"
+
+            $updateRegisterHandler = jQuery.ajax({
+                type: 'POST',
+                url: url,
+                dataType: 'json',
+                contentType: 'application/json;',
+                data: "'" + webFormDataInString2 + "'"
+            })//end of jQuery.ajax() call
+            $updateRegisterHandler.done(function (data, textStatus, jqXHR) {
+                alert("Registration Success");  
+            });//end of $updateCourseHandler.done()
+
+            $updateRegisterHandler.error(function (data, textStatus, jqXHR) {
+                console.log(data.responseJSON.message);
+            });//end of $updateCourseHandler.error()*/
+        }
+
+        function save() {
+            clickSave();
+            register();
+        }
+
+        function cancel() {
+            location.href = "/User/ManageUser";
         }
     </script>
 }
@@ -121,9 +170,6 @@
         <div class="title-bar orange-background">
             <p class="panel-header">Add User</p>
 
-        </div>
-        <div id="messageAlert" style="display:none" class="alert alert-success" role="alert">
-            Updated Successfully
         </div>
         <div class="row1-employeeID">
             <label class="normal-weight" for="employeeID">Employee ID:</label>
@@ -153,10 +199,14 @@
                 <option value="true">Inactive</option>
             </select>
         </div>
+        <div class="row7-email">
+            <label class="normal-weight" for="email">Email:</label>
+            <input type='text' name='email' id="email" />
+        </div>
         <div class="row6-buttons">
 
-            <button onclick="clickSave()" class="save">Save</button>
-            <button class="cancel">Cancel</button>
+            <button onclick="save()" class="save">Save</button>
+            <button onclick="cancel()" class="cancel">Cancel</button>
         </div>
     </div>
   

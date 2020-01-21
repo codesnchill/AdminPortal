@@ -339,6 +339,24 @@ input {
         margin-left: 35px;
     }
 
+.row7-email {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+}
+
+    .row7-email label,
+    input {
+        display: inline-block;
+        vertical-align: middle;
+    }
+
+    .row7-email input {
+        height: 35px;
+        margin-left: 94px;
+    }
+
 .row6-buttons {
     display: flex;
     justify-content: center;
