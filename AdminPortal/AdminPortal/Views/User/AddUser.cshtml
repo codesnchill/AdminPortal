@@ -3,7 +3,14 @@
 }
 
 @section Scripts {
+    <script src="~/Script/select2.min.js"></script>
     <script>
+
+        $(document).ready(function () {
+            $(".mySelect2").select2();
+        });
+
+
         function loadDepartments() {
             var url = "https://localhost:44300/api/v1/departments"
             var $loadhandler = jQuery.ajax({
@@ -53,10 +60,10 @@
         }
         loadRoles();
 
-      //Using a function technique to define a JavaScript class, WebFormData
+        //Using a function technique to define a JavaScript class, WebFormData
         function WebFormData(inCollectedEmployeeId, inCollectedEmployeeName, inCollectedDepartmentId, inCollectedRole, inCollectedStatus) {
             this.EmployeeId = inCollectedEmployeeId;
-        	this.EmployeeName = inCollectedEmployeeName;
+            this.EmployeeName = inCollectedEmployeeName;
             this.DepartmentId = inCollectedDepartmentId;
             this.RolesId = inCollectedRole;
             this.IsDisabled = inCollectedStatus;
@@ -87,8 +94,8 @@
                 data: "'" + webFormDataInString + "'"
             })//end of jQuery.ajax() call
             $updateCourseHandler.done(function (data, textStatus, jqXHR) {
-                alert("User added Successfully");  
-                
+                alert("User added Successfully");
+
             });//end of $updateCourseHandler.done()
 
             $updateCourseHandler.error(function (data, textStatus, jqXHR) {
@@ -98,10 +105,10 @@
         }
 
 
-          //Using a function technique to define a JavaScript class, WebFormData
+        //Using a function technique to define a JavaScript class, WebFormData
         function WebFormData2(inCollectedUsername, inCollectedPassword, inCollectedEmail) {
             this.Username = inCollectedUsername;
-        	this.Password = inCollectedPassword;
+            this.Password = inCollectedPassword;
             this.Email = inCollectedEmail;
         }
 
@@ -128,11 +135,11 @@
                 data: webFormDataInString2
             })//end of jQuery.ajax() call
             $updateRegisterHandler.done(function (data, textStatus, jqXHR) {
-                alert("Registration Success");  
+                alert("Registration Success");
             });//end of $updateCourseHandler.done()
 
             $updateRegisterHandler.error(function (data, textStatus, jqXHR) {
-                console.log(data.responseJSON.message);
+                //console.log(data.responseJSON.message);
             });//end of $updateCourseHandler.error()*/
         }
 
@@ -149,6 +156,7 @@
 
 @section CSS {
     <link href="~/styles/adduser.css" rel="stylesheet" />
+    <link href="~/css/select2.min.css" rel="stylesheet" />
 }
 
 <div class="right-section white-background">
@@ -165,7 +173,7 @@
 
     </div>
     <hr class="divider">
-  
+
     <div class="edit-container">
         <div class="title-bar orange-background">
             <p class="panel-header">Add User</p>
@@ -181,7 +189,7 @@
         </div>
         <div class="row3-department">
             <label class="normal-weight" for="department">Department:</label>
-            <select class="form-control" id="department">
+            <select class="mySelect2" id="department">
                 <option value="" selected disabled hidden>Select...</option>
             </select>
         </div>
@@ -209,6 +217,6 @@
             <button onclick="cancel()" class="cancel">Cancel</button>
         </div>
     </div>
-  
+
 
 </div>

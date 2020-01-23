@@ -2,14 +2,103 @@
     Layout = "../Shared/_Layout.cshtml";
 }
 
-@*@model IEnumerable<AdminPortal.Models.Employee>*@
+@model IEnumerable<AdminPortal.Models.Event>
 
 @section Scripts {
+    <script src="~/Script/select2.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $(".mySelect2").select2();
+        });
 
+
+        function loadDepartments() {
+            var url = "https://localhost:44300/api/v1/departments"
+            var $loadhandler = jQuery.ajax({
+                type: 'GET',
+                url: url,
+                contentType: "application/json",
+                dataType: 'json',
+                crossDomain: true,
+            });
+            $loadhandler.done(function (data, textStatus, jqXHR) {
+                console.log(data);
+                $.each(data, function (key, obj) {
+                    //console.log(key)
+                    console.log(obj)
+                    console.log(obj.departmentName)
+                    $("#department").append($("<option></option>")
+                        .attr("value", obj.departmentId)
+                        .text(obj.departmentName));
+                });
+            });
+
+        }
+        loadDepartments();
+
+
+        //Using a function technique to define a JavaScript class, WebFormData
+        function WebFormData(inCollectedStartDateTime, inCollectedEndDateTime,
+            inCollectedEventName, inCollectedEventDescription, inCollectedDepartmentId) {
+
+            this.StartDateTime = inCollectedStartDateTime;
+            this.EndDateTime = inCollectedEndDateTime;
+            this.EventName = inCollectedEventName;
+            this.EventDescription = inCollectedEventDescription;
+            this.DepartmentList = inCollectedDepartmentId;
+
+        }
+
+        function save() {
+            var collectedStartDate = $('#startDate').val();
+            var collectedEndDate = $('#endDate').val();
+            var collectedStartTime = $('#startTime').val();
+            var collectedEndTime = $('#endTime').val();
+            var collectedEventName = $('#name').val();
+            var collectedEventDescription = $('#description').val();
+            var collectedDepartment = $('#department').val();
+
+            var collectedStartDateTime = new Date(collectedStartDate + ' ' + collectedStartTime);
+            var collectedStartDateTime2 = collectedStartDateTime.toISOString().replace('Z', '').replace('.000', '');
+ 
+
+            var collectedEndDateTime = new Date(collectedEndDate + ' ' + collectedEndTime);
+            var collectedEndDateTime2 =  collectedEndDateTime.toISOString().replace('Z', '').replace('.000', '');
+            //Create a WebFormData object, webFormData. Have its field values
+            //populated with the collected course data
+            var webFormData = new WebFormData(collectedStartDateTime2, collectedEndDateTime2,
+                collectedEventName, collectedEventDescription, collectedDepartment);
+            //Convert the webFromData into a JSON string
+            var webFormDataInString = JSON.stringify(webFormData);
+
+            console.log("Event Details: " + webFormDataInString);
+
+            var url = "https://localhost:44300/api/v1/events"
+
+            $updateCourseHandler = jQuery.ajax({
+                type: 'POST',
+                url: url,
+                dataType: 'json',
+                contentType: 'application/json;',
+                data: "'" + webFormDataInString + "'"
+            })//end of jQuery.ajax() call
+            $updateCourseHandler.done(function (data, textStatus, jqXHR) {
+                alert("Event Added Successfully");
+                location.href = "/Event/AddEvent";
+
+            });//end of $updateCourseHandler.done()
+
+            $updateCourseHandler.error(function (data, textStatus, jqXHR) {
+                console.log(data.responseJSON.message);
+            });//end of $updateCourseHandler.error()*/
+
+        }
+    </script>
 }
 
 @section CSS {
     <link rel="stylesheet" href="~/styles/addevent.css">
+    <link href="~/css/select2.min.css" rel="stylesheet" />
 }
 
 
@@ -27,40 +116,40 @@
         </div>
         <div class="row1-startDate">
             <label class="normal-weight" for="startDate">Start Date:</label>
-            <input type="date" class="form-control" name="startDate">
+            <input type="date" class="form-control" name="startDate" id="startDate">
         </div>
         <div class="row2-endDate">
             <label class="normal-weight" for="endDate">End Date:</label>
-            <input type="date" class="form-control" name="endDate">
+            <input type="date" class="form-control" name="endDate" id="endDate">
         </div>
 
         <div class="row3-startTime">
             <label class="normal-weight" for="startTime">Start Time:</label>
-            <input type="time" class="form-control" name="startTime">
+            <input type="time" class="form-control" name="startTime" id="startTime">
         </div>
         <div class="row4-endTime">
             <label class="normal-weight" for="endTime">End Time:</label>
-            <input type="time" class="form-control" name="endTime">
+            <input type="time" class="form-control" name="endTime" id="endTime">
         </div>
         <div class="row5-eventName">
             <label class="normal-weight" for="eventName">Event Name:</label>
-            <input type="text" class="form-control" name="eventName">
+            <input type="text" class="form-control" name="eventName" id="name">
         </div>
         <div class="row6-eventDescription">
             <label class="normal-weight" for="eventDescription">Event Description:</label>
-            <input type="text" class="form-control" name="eventDescription">
+            <input type="text" class="form-control" name="eventDescription" id="description">
         </div>
 
 
         <div class="row7-department">
             <label class="normal-weight" for="department">Department:</label>
-            <select class="form-control" id="department">
+            <select class="mySelect2" multiple id="department">
             </select>
         </div>
         <div class="row8-buttons">
 
-            <button class="save">Save</button>
-            <button class="cancel">Cancel</button>
+            <button onclick="save()" class="save">Save</button>
+            <button onclick="cancel()" class="cancel">Cancel</button>
         </div>
     </div>
 
