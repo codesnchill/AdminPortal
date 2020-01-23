@@ -2,10 +2,95 @@
     Layout = "../Shared/_Layout.cshtml";
 }
 
-@*@model IEnumerable<AdminPortal.Models.Employee>*@
+@model IEnumerable<AdminPortal.Models.Event>
 
 @section Scripts {
+    <script>
+          function loadDepartments() {
+            var url = "https://localhost:44300/api/v1/departments"
+            var $loadhandler = jQuery.ajax({
+                type: 'GET',
+                url: url,
+                contentType: "application/json",
+                dataType: 'json',
+                crossDomain: true,
+            });
+            $loadhandler.done(function (data, textStatus, jqXHR) {
+                console.log(data);
+                $.each(data, function (key, obj) {
+                    //console.log(key)
+                    console.log(obj)
+                    console.log(obj.departmentName)
+                    $("#department").append($("<option></option>")
+                        .attr("value", obj.departmentId)
+                        .text(obj.departmentName));
+                });
+            });
 
+        }
+        loadDepartments();
+
+
+          // Start of getting eventId from addressbar
+        var g_eventId = getIdFromAddressBar();
+        function getIdFromAddressBar() {
+            var urlArray = window.location.href.split('/');
+            var id = urlArray[urlArray.length - 1];
+            return id;
+        }
+
+        
+        function getEventDetails() {
+            var url = "https://localhost:44300/api/v1/events/" + g_eventId
+            $loadUserDataHandler = jQuery.ajax({
+                type: 'GET',
+                url: url,
+                contentType: "application/json",
+                dataType: 'json',
+                crossDomain: true,
+            })
+            $loadUserDataHandler.done(function (data, textStatus, jqXHR) {
+                console.log(data);
+                var events = data;
+                var startDateTime = events[0].startDateTime;
+                var endDateTime = events[0].endDateTime;
+                eventName = events[0].eventName;
+                eventDescription = events[0].eventDescription;
+                departmentId = events[0].departmentId;
+
+                var startDate = startDateTime;
+                console.log("Retrieved Start Date: " + startDate);
+                startDate = startDate.split('T')[0];
+                console.log("Retrieved Start Date after split: " + startDate);
+                var startTime = startDate.split('T')[1];
+              //  startTime = startTime + ".000Z";
+
+                var endDate = endDateTime;
+                endDate = endDate.split('T')[0];
+                var endTime = endDate[1];
+               // endTime = endTime + ".000Z";
+
+                console.log("Start Date: " + startDate + " Start Time: " + startTime);
+                console.log("End Date: " + endDate + " End Time: " + endTime);
+
+                $('#startDate').val(startDate);
+                $('#endDate').val(endDate);
+                $('#startTime').val(startTime);
+                $('#endTime').val(endTime);
+                $('#eventName').val(eventName);
+                $('#eventDescription').val(eventDescription);
+
+                $('#department option').filter(function () {
+                    return $(this).val() == departmentId;
+                }).prop('selected', true);
+
+            }) //end of done
+
+
+        }
+
+        getEventDetails()
+    </script>
 }
 
 @section CSS {
@@ -26,28 +111,28 @@
         </div>
         <div class="row1-startDate">
             <label class="normal-weight" for="startDate">Start Date:</label>
-            <input type="date" class="form-control" name="startDate">
+            <input type="date" class="form-control" name="startDate" id="startDate">
         </div>
         <div class="row2-endDate">
             <label class="normal-weight" for="endDate">End Date:</label>
-            <input type="date" class="form-control" name="endDate">
+            <input type="date" class="form-control" name="endDate" id="endDate">
         </div>
 
         <div class="row3-startTime">
             <label class="normal-weight" for="startTime">Start Time:</label>
-            <input type="time" class="form-control" name="startTime">
+            <input type="time" class="form-control" name="startTime" id="startTime">
         </div>
         <div class="row4-endTime">
             <label class="normal-weight" for="endTime">End Time:</label>
-            <input type="time" class="form-control" name="endTime">
+            <input type="time" class="form-control" name="endTime" id="endTime">
         </div>
         <div class="row5-eventName">
             <label class="normal-weight" for="eventName">Event Name:</label>
-            <input type="text" class="form-control" name="eventName">
+            <input type="text" class="form-control" name="eventName" id="eventName">
         </div>
         <div class="row6-eventDescription">
             <label class="normal-weight" for="eventDescription">Event Description:</label>
-            <input type="text" class="form-control" name="eventDescription">
+            <input type="text" class="form-control" name="eventDescription" id="eventDescription">
         </div>
 
 
