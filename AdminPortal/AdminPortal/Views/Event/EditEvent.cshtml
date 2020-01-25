@@ -62,12 +62,14 @@
                 console.log("Retrieved Start Date: " + startDate);
                 startDate = startDate.split('T')[0];
                 console.log("Retrieved Start Date after split: " + startDate);
-                var startTime = startDate.split('T')[1];
+                var startTime = startDateTime;
+                   startTime = startTime.split('T')[1];
               //  startTime = startTime + ".000Z";
 
                 var endDate = endDateTime;
                 endDate = endDate.split('T')[0];
-                var endTime = endDate[1];
+                var endTime = endDateTime;
+                endTime = endTime.split('T')[1];
                // endTime = endTime + ".000Z";
 
                 console.log("Start Date: " + startDate + " Start Time: " + startTime);
