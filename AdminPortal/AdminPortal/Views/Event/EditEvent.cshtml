@@ -5,8 +5,14 @@
 @model IEnumerable<AdminPortal.Models.Event>
 
 @section Scripts {
+    <script src="~/Script/select2.min.js"></script>
     <script>
-          function loadDepartments() {
+
+            $(document).ready(function () {
+            $(".mySelect2").select2();
+            });
+
+        function loadDepartments() {
             var url = "https://localhost:44300/api/v1/departments"
             var $loadhandler = jQuery.ajax({
                 type: 'GET',
@@ -31,7 +37,7 @@
         loadDepartments();
 
 
-          // Start of getting eventId from addressbar
+        // Start of getting eventId from addressbar
         var g_eventId = getIdFromAddressBar();
         function getIdFromAddressBar() {
             var urlArray = window.location.href.split('/');
@@ -39,7 +45,7 @@
             return id;
         }
 
-        
+
         function getEventDetails() {
             var url = "https://localhost:44300/api/v1/events/" + g_eventId
             $loadUserDataHandler = jQuery.ajax({
@@ -63,28 +69,31 @@
                 startDate = startDate.split('T')[0];
                 console.log("Retrieved Start Date after split: " + startDate);
                 var startTime = startDateTime;
-                   startTime = startTime.split('T')[1];
-              //  startTime = startTime + ".000Z";
+                startTime = startTime.split('T')[1];
+                //  startTime = startTime + ".000Z";
 
                 var endDate = endDateTime;
                 endDate = endDate.split('T')[0];
                 var endTime = endDateTime;
                 endTime = endTime.split('T')[1];
-               // endTime = endTime + ".000Z";
+                // endTime = endTime + ".000Z";
 
                 console.log("Start Date: " + startDate + " Start Time: " + startTime);
                 console.log("End Date: " + endDate + " End Time: " + endTime);
-
+                console.log("Departments: " + departmentId)
                 $('#startDate').val(startDate);
                 $('#endDate').val(endDate);
                 $('#startTime').val(startTime);
                 $('#endTime').val(endTime);
                 $('#eventName').val(eventName);
                 $('#eventDescription').val(eventDescription);
-
-                $('#department option').filter(function () {
-                    return $(this).val() == departmentId;
-                }).prop('selected', true);
+                // Over here carl
+                $('.mySelect2').select2('val', departmentId.split(','));
+                
+               
+                //$('#department option').filter(function () {
+                //    return $(this).val() == departmentId;
+                //}).prop('selected', true);
 
             }) //end of done
 
@@ -97,6 +106,7 @@
 
 @section CSS {
     <link rel="stylesheet" href="~/styles/editevent.css">
+    <link href="~/css/select2.min.css" rel="stylesheet" />
 }
 
 <div class="right-section white-background">
@@ -140,7 +150,7 @@
 
         <div class="row7-department">
             <label class="normal-weight" for="department">Department:</label>
-            <select class="form-control" id="department">
+            <select class="mySelect2" multiple id="department">
             </select>
         </div>
         <div class="row8-buttons">
