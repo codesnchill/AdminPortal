@@ -134,7 +134,7 @@
                         @Html.DisplayFor(modelItem => item.EndDateTime)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.DepartmentName)
+                        @(item.DepartmentName.Split(",").Length)
                     </td>
 
                     <td>
