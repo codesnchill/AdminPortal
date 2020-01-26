@@ -5,8 +5,14 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using AdminPortal.Models;
+using Syncfusion.HtmlConverter;
+using Syncfusion.Pdf;
+using System.IO;
+using Microsoft.AspNetCore.Hosting;
+
 namespace AdminPortal.Controllers
 {
+    
     public class PointController : Controller
     {
         IEnumerable<Employee> employee = null;
