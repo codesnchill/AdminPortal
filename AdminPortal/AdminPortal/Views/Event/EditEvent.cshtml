@@ -62,7 +62,7 @@
                 var endDateTime = events[0].endDateTime;
                 eventName = events[0].eventName;
                 eventDescription = events[0].eventDescription;
-                departmentId = events[0].departmentId;
+                var departmentId = events[0].departmentId.split(',');
 
                 var startDate = startDateTime;
                 console.log("Retrieved Start Date: " + startDate);
@@ -87,8 +87,8 @@
                 $('#endTime').val(endTime);
                 $('#eventName').val(eventName);
                 $('#eventDescription').val(eventDescription);
-                // Over here carl
-                $('.mySelect2').select2('val', departmentId.split(','));
+                $('.mySelect2').val(departmentId).select2();
+
                 
                
                 //$('#department option').filter(function () {
