@@ -18,7 +18,7 @@ namespace AdminPortal.Controllers
 
         public IActionResult AuditReport()
         {
-           
+
             return View();
         }
 

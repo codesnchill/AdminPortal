@@ -8,8 +8,10 @@
     <script src="~/Script/select2.min.js"></script>
     <script>
 
-            $(document).ready(function () {
+        $(document).ready(function () {
             $(".mySelect2").select2();
+            getEventDetails()
+        
             });
 
         function loadDepartments() {
@@ -87,7 +89,7 @@
                 $('#endTime').val(endTime);
                 $('#eventName').val(eventName);
                 $('#eventDescription').val(eventDescription);
-                $('.mySelect2').val(departmentId).select2();
+                $("#department").val(departmentId).select2();
 
                 
                
@@ -100,7 +102,83 @@
 
         }
 
-        getEventDetails()
+      
+
+
+          //Using a function technique to define a JavaScript class, WebFormData
+        function WebFormData(inCollectedStartDateTime, inCollectedEndDateTime,
+            inCollectedEventName, inCollectedEventDescription, inCollectedDepartmentId) {
+
+            this.startDateTime = inCollectedStartDateTime;
+            this.endDateTime = inCollectedEndDateTime;
+            this.EventName = inCollectedEventName;
+            this.EventDescription = inCollectedEventDescription;
+            this.DepartmentList = inCollectedDepartmentId;
+
+        }
+
+        function save() {
+            var collectedStartDate = $('#startDate').val();
+            var collectedEndDate = $('#endDate').val();
+            var collectedStartTime = $('#startTime').val();
+            var collectedEndTime = $('#endTime').val();
+            var collectedEventName = $('#eventName').val();
+            var collectedEventDescription = $('#eventDescription').val();
+            var collectedDepartment = $('#department').val();
+
+           
+    
+
+            var collectedStartDateTime = collectedStartDate + ' ' + collectedStartTime;
+            var collectedStartDateTime2 = convertUTCDateToLocalDate(new Date(collectedStartDateTime));
+            collectedStartDateTime2 = collectedStartDateTime.replace('Z', '').replace('.000', '').replace(/\s+/, 'T');
+
+
+            var collectedEndDateTime = collectedEndDate + ' ' + collectedEndTime;
+             var collectedEndDateTime2 = convertUTCDateToLocalDate(new Date(collectedEndDateTime));
+             collectedEndDateTime2 =  collectedEndDateTime.replace('Z', '').replace('.000', '').replace(/\s+/, 'T');
+            //Create a WebFormData object, webFormData. Have its field values
+            //populated with the collected course data
+            var webFormData = new WebFormData(collectedStartDateTime2, collectedEndDateTime2,
+                collectedEventName, collectedEventDescription, collectedDepartment);
+            //Convert the webFromData into a JSON string
+            var webFormDataInString = JSON.stringify(webFormData);
+
+            console.log("Event Details: " + webFormDataInString);
+
+            var url = "https://localhost:44300/api/v1/events/" + g_eventId;
+
+            $updateCourseHandler = jQuery.ajax({
+                type: 'PUT',
+                url: url,
+                dataType: 'json',
+                contentType: 'application/json;',
+                data: "'" + webFormDataInString + "'"
+            })//end of jQuery.ajax() call
+            $updateCourseHandler.done(function (data, textStatus, jqXHR) {
+                alert("Event Updated Successfully");
+                location.href = "/Event/EditEvent";
+
+            });//end of $updateCourseHandler.done()
+
+            $updateCourseHandler.error(function (data, textStatus, jqXHR) {
+              //  console.log(data.responseJSON.message);
+            });//end of $updateCourseHandler.error()*/
+
+        }
+
+
+        function convertUTCDateToLocalDate(date) {
+            var newDate = new Date(date.getTime() + date.getTimezoneOffset() * 60 * 1000);
+
+            var offset = date.getTimezoneOffset() / 60;
+            var hours = date.getHours();
+
+            newDate.setHours(hours - offset);
+
+            return newDate;
+        }
+
     </script>
 }
 
@@ -155,7 +233,7 @@
         </div>
         <div class="row8-buttons">
             <button class="delete">Delete</button>
-            <button class="save">Save</button>
+            <button onclick="save()" class="save">Save</button>
             <button class="cancel">Cancel</button>
         </div>
     </div>
