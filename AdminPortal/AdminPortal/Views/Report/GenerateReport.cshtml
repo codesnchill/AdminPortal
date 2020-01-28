@@ -14,9 +14,9 @@
             selectedReportType = $('#report :selected').text();
             startDate = new Date($('#startDate').val());
             //startDate = startDate.getDate() + "/" + (startDate.getMonth() + 1) + "/" + startDate.getFullYear() + " " + startDate.getHours() + ':' + startDate.getMinutes() + ':' + startDate.getSeconds(); 
-            startDate = startDate.getFullYear() + "-" + (startDate.getMonth() + 1) + "-" + startDate.getDate();
+            startDate = startDate.getFullYear() + "-" + ("0" + (startDate.getMonth() + 1)).slice(-2) + "-" + ("0" + startDate.getDate()).slice(-2);
             endDate = new Date($('#endDate').val());
-            endDate = endDate.getFullYear() + "-" + (endDate.getMonth() + 1) + "-" + endDate.getDate();
+            endDate = endDate.getFullYear() + "-" + ("0" + (endDate.getMonth() + 1)).slice(-2) + "-" + ("0" + endDate.getDate()).slice(-2);
             console.log(selectedReportType);
             console.log("FROM " + startDate + " TO " + endDate);
 
@@ -56,6 +56,8 @@
                 <select class="form-control" id="report">
                     <option value="1">Milestone Report</option>
                     <option value="2">Audit Log Report</option>
+                    <option value="3">Department Ranking Report</option>
+                    <option value="4">Individual Ranking Report</option>
                 </select>
             </div>
 
