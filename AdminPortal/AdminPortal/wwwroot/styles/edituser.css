@@ -222,7 +222,7 @@ p.title-control {
     margin-top: 20px;
     margin-left: 20px;
     width: 95%;
-    height: 450px;
+    height: 550px;
     display: flex;
     flex-direction: column;
     border: 1px solid lightgray;
@@ -351,6 +351,25 @@ input {
     .row6-buttons button {
         width: 20%;
         height: 35px;
+    }
+
+
+.row7-reason {
+    display: flex;
+    flex: 2.5;
+    align-items: center;
+    justify-content: center;
+}
+
+    .row7-reason label,
+    input {
+        display: inline-block;
+        vertical-align: middle;
+    }
+
+    .row7-reason input {
+        height: 100px;
+        margin-left: 15px;
     }
 
 .edit-container input {

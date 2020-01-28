@@ -128,13 +128,18 @@
             this.IsDisabled = inCollectedStatus;
         }
 
-        function clickSave() {
+        function save() {
 
             var collectedEmployeeName = $('#employeeName').val();
             var collectedDepartmentId = $('#department').val();
             var collectedRole = $('#rights').val();
             var collectedStatus = $('#status').val();
-          
+            var collectedReason = $('#reason').val();
+
+            if (collectedStatus == "true" && !collectedReason) {
+                markDelete();
+            }
+
             //Create a WebFormData object, webFormData. Have its field values
             //populated with the collected course data
             var webFormData = new WebFormData(collectedEmployeeName,
@@ -163,6 +168,44 @@
 
         }
 
+        //WebFormData2
+        function WebFormData2(inCollectedStatus, inCollectedReason) {
+            this.IsDisabled = inCollectedStatus;
+            this.ReasonForDeletion = ReasonForDeletion;
+        }
+
+        function markDelete() {
+            var collectedStatus = $('#status').val();
+            var collectedReason = $('#reason').val();
+
+            //Create a WebFormData object, webFormData. Have its field values
+            //populated with the collected course data
+            var webFormData2 = new WebFormData2(collectedStatus,
+                collectedReason);
+            //Convert the webFromData into a JSON string
+            var webFormDataInString2 = JSON.stringify(webFormData2);
+
+            console.log(webFormDataInString2);
+
+               var url = "https://localhost:44300/api/v1/users/" + g_userId
+
+            $updateCourseHandler = jQuery.ajax({
+                type: 'PUT',
+                url: url,
+                dataType: 'json',
+                contentType: 'application/json;',
+                data: "'" + webFormDataInString2 + "'"
+            })//end of jQuery.ajax() call
+            $updateCourseHandler.done(function (data, textStatus, jqXHR) {
+            });//end of $updateCourseHandler.done()
+
+            $updateCourseHandler.error(function (data, textStatus, jqXHR) {
+                console.log(data.responseJSON.message);
+            });//end of $updateCourseHandler.error()*/
+        }
+
+
+         
     </script>
 }
 
@@ -218,9 +261,13 @@
                 <option value="true">Inactive</option>
             </select>
         </div>
+        <div class="row7-reason">
+            <label class="normal-weight" for="reason">Reason for change:</label>
+            <input type='text' name='reason' id="reason" />
+        </div>
         <div class="row6-buttons">
             <button class="delete">Delete</button>
-            <button onclick="clickSave()" class="save">Save</button>
+            <button onclick="save()" class="save">Save</button>
             <button class="cancel">Cancel</button>
         </div>
     </div>

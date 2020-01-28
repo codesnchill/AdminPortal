@@ -2,18 +2,17 @@
     Layout = "../Shared/_Layout.cshtml";
 }
 
-@*@model IEnumerable<AdminPortal.Models.Employee>*@
-
 @section Scripts {
+    <script src="~/lib/noty.min.js"></script>
     <script>
-         // Start of getting gameId from addressbar
+        // Start of getting gameId from addressbar
 
         var choiceId1;
         var choiceId2;
         var choiceId3;
         var choiceId4;
 
-   
+
         function getGameIdFromAddressBar() {
             var urlArray = window.location.href.split('?');
             var gameId = urlArray[1].split('&')[0].split('=')[1];
@@ -42,10 +41,10 @@
             $loadUserDataHandler.done(function (data, textStatus, jqXHR) {
                 console.log(data);
                 var game = data;
-                 Question1 = game[0].question1;
-                 answer = game[0].answer
+                Question1 = game[0].question1;
+                answer = game[0].answer
                 Choices = game[0].choices;
-               
+
                 console.log("Question: " + Question1);
                 $('#question').val(Question1);
                 //change the id of the choices input to the real id (from database) of the choices
@@ -73,33 +72,33 @@
                     }
                     $("#answer").append($("<option></option>")
                         .attr("value", Choices[i].choiceId)
-                        .text("Choice " + (i+1)));
-                      
-                    }
+                        .text("Choice " + (i + 1)));
+
+                }
 
                 console.log("answerId " + answerId);
 
                 $('#answer option').filter(function () {
                     return $(this).val() == answerId;
-                 }).prop('selected', true);
+                }).prop('selected', true);
 
                 console.log("Choices: " + Choices);
                 console.log("Answer: " + answer);
-           
+
             }) //end of done
 
-          
+
         }
         getGameDetails();
 
 
         //Using a function technique to define a JavaScript class, WebFormData
-        function WebFormData(inCollectedQuestion1, inCollectedAnswer, inCollectedPoints, inCollectedChoices ) {
+        function WebFormData(inCollectedQuestion1, inCollectedAnswer, inCollectedPoints, inCollectedChoices) {
             this.Question = inCollectedQuestion1;
             this.Answer = inCollectedAnswer;
-              this.Points = inCollectedPoints;
+            this.Points = inCollectedPoints;
             this.Choices = inCollectedChoices;
-          
+
         }
 
         function clickSave() {
@@ -112,25 +111,25 @@
             var selectedChoiceId = $('#answer').val();
             var collectedAnswer = $('#' + selectedChoiceId).val();
 
-                 var collectedChoicesArray1 = {
-                    ChoiceId:  choiceId1,
-                    Choice: $('#' + choiceId1).val()
+            var collectedChoicesArray1 = {
+                ChoiceId: choiceId1,
+                Choice: $('#' + choiceId1).val()
             };
 
-                        var collectedChoicesArray2 = {
-                                                ChoiceId:  choiceId2,
-                    Choice: $('#' + choiceId2).val()
+            var collectedChoicesArray2 = {
+                ChoiceId: choiceId2,
+                Choice: $('#' + choiceId2).val()
             };
 
-                        var collectedChoicesArray3 = {
-                                                ChoiceId:  choiceId3,
-                    Choice: $('#' + choiceId3).val()
+            var collectedChoicesArray3 = {
+                ChoiceId: choiceId3,
+                Choice: $('#' + choiceId3).val()
             };
 
-                        var collectedChoicesArray4 = {
-                                                ChoiceId:  choiceId4,
-                    Choice: $('#' + choiceId4).val()
-};
+            var collectedChoicesArray4 = {
+                ChoiceId: choiceId4,
+                Choice: $('#' + choiceId4).val()
+            };
             collectedChoices.push(collectedChoicesArray1, collectedChoicesArray2, collectedChoicesArray3, collectedChoicesArray4);
             console.log(collectedChoices);
 
@@ -162,11 +161,50 @@
 
         }
 
+        function deleteQuestion() {
+             var noty = new Noty({
+                text: 'Continue the delete action?',
+                layout: 'center',
+                template: '<div class="noty_message" style="height:50px;"><span class="noty_text"></span>',
+                buttons: [
+                    Noty.button('Cancel', 'btn btn-default', function () {
+                        noty.close();
+                    }),
+
+                    Noty.button('Delete', 'btn btn-danger', function () {
+                        var url = "https://localhost:44300/api/v1/games/" + gameId + "/question/" + questionId
+                        $deleteHandler = jQuery.ajax({
+                            type: 'PUT',
+                            url: url,
+                        })//end of jQuery.ajax() call
+
+                        $deleteHandler.done(function (data, textStatus, jqXHR) {
+                            $('body').fadeOut(500, redirectPage);
+                            noty.close();
+                        })
+
+                        $deleteHandler.fail(function (data, textStatus, jqXHR) {
+                            console.log(data);
+                            new Noty({
+                                text: data.responseJSON.message, type: 'error',
+                                layout: 'center',
+                                template: '<div class="noty_message"><span class="noty_text"></span>'
+                            }).show();//end of noty()
+                        });//end of $deleteCourseHandler.fail()
+                    })
+                ]
+            }).show();
+        }
+
+     function redirectPage(){
+            location.href = "/Game/ManageGames";
+        }
     </script>
 }
 
 @section CSS {
     <link rel="stylesheet" href="~/styles/editquestion.css">
+    <link rel="stylesheet" href="~/lib/noty.css" />
 }
 
 <div class="right-section white-background">
@@ -212,7 +250,7 @@
         </div>
 
         <div class="row7-buttons">
-            <button class="delete">Delete</button>
+            <button onclick="deleteQuestion()" class="delete">Delete</button>
             <button onclick="clickSave()" class="save">Save</button>
             <button onclick="clickForFun()" class="cancel">Cancel</button>
         </div>
