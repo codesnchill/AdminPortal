@@ -14,11 +14,24 @@
             selectedReportType = $('#report :selected').text();
             startDate = new Date($('#startDate').val());
             //startDate = startDate.getDate() + "/" + (startDate.getMonth() + 1) + "/" + startDate.getFullYear() + " " + startDate.getHours() + ':' + startDate.getMinutes() + ':' + startDate.getSeconds(); 
-            startDate = startDate.getDate() + "/" + (startDate.getMonth() + 1) + "/" + startDate.getFullYear(); 
+            startDate = startDate.getFullYear() + "-" + (startDate.getMonth() + 1) + "-" + startDate.getDate();
             endDate = new Date($('#endDate').val());
-            startDate = endDate.getDate() + "/" + (endDate.getMonth()+1) + "/" + endDate.getFullYear(); 
+            endDate = endDate.getFullYear() + "-" + (endDate.getMonth() + 1) + "-" + endDate.getDate();
             console.log(selectedReportType);
             console.log("FROM " + startDate + " TO " + endDate);
+
+            if (selectedReportType == "Audit Log Report") {
+                window.localStorage.setItem("report", "audit");
+                localStorage.setItem("startDate", startDate);
+                localStorage.setItem("endDate", endDate);
+                location.href = "/Report/AuditReport"
+            } else if (selectedReportType == "Milestone Report") {
+                window.localStorage.setItem("report", "milestone");
+                localStorage.setItem("startDate", startDate);
+                localStorage.setItem("endDate", endDate);
+                location.href = "/Report/MilestoneReport"
+            }
+
         });
     </script>
 }

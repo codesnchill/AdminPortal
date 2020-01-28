@@ -1,0 +1,100 @@
+﻿<script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap.min.js"></script>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap.min.css" />
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+@{
+    Layout = null;
+}
+
+
+<h1>MilestoneReport</h1>
+
+<table id="datatable" class="table table-bordered">
+    <thead class="blue-background">
+        <tr>
+            <th>Employee ID</th>
+            <th>DateTimeReceived</th>
+            <th>Reward</th>
+        </tr>
+    </thead>
+    <tbody id="tableBody"></tbody>
+</table>
+
+<script>
+    var report = localStorage.getItem("report");
+    var startDate = localStorage.getItem("startDate");
+    var endDate = localStorage.getItem("endDate");
+
+    loadData();
+
+    function loadData() {
+        //Note: jQuery.ajax(..) is also often written is $.ajax(..)
+        var $loadDataHandler = jQuery.ajax({
+            url: 'https://localhost:44300/api/v1/report/type/' + report + '/startdate/' + startDate + '/enddate/' + endDate,
+            method: 'GET',
+            dataType: 'json',
+            cache: false,
+        });
+
+        $loadDataHandler.done(function (data, textStatus, jqXHR) {
+            //This done method will
+            //The (data) input parameter automatically captures the response from the
+            //Get() API method which is labelled to handle this GET request.
+
+            //I usually use the following code to inspect the returned result captured by the data input parameter from the web server.
+            console.log(data);
+
+            $(document).ready(function () {
+                var t = $('#datatable').DataTable({
+                });
+                t.on('order.dt search.dt', function () {
+                    t.column(0, { search: 'applied', order: 'applied' }).nodes().each(function (cell, i) {
+                        cell.innerHTML = i + 1;
+                    });
+                }).draw();
+
+            });
+            //After inspecting the data object with the console.log
+            //I have clear picture of the structure and used the following variable to represent the response.
+            var rewardList = data;
+            var EmployeeId = '';
+            var DateTimeReceived = '';
+            var Reward = '';
+            var $tableElement = null;
+            var $cellElement = null;
+            var $rowElement = null;
+            $tableBodyElement = $('#tableBody');
+
+            for (index = 0; index < rewardList.length; index++) {
+                rewardList = rewardList[index];
+
+                EmployeeId = rewardList.EmployeeId;
+                DateTimeReceived = rewardList.DateTimeReceived;
+                Reward = rewardList.Reward;
+
+                $rowElement = $('<tr></tr>');
+                $cellElement = $('<td></td>');
+
+                $cellElement = $('<td></td>', { text: EmployeeId });
+                $rowElement.append($cellElement);
+
+                $cellElement = $('<td></td>', { text: DateTimeReceived });
+                $rowElement.append($cellElement);
+
+                $cellElement = $('<td></td>', { text: Reward });
+                $rowElement.append($cellElement);
+
+                $tableBodyElement.append($rowElement);
+            }//end of for loop.
+        }//end of JavaScript anonymous function
+        )//end of the done() method;
+        $loadDataHandler.fail(function (data, textStatus, jqXHR) {
+            new Noty({
+                text: 'Ajax call has failed due to : ' + data.statusText, type: 'error',
+                layout: 'center'
+            }).show();//end of noty()
+        })//end of $loadCourseDataHandler.fail()
+    }//end of loadCourseData();
+</script>
+
