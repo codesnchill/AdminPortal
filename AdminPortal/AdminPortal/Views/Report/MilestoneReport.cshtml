@@ -1,8 +1,10 @@
-﻿<script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap.min.js"></script>
-<link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap.min.css" />
+﻿@*<script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap.min.js"></script>*@
+@*<link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap.min.css" />*@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.css">
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.js"></script>
 @{
     Layout = null;
 }
@@ -94,7 +96,7 @@
                 text: 'Ajax call has failed due to : ' + data.statusText, type: 'error',
                 layout: 'center'
             }).show();//end of noty()
-        })//end of $loadCourseDataHandler.fail()
-    }//end of loadCourseData();
+        })//end of $loadDataHandler.fail()
+    }//end of $loadDataHandler();
 </script>
 

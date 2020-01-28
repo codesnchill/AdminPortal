@@ -18,24 +18,31 @@ namespace AdminPortal.Controllers
 
         public IActionResult AuditReport()
         {
-            //HtmlToPdfConverter converter = new HtmlToPdfConverter();
-
-            //WebKitConverterSettings settings = new WebKitConverterSettings();
-            //settings.WebKitPath = ("C:/AdminPortal/AdminPortal/AdminPortal/QtBinariesWindows/");
-            //converter.ConverterSettings = settings;
-
-            //PdfDocument document = converter.Convert("https://localhost:44332/Point/ManagePoints");
-
-            //MemoryStream ms = new MemoryStream();
-            //document.Save(ms);
-            //document.Close(true);
-            //ms.Position = 0;
-
-            //FileStreamResult fsr = new FileStreamResult(ms, "application/pdf");
-            //fsr.FileDownloadName = "invoice.pdf";
-
-            //return fsr;
+           
             return View();
+        }
+
+        [HttpPost]
+        public IActionResult AuditReport(string submit)
+        {
+            HtmlToPdfConverter converter = new HtmlToPdfConverter();
+
+            WebKitConverterSettings settings = new WebKitConverterSettings();
+            settings.WebKitPath = ("C:/AdminPortal/AdminPortal/AdminPortal/QtBinariesWindows/");
+            converter.ConverterSettings = settings;
+
+            PdfDocument document = converter.Convert("https://localhost:44332/Point/ManagePoints");
+
+            MemoryStream ms = new MemoryStream();
+            document.Save(ms);
+            document.Close(true);
+            ms.Position = 0;
+
+            FileStreamResult fsr = new FileStreamResult(ms, "application/pdf");
+            fsr.FileDownloadName = "invoice.pdf";
+
+            return fsr;
+            //return View();
         }
         public IActionResult MilestoneReport()
         {
