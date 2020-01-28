@@ -30,8 +30,9 @@ namespace AdminPortal.Controllers
             WebKitConverterSettings settings = new WebKitConverterSettings();
             settings.WebKitPath = ("C:/AdminPortal/AdminPortal/AdminPortal/QtBinariesWindows/");
             converter.ConverterSettings = settings;
+            settings.WindowStatus = "completed";
 
-            PdfDocument document = converter.Convert("https://localhost:44332/Point/ManagePoints");
+            PdfDocument document = converter.Convert("https://localhost:44332/Report/AuditReport");
 
             MemoryStream ms = new MemoryStream();
             document.Save(ms);

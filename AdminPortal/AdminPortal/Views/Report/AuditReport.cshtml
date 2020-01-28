@@ -8,9 +8,11 @@
 <h1>AuditReport</h1>
 
 <div class="button-row">
-    <button class="searchButton orange-background" id="generate" value="submit">
-        Save
-    </button>
+    @{ Html.BeginForm("AuditReport", "Report", FormMethod.Post);
+        {
+    <input type="submit" class="Button" value="Export to PDF"/>
+           }
+        }   
 </div>
 
 <table id="datatable" class="table table-bordered">
@@ -32,6 +34,29 @@
     var endDate = localStorage.getItem("endDate");
 
     loadData();
+    //function WebFormData(inSubmit) {
+    //    this.inSubmit = inSubmit;
+    //}
+    //$('#saveButton').on('click', function () {
+    //    var submit = "submit"
+
+    //    //Create a JavaScript object to contain the course name and course abbreviation information
+    //    var webFormData = new WebFormData(submit);
+
+    //    //Serialize the webFormData object which contains the course name, course abbreviation
+    //    //data into a flat string. So that, it can be sent accross the Internet network successfully.
+    //    var webFormDataInString = JSON.stringify(webFormData);
+
+    //    $saveSynopsisHandler = jQuery.ajax({
+    //        type: 'POST',
+    //        url: '/api/Report/',
+    //        dataType: 'json',
+    //        contentType: 'application/json;',
+    //        data: "'" + webFormDataInString + "'"
+    //    })//end of ajax() call
+    //});
+
+        
 
     function loadData() {
         //Note: jQuery.ajax(..) is also often written is $.ajax(..)
@@ -86,18 +111,19 @@
                 $cellElement = $('<td></td>', { text: Admin });
                 $rowElement.append($cellElement);
 
-                $cellElement = $('<td></td>', { text: DateTimeReceived });
+                $cellElement = $('<td></td>', { text: Action });
                 $rowElement.append($cellElement);
 
-                $cellElement = $('<td></td>', { text: Reward });
+                $cellElement = $('<td></td>', { text: DateTime });
                 $rowElement.append($cellElement);
 
-                $cellElement = $('<td></td>', { text: Reward });
+                $cellElement = $('<td></td>', { text: Target });
                 $rowElement.append($cellElement);
 
 
                 $tableBodyElement.append($rowElement);
-            }//end of for loop.
+            }
+            window.status = "completed"//end of for loop.
         }//end of JavaScript anonymous function
         )//end of the done() method;
         $loadDataHandler.fail(function (data, textStatus, jqXHR) {
