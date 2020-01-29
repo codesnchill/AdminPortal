@@ -1,0 +1,159 @@
+﻿
+@{
+    Layout = "../Shared/_Layout.cshtml";
+}
+
+@section Scripts{
+    <script src="~/lib/noty.min.js"></script>
+    <script>
+
+        var g_rewardId = getIdFromAddressBar();
+        function getIdFromAddressBar() {
+            var urlArray = window.location.href.split('/');
+            var id = urlArray[urlArray.length - 1];
+            return id;
+        }
+
+
+        function getRewardDetails() {
+            var url = "https://localhost:44300/api/v1/milestone/details/" + g_rewardId
+            $loadUserDataHandler = jQuery.ajax({
+                type: 'GET',
+                url: url,
+                contentType: "application/json",
+                dataType: 'json',
+                crossDomain: true,
+            })
+            $loadUserDataHandler.done(function (data, textStatus, jqXHR) {
+                console.log(data);
+                var rewards = data;
+                var rewardId = rewards[0].rewardId;
+                var reward = rewards[0].reward;
+                var points = rewards[0].points;
+
+                $('#rewardId').val(rewardId);
+                $('#reward').val(reward);
+                $('#points').val(points);
+
+            }) //end of done
+        }
+        getRewardDetails();
+
+
+        //Using a function technique to define a JavaScript class, WebFormData
+        function WebFormData(inCollectedReward, inCollectedPointNeeded) {
+            this.Reward = inCollectedReward;
+            this.PointNeeded = inCollectedPointNeeded;
+        }
+
+        function clickSave() {
+            var collectedReward = $('#reward').val();
+            var collectedPoints = $('#points').val();
+            //Create a WebFormData object, webFormData. Have its field values
+            //populated with the collected course data
+            var webFormData = new WebFormData(collectedReward, collectedPoints);
+            //Convert the webFromData into a JSON string
+            var webFormDataInString = JSON.stringify(webFormData);
+
+            console.log("JSON RESULTS for add: " + webFormDataInString);
+
+            var url = "https://localhost:44300/api/v1/milestone/details/" + g_rewardId;
+
+            $updateCourseHandler = jQuery.ajax({
+                type: 'PUT',
+                url: url,
+                dataType: 'json',
+                contentType: 'application/json;',
+                data: "'" + webFormDataInString + "'"
+            })//end of jQuery.ajax() call
+            $updateCourseHandler.done(function (data, textStatus, jqXHR) {
+                alert("Reward Updated Successfully");
+                location.href = "/Milestone/EditReward/" + g_rewardId;
+            });//end of $updateCourseHandler.done()
+
+            $updateCourseHandler.error(function (data, textStatus, jqXHR) {
+                console.log(data.responseJSON.message);
+            });//end of $updateCourseHandler.error()*/
+
+        }
+
+        function deleteReward() {
+            var noty = new Noty({
+                text: 'Continue the delete action?',
+                layout: 'center',
+                template: '<div class="noty_message" style="height:50px;"><span class="noty_text"></span>',
+                buttons: [
+                    Noty.button('Cancel', 'btn btn-default', function () {
+                        noty.close();
+                    }),
+
+                    Noty.button('Delete', 'btn btn-danger', function () {
+                        var url = "https://localhost:44300/api/v1/milestone/" + g_rewardId;
+                        $deleteHandler = jQuery.ajax({
+                            type: 'DELETE',
+                            url: url,
+                        })//end of jQuery.ajax() call
+
+                        $deleteHandler.done(function (data, textStatus, jqXHR) {
+                            $('body').fadeOut(500, clickback);
+                            noty.close();
+                        })
+
+                        $deleteHandler.fail(function (data, textStatus, jqXHR) {
+                            console.log(data);
+                            new Noty({
+                                text: data.responseJSON.message, type: 'error',
+                                layout: 'center',
+                                template: '<div class="noty_message"><span class="noty_text"></span>'
+                            }).show();//end of noty()
+                        });//end of $deleteCourseHandler.fail()
+                    })
+                ]
+            }).show();
+        }//end of on click
+
+        function clickback() {
+            location.href = "/Milestone/ManageMilestones";
+        }
+    </script>
+}
+
+@section CSS {
+    <link rel="stylesheet" href="~/styles/editreward.css">
+    <link href="~/lib/noty.css" />
+}
+
+<div class="right-section white-background">
+    <div class="title">
+        <p class="title-control">Manage Milestones</p>
+    </div>
+
+    <hr class="divider">
+
+    <div class="edit-container">
+        <div class="title-bar orange-background">
+            <p class="panel-header">Edit Reward</p>
+
+        </div>
+        <div class="row4-rewardId">
+            <label class="normal-weight" for="reward">Reward ID:</label>
+            <input type="text" name="rewardId" id="rewardId">
+        </div>
+        <div class="row1-reward">
+            <label class="normal-weight" for="reward">Name of Reward:</label>
+            <input type="text" name="reward" id="reward">
+        </div>
+        <div class="row2-points">
+            <label class="normal-weight" for="points">Points Needed:</label>
+            <input type='text' name='points' id="points" />
+        </div>
+
+        <div class="row3-buttons">
+            <button class="delete" onclick="deleteReward()">Delete</button>
+            <button class="save" onclick="clickSave()">Save</button>
+            <button onclick="clickback()" class="cancel">Cancel</button>
+        </div>
+    </div>
+
+
+</div>
