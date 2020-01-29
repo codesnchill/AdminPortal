@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Session;
 
 
 namespace AdminPortal
@@ -27,6 +28,12 @@ namespace AdminPortal
             services.AddControllersWithViews();
             services.AddMvc().SetCompatibilityVersion(Microsoft.AspNetCore.Mvc.CompatibilityVersion.Version_3_0);
 
+            
+            services.AddSession(options=>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(30);
+            });  //added for session purpose
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -44,6 +51,8 @@ namespace AdminPortal
             }
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+
+            app.UseSession(); //added for session purpose
 
             app.UseRouting();
 
