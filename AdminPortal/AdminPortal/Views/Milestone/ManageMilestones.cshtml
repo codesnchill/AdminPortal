@@ -43,29 +43,37 @@
     <table id="datatable" class="table table-bordered">
         <thead class="blue-background">
             <tr>
-                <th>Reward Id</th>
+                <th>ID</th>
                 <th>Reward</th>
                 <th>Points Needed</th>
+                <th>CreatedBy</th>
+                <th>Last Update</th>
                 <th>Actions</th>
             </tr>
         </thead>
         <tbody>
             @foreach (var item in Model)
             {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.RewardId)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Reward)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Points)
-                    </td>
-                    <td>
-                        <button onclick="edit(@item.RewardId)">Edit</button>
-                    </td>
-                </tr>
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.RewardId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Reward)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Points)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CreatedBy)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UpdatedAt)
+                </td>
+                <td>
+                    <button onclick="edit(@item.RewardId)">Edit</button>
+                </td>
+            </tr>
             }
         </tbody>
     </table>
