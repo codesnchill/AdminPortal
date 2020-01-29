@@ -93,6 +93,14 @@
             });//end of $updateCourseHandler.error()*/
 
         }
+
+            function redirectPage() {
+            location.href = "/Event/ManageEvents";
+        }
+
+        function clickback() {
+            redirectPage();
+        }
     </script>
 }
 
@@ -149,7 +157,7 @@
         <div class="row8-buttons">
 
             <button onclick="save()" class="save">Save</button>
-            <button onclick="cancel()" class="cancel">Cancel</button>
+            <button onclick="clickback()" class="cancel">Cancel</button>
         </div>
     </div>
 

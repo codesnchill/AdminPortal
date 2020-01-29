@@ -88,6 +88,14 @@
             });//end of $updateCourseHandler.error()*/
 
         }
+
+          function redirectPage() {
+            location.href = "/Point/ManagePoints";
+        }
+
+        function clickback() {
+            redirectPage();
+        }
     </script>
 }
 
@@ -139,7 +147,7 @@
             <div class="row7-buttons">
 
                 <button class="save" onclick="save()">Save</button>
-                <button class="cancel">Cancel</button>
+                <button onclick="clickback()" class="cancel">Cancel</button>
             </div>
         </div>
     

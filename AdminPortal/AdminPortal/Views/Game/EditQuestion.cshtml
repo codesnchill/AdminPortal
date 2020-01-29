@@ -174,7 +174,7 @@
                     Noty.button('Delete', 'btn btn-danger', function () {
                         var url = "https://localhost:44300/api/v1/games/" + gameId + "/question/" + questionId
                         $deleteHandler = jQuery.ajax({
-                            type: 'PUT',
+                            type: 'DELETE',
                             url: url,
                         })//end of jQuery.ajax() call
 
@@ -198,6 +198,10 @@
 
      function redirectPage(){
             location.href = "/Game/ManageGames";
+        }
+
+        function clickBack() {
+            redirectPage();
         }
     </script>
 }
@@ -252,7 +256,7 @@
         <div class="row7-buttons">
             <button onclick="deleteQuestion()" class="delete">Delete</button>
             <button onclick="clickSave()" class="save">Save</button>
-            <button onclick="clickForFun()" class="cancel">Cancel</button>
+            <button onclick="clickBack()" class="cancel">Cancel</button>
         </div>
     </div>
 

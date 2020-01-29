@@ -136,7 +136,7 @@
             var collectedStatus = $('#status').val();
             var collectedReason = $('#reason').val();
 
-            if (collectedStatus == "true" && !collectedReason) {
+            if (collectedStatus === "true" && !collectedReason) {
                 markDelete();
             }
 
@@ -171,7 +171,7 @@
         //WebFormData2
         function WebFormData2(inCollectedStatus, inCollectedReason) {
             this.IsDisabled = inCollectedStatus;
-            this.ReasonForDeletion = ReasonForDeletion;
+            this.ReasonForDeletion = inCollectedReason;
         }
 
         function markDelete() {
@@ -190,13 +190,14 @@
                var url = "https://localhost:44300/api/v1/users/" + g_userId
 
             $updateCourseHandler = jQuery.ajax({
-                type: 'PUT',
+                type: 'DELETE',
                 url: url,
                 dataType: 'json',
                 contentType: 'application/json;',
                 data: "'" + webFormDataInString2 + "'"
             })//end of jQuery.ajax() call
             $updateCourseHandler.done(function (data, textStatus, jqXHR) {
+                  $('body').fadeOut(500, redirectPage);
             });//end of $updateCourseHandler.done()
 
             $updateCourseHandler.error(function (data, textStatus, jqXHR) {
@@ -204,7 +205,13 @@
             });//end of $updateCourseHandler.error()*/
         }
 
+        function redirectPage() {
+            location.href = "/User/ManageUser";
+        }
 
+        function clickback() {
+            redirectPage();
+        }
          
     </script>
 }
@@ -268,7 +275,7 @@
         <div class="row6-buttons">
             <button class="delete">Delete</button>
             <button onclick="save()" class="save">Save</button>
-            <button class="cancel">Cancel</button>
+            <button onclick="clickback()" class="cancel">Cancel</button>
         </div>
     </div>
 

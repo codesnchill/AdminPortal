@@ -196,7 +196,7 @@
                     Noty.button('Delete', 'btn btn-danger', function () {
                         var url = "https://localhost:44300/api/v1/events/markdelete/" + g_eventId;
                         $deleteHandler = jQuery.ajax({
-                            type: 'PUT',
+                            type: 'DELETE',
                             url: url,
                         })//end of jQuery.ajax() call
 

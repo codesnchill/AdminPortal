@@ -48,6 +48,11 @@
                     <button id="managePoints">Manage Points</button>
                 </div>
 
+                <div class="manage-milestone">
+                    <img src="/images/milestone.png" alt="manage milestone logo">
+                    <button id="manageMilestone">Manage Milestones</button>
+                </div>
+
             </div>
         </div>
         <div class="container">
@@ -76,6 +81,10 @@
 
             $("#managePoints").click(function () {
                 location.href = "/Point/ManagePoints";
+            })
+
+             $("#manageMilestone").click(function () {
+                location.href = "/Milestone/ManageMilestone";
             })
 
         })
