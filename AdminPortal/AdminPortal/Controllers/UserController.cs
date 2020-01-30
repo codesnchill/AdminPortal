@@ -42,7 +42,7 @@ namespace AdminPortal.Controllers
             {
                 client.BaseAddress = new Uri("https://localhost:44300/api/v1/");
                 //HTTP GET
-                var responseTask = client.GetAsync("users");
+                var responseTask = client.GetAsync("users?isDisabled=false");
                 responseTask.Wait();
 
                 var result = responseTask.Result;
@@ -74,29 +74,6 @@ namespace AdminPortal.Controllers
             return View(employeeList);
         }
 
-
-
-        public IActionResult AddUser()
-        {
-            return View();
-        }
-
-        public IActionResult EditUser()
-        {
-            return View();
-        }
-
-        public IActionResult ChangePassword()
-        {
-            return View();
-        }
-
-        public IActionResult Search()
-        {
-
-            return View("ManageUser");
-        }
-
         public IActionResult SetPage(string pageIndex)
         {
             //int pageIndex = int.Parse(RouteData.Values["pageIndex"].ToString());
@@ -108,7 +85,7 @@ namespace AdminPortal.Controllers
                 {
                     client.BaseAddress = new Uri("https://localhost:44300/api/v1/");
                     //HTTP GET
-                    var responseTask = client.GetAsync("users");
+                    var responseTask = client.GetAsync("users?isDisabled=false");
                     responseTask.Wait();
 
                     var result = responseTask.Result;
@@ -144,12 +121,140 @@ namespace AdminPortal.Controllers
                 employeeList = PaginatedList<Employee>.Create(employee, pageIn, 4, 5);
 
             }
-            
 
-            
 
-            return View("ManageUser",employeeList);
+
+
+            return View("ManageUser", employeeList);
         }
+
+
+
+        public IActionResult AddUser()
+        {
+            return View();
+        }
+
+        public IActionResult EditUser()
+        {
+            return View();
+        }
+
+        public IActionResult ChangePassword()
+        {
+            return View();
+        }
+
+        public IActionResult EditDeletedUser()
+        {
+            return View();
+        }
+
+        public IActionResult Search()
+        {
+
+            return View("ManageUser");
+        }
+
+
+        IEnumerable<Employee> deletedEmployee = null;
+        public PaginatedList<Employee> deletedEmployeeList { get; private set; }
+
+        const string DeletedEmployeeListSessionName = "_DEmployeeList";
+        public IActionResult ManageDeletedUser()
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("https://localhost:44300/api/v1/");
+                //HTTP GET
+                var responseTask = client.GetAsync("users?isDisabled=true");
+                responseTask.Wait();
+
+                var result = responseTask.Result;
+                if (result.IsSuccessStatusCode)
+                {
+                    var readTask = result.Content.ReadAsAsync<IList<Employee>>();
+                    readTask.Wait();
+
+                    deletedEmployee = readTask.Result;
+                    var myEmployeeList = deletedEmployee.ToList();
+                    deletedEmployeeList = PaginatedList<Employee>.Create(deletedEmployee, 1, 4, 5);
+
+                    // store employee in session
+                    HttpContext.Session.SetComplexData(DeletedEmployeeListSessionName, myEmployeeList);
+                    //HttpContext.Session["employeeList"] = employeeList;
+                }
+                else //web api sent error response 
+                {
+                    //log response status here..
+
+                    deletedEmployee = Enumerable.Empty<Employee>();
+
+                    ModelState.AddModelError(string.Empty, "Server error. Please contact administrator.");
+                }
+
+
+            }
+
+            return View(deletedEmployeeList);
+        }
+
+
+        public IActionResult SetPage2(string pageIndex)
+        {
+            //int pageIndex = int.Parse(RouteData.Values["pageIndex"].ToString());
+            int pageIn = int.Parse(pageIndex);
+            if (string.IsNullOrWhiteSpace(HttpContext.Session.GetString(DeletedEmployeeListSessionName)))
+            {
+
+                using (var client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri("https://localhost:44300/api/v1/");
+                    //HTTP GET
+                    var responseTask = client.GetAsync("users?isDisabled=true");
+                    responseTask.Wait();
+
+                    var result = responseTask.Result;
+                    if (result.IsSuccessStatusCode)
+                    {
+                        var readTask = result.Content.ReadAsAsync<IList<Employee>>();
+                        readTask.Wait();
+
+                        deletedEmployee = readTask.Result;
+                        var myEmployeeList = deletedEmployee.ToList();
+                        deletedEmployeeList = PaginatedList<Employee>.Create(deletedEmployee, pageIn, 4, 5);
+
+                        // store employee in session
+                        HttpContext.Session.SetComplexData(DeletedEmployeeListSessionName, myEmployeeList);
+                    }
+                    else //web api sent error response 
+                    {
+                        //log response status here..
+
+                        deletedEmployee = Enumerable.Empty<Employee>();
+
+                        ModelState.AddModelError(string.Empty, "Server error. Please contact administrator.");
+                    }
+
+
+                }
+
+            }
+            else
+            {
+                deletedEmployee = HttpContext.Session.GetComplexData<IEnumerable<Employee>>(EmployeeListSessionName);
+
+                deletedEmployeeList = PaginatedList<Employee>.Create(employee, pageIn, 4, 5);
+
+            }
+
+
+
+
+            return View("ManageDeletedUser", deletedEmployeeList);
+        }
+
+
 
     }
 }

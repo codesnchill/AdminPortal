@@ -1,6 +1,6 @@
 ﻿@{
     Layout = "../Shared/_Layout.cshtml";
-    
+
 }
 
 @model IEnumerable<AdminPortal.Models.Employee>
@@ -8,7 +8,7 @@
 @section Scripts {
     <script>
 
-        
+
          function viewUser() {
             location.href = "/User/ManageUser";
         }
@@ -142,11 +142,6 @@
             var collectedDepartmentId = $('#department').val();
             var collectedRole = $('#rights').val();
             var collectedStatus = $('#status').val();
-            var collectedReason = $('#reason').val();
-
-            if (collectedStatus === "true" && !collectedReason) {
-                markDelete();
-            }
 
             //Create a WebFormData object, webFormData. Have its field values
             //populated with the collected course data
@@ -176,51 +171,15 @@
 
         }
 
-        //WebFormData2
-        function WebFormData2(inCollectedStatus, inCollectedReason) {
-            this.IsDisabled = inCollectedStatus;
-            this.ReasonForDeletion = inCollectedReason;
-        }
-
-        function markDelete() {
-            var collectedStatus = $('#status').val();
-            var collectedReason = $('#reason').val();
-
-            //Create a WebFormData object, webFormData. Have its field values
-            //populated with the collected course data
-            var webFormData2 = new WebFormData2(collectedStatus,
-                collectedReason);
-            //Convert the webFromData into a JSON string
-            var webFormDataInString2 = JSON.stringify(webFormData2);
-
-            console.log(webFormDataInString2);
-
-               var url = "https://localhost:44300/api/v1/users/" + g_userId
-
-            $updateCourseHandler = jQuery.ajax({
-                type: 'DELETE',
-                url: url,
-                dataType: 'json',
-                contentType: 'application/json;',
-                data: "'" + webFormDataInString2 + "'"
-            })//end of jQuery.ajax() call
-            $updateCourseHandler.done(function (data, textStatus, jqXHR) {
-                  $('body').fadeOut(500, redirectPage);
-            });//end of $updateCourseHandler.done()
-
-            $updateCourseHandler.error(function (data, textStatus, jqXHR) {
-                console.log(data.responseJSON.message);
-            });//end of $updateCourseHandler.error()*/
-        }
-
+       
         function redirectPage() {
-            location.href = "/User/ManageUser";
+            location.href = "/User/ManageDeletedUser";
         }
 
         function clickback() {
             redirectPage();
         }
-         
+
     </script>
 }
 
@@ -276,12 +235,7 @@
                 <option value="true">Inactive</option>
             </select>
         </div>
-        <div class="row7-reason">
-            <label class="normal-weight" for="reason">Reason for change:</label>
-            <input type='text' name='reason' id="reason" />
-        </div>
         <div class="row6-buttons">
-            <button class="delete">Delete</button>
             <button onclick="save()" class="save">Save</button>
             <button onclick="clickback()" class="cancel">Cancel</button>
         </div>

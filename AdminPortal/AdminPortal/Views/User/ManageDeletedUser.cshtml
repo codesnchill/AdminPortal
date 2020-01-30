@@ -7,22 +7,12 @@
 @section Scripts {
     <script>
         function edit(id) {
-            location.href = "/User/EditUser/" + id;
+            location.href = "/User/EditDeletedUser/" + id;
         }
 
-        function changePassword(id) {
-            location.href = "/User/ChangePassword/" + id;
+        function viewUser() {
+            location.href = "/User/ManageUser";
         }
-
-        function addUser() {
-            location.href = "/User/AddUser/";
-        }
-
-        function viewDeletedUser() {
-            location.href = "/User/ManageDeletedUser";
-        }
-
-        
 
         var display = true;
         function show() {
@@ -91,29 +81,17 @@
             });
         }
 
-        //Using a function technique to define a JavaScript class, WebFormData
-        function WebFormData(inCollectedEmployeeName, inCollectedEmployeeId, inCollectedDepartment, inCollectedRole, inCollectedStatus) {
-            this.employeeName = inCollectedEmployeeName;
-            this.employeeId = inCollectedEmployeeId,
-            this.department = inCollectedDepartment;
-            this.roles = inCollectedRole;
-            this.isDisabled = inCollectedStatus;
-        }
-
         function search() {
             var employeeID = $("#employeeID").val();
             var employeeName = $("#employeeName").val();
             var department = $("#department").val();
             var rights = $("#rights").val();
             var status = $("#status").val();
-
-            var url = "/User/Search"
-            var data = WebFormData(employeeName, employeeID, department, rights, status);
-
+            /*var url = "https://localhost:44300/api/v1/users/search?EmployeeId=" + employeeID + "&Department=" + department + "&Roles=" + rights
+                + "&IsDisabled=" + status + "&EmployeeName=" + employeeName;
             var $loadhandler = jQuery.ajax({
-                type: 'POST',
+                type: 'GET',
                 url: url,
-                data: data,
                 contentType: "application/json",
                 dataType: 'json',
                 crossDomain: true,
@@ -124,7 +102,6 @@
                     //console.log(key)
                     console.log(obj)
                     console.log(obj[0].employeeName)
-                    $("#datatable tbody tr").remove()
                     $("#datatable tbody tr").append(
                         $('<td>').text(obj[0].employeeID),
                         $('<td>').text(obj[0].employeeName),
@@ -134,26 +111,26 @@
                     );
 
                 });
-            });
+            });*/
         }
     </script>
 
 }
 
 @section CSS {
-    <link rel="stylesheet" href="~/styles/manageuser.css">
+    <link rel="stylesheet" href="~/styles/managedeleteuser.css">
 }
 
 
 <div class="right-section white-background">
     <div class="title">
-        <p class="title-control">Manage Users</p>
+        <p class="title-control">Manage Deleted Users</p>
     </div>
     <div class="view-buttons">
-        <button class="view-details" type="button">
+        <button onclick="viewUser()" class="view-details" type="button">
             View User Details
         </button>
-        <button onclick="viewDeletedUser()" class="view-deleted" type="button">
+        <button class="view-deleted" type="button">
             View Deleted Users
         </button>
 
@@ -171,9 +148,6 @@
             <label for="plus">Advanced Search</label>
         </div>
 
-        <div class="new-user-button">
-            <button onclick="addUser()" class="orange-background" name="Add">Add new user</button>
-        </div>
     </div>
 
     <div id="advSearch" class="search-fields">
@@ -210,7 +184,6 @@
                 <th>Access</th>
                 <th>Account</th>
                 <th>Actions</th>
-                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -244,9 +217,6 @@
                     <td>
                         <button onclick="edit(@item.EmployeeId)">Edit</button>
                     </td>
-                    <td>
-                        <button onclick="changePassword(@item.EmployeeId)">Change Password</button>
-                    </td>
                 </tr>
             }
         </tbody>
@@ -262,7 +232,7 @@
                 <a class="page-link"
                    asp-route-pageIndex="@(Model.PageIndex - 1)"
                    asp-controller="User"
-                   asp-action="SetPage"
+                   asp-action="SetPage2"
                    aria-label="Previous">
                     <span aria-hidden="true">&laquo;</span>
                     <span class="sr-only">Previous</span>
@@ -275,16 +245,15 @@
                 <li class="page-item @activeClass">
                     <a class="page-link"
                        asp-route-pageIndex="@(i.Index)"
-                   asp-controller="User"
-                         asp-action="SetPage"
-                       >@i.Index</a>
+                       asp-controller="User"
+                       asp-action="SetPage2">@i.Index</a>
                 </li>
             }
             <li class="page-item @nextDisabled">
                 <a class="page-link"
                    asp-route-pageIndex="@(Model.PageIndex + 1)"
                    asp-controller="User"
-                   asp-action="SetPage"
+                   asp-action="SetPage2"
                    aria-label="Next">
                     <span aria-hidden="true">&raquo;</span>
                     <span class="sr-only">Next</span>
