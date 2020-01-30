@@ -393,11 +393,11 @@ select {
 }
 
 
-.rightsColumn select {
-    width: 23%;
-    height: 40px;
-    margin-left: 25px;
-}
+    .rightsColumn select {
+        width: 23%;
+        height: 40px;
+        margin-left: 25px;
+    }
 
 .button-row {
     display: flex;
