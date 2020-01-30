@@ -85,17 +85,29 @@
             });
         }
 
+        //Using a function technique to define a JavaScript class, WebFormData
+        function WebFormData(inCollectedEmployeeName, inCollectedEmployeeId, inCollectedDepartment, inCollectedRole, inCollectedStatus) {
+            this.employeeName = inCollectedEmployeeName;
+            this.employeeId = inCollectedEmployeeId,
+            this.department = inCollectedDepartment;
+            this.roles = inCollectedRole;
+            this.isDisabled = inCollectedStatus;
+        }
+
         function search() {
             var employeeID = $("#employeeID").val();
             var employeeName = $("#employeeName").val();
             var department = $("#department").val();
             var rights = $("#rights").val();
             var status = $("#status").val();
-            /*var url = "https://localhost:44300/api/v1/users/search?EmployeeId=" + employeeID + "&Department=" + department + "&Roles=" + rights
-                + "&IsDisabled=" + status + "&EmployeeName=" + employeeName;
+
+            var url = "/User/Search"
+            var data = WebFormData(employeeName, employeeID, department, rights, status);
+
             var $loadhandler = jQuery.ajax({
-                type: 'GET',
+                type: 'POST',
                 url: url,
+                data: data,
                 contentType: "application/json",
                 dataType: 'json',
                 crossDomain: true,
@@ -106,6 +118,7 @@
                     //console.log(key)
                     console.log(obj)
                     console.log(obj[0].employeeName)
+                    $("#datatable tbody tr").remove()
                     $("#datatable tbody tr").append(
                         $('<td>').text(obj[0].employeeID),
                         $('<td>').text(obj[0].employeeName),
@@ -115,7 +128,7 @@
                     );
 
                 });
-            });*/
+            });
         }
     </script>
 
