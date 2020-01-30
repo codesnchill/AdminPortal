@@ -38,6 +38,8 @@ namespace AdminPortal.Controllers
 
         public IActionResult ManageUser()
         {
+            List<Employee> myEmployeeList = new List<Employee>();
+
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri("https://localhost:44300/api/v1/");
@@ -52,7 +54,7 @@ namespace AdminPortal.Controllers
                     readTask.Wait();
 
                     employee = readTask.Result;
-                    var myEmployeeList = employee.ToList();
+                    myEmployeeList = employee.ToList();
                     employeeList = PaginatedList<Employee>.Create(employee, 1, 4, 5);
 
                     // store employee in session
@@ -71,7 +73,7 @@ namespace AdminPortal.Controllers
 
             }
 
-            return View(employeeList);
+            return View(myEmployeeList);
         }
 
         public IActionResult SetPage(string pageIndex)
