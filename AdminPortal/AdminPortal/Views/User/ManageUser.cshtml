@@ -92,46 +92,54 @@
         }
 
         //Using a function technique to define a JavaScript class, WebFormData
-        function WebFormData(inCollectedEmployeeName, inCollectedEmployeeId, inCollectedDepartment, inCollectedRole, inCollectedStatus) {
+        function WebFormData(inCollectedEmployeeName, inCollectedEmployeeId, inCollectedDepartment, inCollectedRole) {
             this.employeeName = inCollectedEmployeeName;
             this.employeeId = inCollectedEmployeeId,
             this.department = inCollectedDepartment;
             this.roles = inCollectedRole;
-            this.isDisabled = inCollectedStatus;
         }
 
         function search() {
             var employeeID = $("#employeeID").val();
+            console.log(employeeID);
             var employeeName = $("#employeeName").val();
-            var department = $("#department").val();
-            var rights = $("#rights").val();
-            var status = $("#status").val();
+            console.log(employeeName);
+            var departmentName = $("#department option:selected").text();
+            console.log(departmentName);
+            var roles = $("#rights option:selected").text(); 
+            console.log(roles);
+            
 
-            var url = "/User/Search"
-            var data = WebFormData(employeeName, employeeID, department, rights, status);
+            var url = "/User/Search?EmployeeId=" + employeeID + "&EmployeeName="
+                + employeeName + "&DepartmentName=" + 'CREDIT%20CONTROL' + "&Roles=" + roles;
 
+            console.log(url);
             var $loadhandler = jQuery.ajax({
-                type: 'POST',
+                type: 'GET',
                 url: url,
-                data: data,
-                contentType: "application/json",
                 dataType: 'json',
-                crossDomain: true,
+                contentType: "application/json"
             });
             $loadhandler.done(function (data, textStatus, jqXHR) {
-                console.log(data);
+                console.log("RETURNED DATA" + data);
                 $.each(data, function (key, obj) {
                     //console.log(key)
                     console.log(obj)
-                    console.log(obj[0].employeeName)
+                    console.log(obj[0].EmployeeName)
+
+                    // clear the whole datatable
                     $("#datatable tbody tr").remove()
-                    $("#datatable tbody tr").append(
-                        $('<td>').text(obj[0].employeeID),
-                        $('<td>').text(obj[0].employeeName),
-                        $('<td>').text(obj[0].departmentName),
-                        $('<td>').text(obj[0].roleName),
-                        $('<td>').text(obj[0].status)
-                    );
+
+					$rowElement.append($cellElement);
+                    // repopulate datatable
+
+                    //$("#datatable tbody tr").append(
+                    //    $('<td>').text(obj[0].employeeID),
+                    //    $('<td>').text(obj[0].employeeName),
+                    //    $('<td>').text(obj[0].departmentName),
+                    //    $('<td>').text(obj[0].roleName),
+                    //    $('<td>').text(obj[0].status)
+                    //);
 
                 });
             });
