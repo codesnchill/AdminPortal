@@ -46,6 +46,12 @@
             });
             $loadhandler.done(function (data, textStatus, jqXHR) {
                 console.log(data);
+
+                // set first item as empty
+                $("#department").append($("<option></option>")
+                    .attr("value", 0)
+                    .text("Select..."));
+
                 $.each(data, function (key, obj) {
                     //console.log(key)
                     console.log(obj)
@@ -71,6 +77,12 @@
             });
             $loadhandler.done(function (data, textStatus, jqXHR) {
                 console.log(data);
+
+                // set first item as empty
+                $("#rights").append($("<option></option>")
+                    .attr("value", 0)
+                    .text("Select..."));
+
                 $.each(data, function (key, obj) {
                     //console.log(key)
                     console.log(obj)
@@ -100,20 +112,28 @@
         }
 
         function search() {
+            // clear the whole datatable
+            $("#datatable tbody tr").remove()
+
             var employeeID = $("#employeeID").val();
-            console.log(employeeID);
             var employeeName = $("#employeeName").val();
-            console.log(employeeName);
-            var departmentName = $("#department option:selected").text();
-            console.log(departmentName);
-            var roles = $("#rights option:selected").text(); 
-            console.log(roles);
+            var departmentName = "";
+
+            if ($("#department option:selected").val() != 0) {
+                var departmentName = $("#department option:selected").text();
+            }
+
+            var roles = "";
+            if ($("#rights option:selected").val() != 0) {
+                var roles = $("#rights option:selected").text(); 
+            }
             
 
             var url = "/User/Search?EmployeeId=" + employeeID + "&EmployeeName="
-                + employeeName + "&DepartmentName=" + 'CREDIT%20CONTROL' + "&Roles=" + roles;
+                + employeeName + "&DepartmentName=" + departmentName + "&Roles=" + roles;
 
             console.log(url);
+
             var $loadhandler = jQuery.ajax({
                 type: 'GET',
                 url: url,
@@ -122,26 +142,87 @@
             });
             $loadhandler.done(function (data, textStatus, jqXHR) {
                 console.log("RETURNED DATA" + data);
-                $.each(data, function (key, obj) {
-                    //console.log(key)
-                    console.log(obj)
-                    console.log(obj[0].EmployeeName)
 
-                    // clear the whole datatable
-                    $("#datatable tbody tr").remove()
+                // if data is empty, show alert message
+                if (data == "") {
+                    console.log("empty");
+                    var alert_message = "No search result found";
+                    $tableBodyElement = $('#datatable');
+                    $rowElement = $('<tr></tr>');
+                    $cellElement = $('<td></td>', { text: alert_message }).attr("colspan",7);
+                    $rowElement.append($cellElement);
+                    $tableBodyElement.append($rowElement);
+                }
 
+                // once I get my data, I need to paginate
+
+
+                // vars for table
+                $tableBodyElement = $('#datatable');
+
+                var userDataList = data;
+                var employeeId = '';
+                var employeeName = '';
+                var departmentName = '';
+                var rolesName = '';
+                var status = '';
+
+                console.log("LENGTH = " + userDataList.length)
+                // repopulate datatable
+                for (i = 0; i < userDataList.length; i++) {
+                console.log("loop counter = " + i)
+
+                    myList = userDataList[i];
+
+                    employeeId = myList.employeeId;
+                    employeeName = myList.employeeName;
+                    departmentName = myList.departmentName;
+                    rolesName = myList.roles;
+                    status = myList.isDisabled;
+                    if (status) {
+                        status = 'Inactive'
+                    } else {
+                        status = 'Active'
+                    }
+
+                    console.log(employeeId);
+                    console.log(employeeName);
+                    console.log(departmentName);
+                    console.log(rolesName);
+                    console.log(status);
+
+                    $rowElement = $('<tr></tr>');
+                    $cellElement = $('<td></td>', { text: employeeId });
+                    $rowElement.append($cellElement);
+
+                    $cellElement = $('<td></td>', { text: employeeName });
+                    $rowElement.append($cellElement);
+
+                    $cellElement = $('<td></td>', { text: departmentName });
+                    $rowElement.append($cellElement);
+
+                    $cellElement = $('<td></td>', { text: rolesName });
+                    $rowElement.append($cellElement);
+
+                    $cellElement = $('<td></td>', { text: status });
+                    $rowElement.append($cellElement);
+
+                    $hyperLinkElement = $('<button>Edit</button>');
+                    $hyperLinkElement.onclick = function () {edit(employeeId)}
+                    $hyperLinkElement.addClass('btn btn-primary');
+                    $cellElement = $('<td></td>');
+                    $cellElement.append($hyperLinkElement);
+                    $rowElement.append($cellElement);
+
+                    $hyperLinkElement = $('<button>Change Password</button>');
+                    $hyperLinkElement.onclick = function () {changePassword(employeeId)}
+                    $hyperLinkElement.addClass('btn btn-primary');
+                    $cellElement = $('<td></td>');
+                    $cellElement.append($hyperLinkElement);
 					$rowElement.append($cellElement);
-                    // repopulate datatable
 
-                    //$("#datatable tbody tr").append(
-                    //    $('<td>').text(obj[0].employeeID),
-                    //    $('<td>').text(obj[0].employeeName),
-                    //    $('<td>').text(obj[0].departmentName),
-                    //    $('<td>').text(obj[0].roleName),
-                    //    $('<td>').text(obj[0].status)
-                    //);
-
-                });
+                    $tableBodyElement.append($rowElement);
+                    }
             });
         }
     </script>
