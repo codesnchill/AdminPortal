@@ -6,6 +6,15 @@
     <script src="~/Script/select2.min.js"></script>
     <script>
 
+         function viewUser() {
+            location.href = "/User/ManageUser";
+        }
+
+        function viewDeletedUser() {
+            location.href = "/User/ManageDeletedUser";
+        }
+
+
         $(document).ready(function () {
             $(".mySelect2").select2();
         });
@@ -164,10 +173,10 @@
         <p class="title-control">Manage Users</p>
     </div>
     <div class="view-buttons">
-        <button class="view-details" type="button">
+        <button onclick="viewUser()" class="view-details" type="button">
             View User Details
         </button>
-        <button class="view-deleted" type="button">
+        <button onclick="viewDeletedUser()" class="view-deleted" type="button">
             View Deleted Users
         </button>
 

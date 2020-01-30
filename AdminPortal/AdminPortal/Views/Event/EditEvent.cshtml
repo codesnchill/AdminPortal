@@ -5,14 +5,19 @@
 @model IEnumerable<AdminPortal.Models.Event>
 
 @section Scripts {
+    <script src="~/lib/noty.min.js"></script>
     <script src="~/Script/select2.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.7.0/moment.min.js" type="text/javascript"></script>
+    <link href="~/lib/noty.css" />
     <script>
 
         $(document).ready(function () {
+
             $(".mySelect2").select2();
             getEventDetails()
-        
-            });
+
+        });
+
 
         function loadDepartments() {
             var url = "https://localhost:44300/api/v1/departments"
@@ -91,8 +96,8 @@
                 $('#eventDescription').val(eventDescription);
                 $("#department").val(departmentId).select2();
 
-                
-               
+
+
                 //$('#department option').filter(function () {
                 //    return $(this).val() == departmentId;
                 //}).prop('selected', true);
@@ -102,10 +107,10 @@
 
         }
 
-      
 
 
-          //Using a function technique to define a JavaScript class, WebFormData
+
+        //Using a function technique to define a JavaScript class, WebFormData
         function WebFormData(inCollectedStartDateTime, inCollectedEndDateTime,
             inCollectedEventName, inCollectedEventDescription, inCollectedDepartmentId) {
 
@@ -126,8 +131,8 @@
             var collectedEventDescription = $('#eventDescription').val();
             var collectedDepartment = $('#department').val();
 
-           
-    
+
+
 
             var collectedStartDateTime = collectedStartDate + ' ' + collectedStartTime;
             var collectedStartDateTime2 = convertUTCDateToLocalDate(new Date(collectedStartDateTime));
@@ -135,8 +140,8 @@
 
 
             var collectedEndDateTime = collectedEndDate + ' ' + collectedEndTime;
-             var collectedEndDateTime2 = convertUTCDateToLocalDate(new Date(collectedEndDateTime));
-             collectedEndDateTime2 =  collectedEndDateTime.replace('Z', '').replace('.000', '').replace(/\s+/, 'T');
+            var collectedEndDateTime2 = convertUTCDateToLocalDate(new Date(collectedEndDateTime));
+            collectedEndDateTime2 = collectedEndDateTime.replace('Z', '').replace('.000', '').replace(/\s+/, 'T');
             //Create a WebFormData object, webFormData. Have its field values
             //populated with the collected course data
             var webFormData = new WebFormData(collectedStartDateTime2, collectedEndDateTime2,
@@ -162,7 +167,7 @@
             });//end of $updateCourseHandler.done()
 
             $updateCourseHandler.error(function (data, textStatus, jqXHR) {
-              //  console.log(data.responseJSON.message);
+                //  console.log(data.responseJSON.message);
             });//end of $updateCourseHandler.error()*/
 
         }
@@ -179,12 +184,52 @@
             return newDate;
         }
 
+
+        function deleteEvent() {
+            var noty = new Noty({
+                text: 'Continue the delete action?',
+                layout: 'center',
+                template: '<div class="noty_message" style="height:50px;"><span class="noty_text"></span>',
+                buttons: [
+                    Noty.button('Cancel', 'btn btn-default', function () {
+                        noty.close();
+                    }),
+
+                    Noty.button('Delete', 'btn btn-danger', function () {
+                        var url = "https://localhost:44300/api/v1/events/markdelete/" + g_eventId;
+                        $deleteHandler = jQuery.ajax({
+                            type: 'DELETE',
+                            url: url,
+                        })//end of jQuery.ajax() call
+
+                        $deleteHandler.done(function (data, textStatus, jqXHR) {
+                            $('body').fadeOut(500, redirectPage);
+                            noty.close();
+                        })
+
+                        $deleteHandler.fail(function (data, textStatus, jqXHR) {
+                            console.log(data);
+                            new Noty({
+                                text: data.responseJSON.message, type: 'error',
+                                layout: 'center',
+                                template: '<div class="noty_message"><span class="noty_text"></span>'
+                            }).show();//end of noty()
+                        });//end of $deleteCourseHandler.fail()
+                    })
+                ]
+            }).show();
+        }//end of on click
+
+        function redirectPage() {
+            location.href = "/Event/ManageEvents";
+        }
     </script>
 }
 
 @section CSS {
     <link rel="stylesheet" href="~/styles/editevent.css">
     <link href="~/css/select2.min.css" rel="stylesheet" />
+
 }
 
 <div class="right-section white-background">
@@ -199,6 +244,7 @@
             <p class="panel-header">Edit Event</p>
 
         </div>
+        <div class="noty_message"></div>
         <div class="row1-startDate">
             <label class="normal-weight" for="startDate">Start Date:</label>
             <input type="date" class="form-control" name="startDate" id="startDate">
@@ -211,10 +257,12 @@
         <div class="row3-startTime">
             <label class="normal-weight" for="startTime">Start Time:</label>
             <input type="time" class="form-control" name="startTime" id="startTime">
+
         </div>
         <div class="row4-endTime">
             <label class="normal-weight" for="endTime">End Time:</label>
             <input type="time" class="form-control" name="endTime" id="endTime">
+
         </div>
         <div class="row5-eventName">
             <label class="normal-weight" for="eventName">Event Name:</label>
@@ -232,7 +280,7 @@
             </select>
         </div>
         <div class="row8-buttons">
-            <button class="delete">Delete</button>
+            <button onclick="deleteEvent()" class="delete">Delete</button>
             <button onclick="save()" class="save">Save</button>
             <button class="cancel">Cancel</button>
         </div>

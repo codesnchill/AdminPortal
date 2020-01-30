@@ -198,38 +198,9 @@ p.title-control {
 .right-section hr.divider {
     border: 1px solid lightgray;
     border-bottom: none;
-    margin: 0;
+    margin-top: 55px;
 }
 
-.right-section .view-buttons {
-    height: 55px;
-    width: 300px;
-    display: flex;
-    padding-left: 2px;
-}
-
-    .right-section .view-buttons button {
-        color: black;
-        font-weight: bold;
-        text-align: center;
-        background: transparent;
-        border: none;
-        cursor: pointer;
-    }
-
-        .right-section .view-buttons button:hover {
-            border-bottom: 1px solid #086795;
-            color: #086795;
-            border-bottom-width: medium;
-        }
-
-    .right-section .view-buttons .view-details {
-        flex: 1;
-    }
-
-    .right-section .view-buttons .view-deleted {
-        flex: 1;
-    }
 
 .right-section .search-bar {
     border-radius: 10px 10px 0px 0px;
@@ -263,34 +234,15 @@ p.title-control {
             font-size: 15px;
         }
 
-    .right-section .search-bar .input-field-search2 {
-        display: flex;
-        flex: 1.5;
-        padding-top: 7px;
-        padding-right: 20px;
-    }
+.new-reward-button {
+    flex: 1;
+    padding-left: 50px;
+    padding-top:5px;
+}
 
-        .right-section .search-bar .input-field-search2 input {
-            height: 22px;
-            margin-top: 5px;
-        }
-
-        .right-section .search-bar .input-field-search2 label {
-            height: 30px;
-            padding-top: 7px;
-            padding-left: 10px;
-            font-size: 15px;
-            color: darkblue;
-        }
-
-    .right-section .search-bar .new-user-button {
-        flex: 1;
-    }
-
-    .right-section .search-bar button {
-        height: 40px;
-        width: 120px;
-        margin-top: 5px;
+    .new-reward-button button {
+        height: 38px;
+        width: 90%;
         border-radius: 5px;
         border: 1px solid transparent;
         color: #fff;
@@ -301,123 +253,8 @@ p.title-control {
     background: #ff7321;
 }
 
-.right-section .search-fields {
-    width: 95%;
-    margin-left: 13px;
-    height: 250px;
-    display: flex;
-    flex-direction: column;
-    border: 1px solid darkgray;
-    border-top: 1px solid transparent;
-}
-
-    .right-section .search-fields .first-row {
-        display: flex;
-        flex: 1;
-        align-items: center;
-        padding-left: 60px;
-    }
-
-.first-row label {
-    font-size: 16px;
-    font-weight: normal;
-}
-
-.employeeColumn label,
-input {
-    display: inline-block;
-    vertical-align: middle;
-}
-
-.departmentColumn label,
-select {
-    display: inline-block;
-    vertical-align: middle;
-}
-
-.search-fields .first-row .employeeColumn {
-    flex: 1;
-}
-
-    .search-fields .first-row .employeeColumn input {
-        height: 40px;
-        width: 15vw;
-        margin-left: 30px;
-        border: none;
-        border-bottom: 1px solid lightgray;
-    }
-
-.search-fields .first-row .departmentColumn {
-    flex: 1;
-    display: flex;
-}
-
-    .search-fields .first-row .departmentColumn label {
-        padding-top: 10px;
-    }
-
-.departmentColumn select {
-    width: 40%;
-    height: 40px;
-    margin-left: 49px;
-}
-
-.right-section .search-fields .second-row {
-    display: flex;
-    flex: 1;
-    align-items: center;
-    padding-left: 60px;
-}
-
-.rightsColumn label,
-select {
-    display: inline-block;
-    vertical-align: middle;
-}
-
-.statusColumn label,
-select {
-    display: inline-block;
-    vertical-align: middle;
-}
-
-.second-row label {
-    font-size: 16px;
-    font-weight: normal;
-    padding-top: 10px;
-}
-
-.rightsColumn {
-    display: flex;
-    flex: 1;
-}
-
-
-.rightsColumn select {
-    width: 23%;
-    height: 40px;
-    margin-left: 25px;
-}
-
-.button-row {
-    display: flex;
-    flex: 1;
-    justify-content: center;
-}
-
-.searchButton {
-    width: 25%;
-    height: 45px;
-    border: 1px solid transparent;
-    border-radius: 8px;
-    margin-top: 10px;
-    margin-right: 5px;
-}
-
-.button-row button {
-    color: #fff;
-    font-weight: bold;
-    font-size: 15px;
+.blue-background {
+    background: #086795;
 }
 
 #datatable {
@@ -433,22 +270,6 @@ select {
         text-align: center;
     }
 
-    #datatable td {
-        text-align: center;
-    }
-
-/* 
-  .black-overlay {
-    background-color: rgba(0, 0, 0, 0.7);
-    top: 6vh;
-    left: 0;
-    height: 94vh;
-    width: 100vw;
-    position: absolute;
-    display: none;
-    z-index: 4; 
-  }*/
-
 @media only screen and (max-width: 800px) {
     .bottom-section .left-section {
         display: none;
@@ -459,3 +280,5 @@ select {
         display: flex;
     }
 }
+
+
