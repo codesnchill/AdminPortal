@@ -30,6 +30,11 @@
                 localStorage.setItem("startDate", startDate);
                 localStorage.setItem("endDate", endDate);
                 location.href = "/Report/MilestoneReport"
+            } else if (selectedReportType == "Department Ranking Report") {
+                window.localStorage.setItem("report", "department");
+                localStorage.setItem("startDate", startDate);
+                localStorage.setItem("endDate", endDate);
+                location.href = "/Report/MilestoneReport"
             }
 
         });
@@ -40,7 +45,7 @@
     <link rel="stylesheet" href="~/styles/managepoints.css">
 }
 
-<div class="right-section white-background">
+<div class="right-section white-background"> 
     <div class="title">
         <p class="title-control">Generate report</p>
     </div>

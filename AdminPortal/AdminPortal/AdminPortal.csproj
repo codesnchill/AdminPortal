@@ -25,12 +25,14 @@
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.0.0" />
     <PackageReference Include="Rotativa" Version="1.7.3" />
+    <PackageReference Include="Rotativa.AspNetCore" Version="1.1.1" />
     <PackageReference Include="Select2.js" Version="4.0.11" />
     <PackageReference Include="Syncfusion.HtmlToPdfConverter.QtWebKit.Net.Core" Version="17.4.0.39" />
     <PackageReference Include="System.Data.SqlClient" Version="4.8.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="wwwroot\Rotativa\wkhtmltopdf.exe" />
     <None Include="wwwroot\styles\style.css" />
   </ItemGroup>
 

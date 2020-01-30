@@ -33,29 +33,7 @@
     var startDate = localStorage.getItem("startDate");
     var endDate = localStorage.getItem("endDate");
 
-    loadData();
-    //function WebFormData(inSubmit) {
-    //    this.inSubmit = inSubmit;
-    //}
-    //$('#saveButton').on('click', function () {
-    //    var submit = "submit"
-
-    //    //Create a JavaScript object to contain the course name and course abbreviation information
-    //    var webFormData = new WebFormData(submit);
-
-    //    //Serialize the webFormData object which contains the course name, course abbreviation
-    //    //data into a flat string. So that, it can be sent accross the Internet network successfully.
-    //    var webFormDataInString = JSON.stringify(webFormData);
-
-    //    $saveSynopsisHandler = jQuery.ajax({
-    //        type: 'POST',
-    //        url: '/api/Report/',
-    //        dataType: 'json',
-    //        contentType: 'application/json;',
-    //        data: "'" + webFormDataInString + "'"
-    //    })//end of ajax() call
-    //});
-
+    
         
 
     function loadData() {
@@ -67,6 +45,8 @@
             cache: false,
         });
 
+
+
         $loadDataHandler.done(function (data, textStatus, jqXHR) {
             //This done method will
             //The (data) input parameter automatically captures the response from the
@@ -76,6 +56,7 @@
             console.log(data);
 
             $(document).ready(function () {
+
                 var t = $('#datatable').DataTable({
                 });
                 t.on('order.dt search.dt', function () {
@@ -123,7 +104,8 @@
 
                 $tableBodyElement.append($rowElement);
             }
-            window.status = "completed"//end of for loop.
+
+            //end of for loop.
         }//end of JavaScript anonymous function
         )//end of the done() method;
         $loadDataHandler.fail(function (data, textStatus, jqXHR) {
