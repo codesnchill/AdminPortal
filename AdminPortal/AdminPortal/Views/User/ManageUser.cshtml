@@ -15,6 +15,7 @@
         $(document).ready(function () {
             var oTable =
                 $('#datatable').DataTable({
+                     "pageLength": 4,
                     "lengthChange": false,
                     "sDom": 'ltipr',
                     initComplete: function () {
@@ -24,9 +25,9 @@
                             // bind dropdown filter of datatable to searchbar dropdowns
                             var $dropdownId = null;
                             if (column[0] == 2) {
-                                $dropdownId = $('#departmentColumn');
+                                $dropdownId = $('.departmentColumn');
                             } else if (column[0] == 3) {
-                                $dropdownId = $('#rightsColumn');
+                                $dropdownId = $('.rightsColumn');
                             }
                             // end of binding
 
@@ -128,12 +129,14 @@
 
     <div id="advSearch" class="search-fields">
         <div class="first-row">
-            <div class="rightsColumn" id="rightsColumn">
-                <label for="rights">Access Rights:</label>
-                @*remove select tag here as datatable will create and populate it automatically*@
-            </div>
             <div class="departmentColumn" id="departmentColumn">
                 <label for="department">Department:</label>
+                @*remove select tag here as datatable will create and populate it automatically*@
+            </div>
+        </div>
+        <div class="second-row">
+            <div class="rightsColumn" id="rightsColumn">
+                <label for="rights">Access Rights:</label>
                 @*remove select tag here as datatable will create and populate it automatically*@
             </div>
         </div>

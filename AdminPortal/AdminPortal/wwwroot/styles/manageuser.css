@@ -357,7 +357,7 @@ select {
     }
 
 .departmentColumn select {
-    width: 40%;
+    width: 30%;
     height: 40px;
     margin-left: 49px;
 }
@@ -394,9 +394,9 @@ select {
 
 
 .rightsColumn select {
-    width: 23%;
+    width: 30%;
     height: 40px;
-    margin-left: 25px;
+    margin-left: 30px;
 }
 
 .button-row {
