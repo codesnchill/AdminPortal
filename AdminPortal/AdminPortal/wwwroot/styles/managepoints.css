@@ -311,11 +311,7 @@ p.title-control {
     font-weight: normal;
 }
 
-.employeeColumn label,
-input {
-    display: inline-block;
-    vertical-align: middle;
-}
+
 
 .departmentColumn label,
 select {
@@ -323,31 +319,21 @@ select {
     vertical-align: middle;
 }
 
-.search-fields .first-row .employeeColumn {
-    flex: 1;
-}
 
-    .search-fields .first-row .employeeColumn input {
-        height: 40px;
-        width: 25%;
-        margin-left: 30px;
-        border: none;
-        border-bottom: 1px solid lightgray;
-    }
 
-.search-fields .second-row .departmentColumn {
+.search-fields .first-row .departmentColumn {
     flex: 1;
     display: flex;
 }
 
-    .search-fields .second-row .departmentColumn label {
+    .search-fields .first-row .departmentColumn label {
         padding-top: 10px;
     }
 
 .departmentColumn select {
-    width: 25%;
+    width: 30%;
     height: 40px;
-    margin-left: 41px;
+    margin-left: 49px;
 }
 
 .right-section .search-fields .second-row {
@@ -363,11 +349,6 @@ select {
     vertical-align: middle;
 }
 
-.statusColumn label,
-select {
-    display: inline-block;
-    vertical-align: middle;
-}
 
 .second-row label {
     font-size: 16px;
@@ -375,28 +356,18 @@ select {
     padding-top: 10px;
 }
 
-
-
-.button-row {
+.rightsColumn {
     display: flex;
     flex: 1;
-    justify-content: center;
 }
 
-.searchButton {
-    width: 25%;
-    height: 45px;
-    border: 1px solid transparent;
-    border-radius: 8px;
-    margin-top: 10px;
-    margin-right: 5px;
-}
 
-.button-row button {
-    color: #fff;
-    font-weight: bold;
-    font-size: 15px;
-}
+    .rightsColumn select {
+        width: 30%;
+        height: 40px;
+        margin-left: 30px;
+    }
+
 
 #datatable {
     width: 95%;

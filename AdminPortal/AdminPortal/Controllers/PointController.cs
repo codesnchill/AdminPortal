@@ -16,14 +16,17 @@ namespace AdminPortal.Controllers
     public class PointController : Controller
     {
         IEnumerable<Employee> employee = null;
-        public PaginatedList<Employee> employeeList { get; private set; }
+
+        const string EmployeeListSessionName = "_EmployeeList";
         public IActionResult ManagePoints()
         {
+            List<Employee> myEmployeeList = new List<Employee>();
+
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri("https://localhost:44300/api/v1/");
                 //HTTP GET
-                var responseTask = client.GetAsync("users");
+                var responseTask = client.GetAsync("users?isDisabled=false");
                 responseTask.Wait();
 
                 var result = responseTask.Result;
@@ -33,9 +36,10 @@ namespace AdminPortal.Controllers
                     readTask.Wait();
 
                     employee = readTask.Result;
+                    myEmployeeList = employee.ToList();
 
-                    employeeList = PaginatedList<Employee>.Create(employee, 1, 4, 5);
-
+                    // store employee in session
+                    HttpContext.Session.SetComplexData(EmployeeListSessionName, myEmployeeList);
                     //HttpContext.Session["employeeList"] = employeeList;
                 }
                 else //web api sent error response 
@@ -50,7 +54,8 @@ namespace AdminPortal.Controllers
 
             }
 
-            return View(employeeList);
+            //make sure it returns the whole list retrieve from database (not the paginated list)
+            return View(myEmployeeList);
         }
 
         public IActionResult AwardPoint()
@@ -63,39 +68,6 @@ namespace AdminPortal.Controllers
             return View();
         }
 
-        public IActionResult SetPage(string pageIndex)
-        {
-            //int pageIndex = int.Parse(RouteData.Values["pageIndex"].ToString());
-            int pageIn = int.Parse(pageIndex);
-            using (var client = new HttpClient())
-            {
-                client.BaseAddress = new Uri("https://localhost:44300/api/v1/");
-                //HTTP GET
-                var responseTask = client.GetAsync("users");
-                responseTask.Wait();
-
-                var result = responseTask.Result;
-                if (result.IsSuccessStatusCode)
-                {
-                    var readTask = result.Content.ReadAsAsync<IList<Employee>>();
-                    readTask.Wait();
-
-                    employee = readTask.Result;
-
-                    employeeList = PaginatedList<Employee>.Create(employee, pageIn, 4, 5);
-                }
-                else //web api sent error response 
-                {
-                    //log response status here..
-
-                    employee = Enumerable.Empty<Employee>();
-
-                    ModelState.AddModelError(string.Empty, "Server error. Please contact administrator.");
-                }
-
-
-            }
-            return View("ManagePoints", employeeList);
-        }
+       
     }
 }
