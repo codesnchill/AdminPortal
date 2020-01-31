@@ -2,29 +2,33 @@
     Layout = "../Shared/_Layout.cshtml";
 }
 
+@* Change model to IEnumerable<model> *@
 @model IEnumerable<Employee>
 
 @section Scripts {
+    @* DATATABLE scripts implementation *@
     <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap.min.js"></script>
     <script>
-        //var table = $('#datatable').DataTable()({ "searching": false });;
 
+        // datatable
         $(document).ready(function () {
             var oTable =
                 $('#datatable').DataTable({
                     "lengthChange": false,
                     "sDom": 'ltipr',
                     initComplete: function () {
-                        this.api().columns([2, 3]).every(function () { // columns([2, 3, 4]) this line states where you want the dropdown to appear (the one at the bottom)
+                        this.api().columns([2, 3]).every(function () { // columns([2, 3]) this line states which column of the datatable you want to add filter to (Index start at 0) *Need change in other pages
                             var column = this;
 
+                            // bind dropdown filter of datatable to searchbar dropdowns
                             var $dropdownId = null;
                             if (column[0] == 2) {
                                 $dropdownId = $('#departmentColumn');
                             } else if (column[0] == 3) {
                                 $dropdownId = $('#rightsColumn');
                             }
+                            // end of binding
 
                             var select = $('<select><option value=""></option></select>')
                                 .appendTo($dropdownId)
@@ -36,7 +40,7 @@
                                     column
                                         .search(val ? '^' + val + '$' : '', true, false)
                                         .draw();
-                                });
+                                }).addClass("form-control");
 
                             column.data().unique().sort().each(function (d, j) {
                                 select.append('<option value="' + d + '">' + d + '</option>')
@@ -45,9 +49,11 @@
                     }
                 });
 
+            // bind datatable search function to searchbar
             $('#employeeName').keyup(function () {
                 oTable.search($(this).val()).draw();
             });
+            // end of binding
 
         });// end of document
 
@@ -80,198 +86,6 @@
             }
         }
 
-
-
-        //function loadDepartments() {
-        //    var url = "https://localhost:44300/api/v1/departments"
-        //    var $loadhandler = jQuery.ajax({
-        //        type: 'GET',
-        //        url: url,
-        //        contentType: "application/json",
-        //        dataType: 'json',
-        //        crossDomain: true,
-        //    });
-        //    $loadhandler.done(function (data, textStatus, jqXHR) {
-        //        console.log(data);
-
-        //        // set first item as empty
-        //        $("#department").append($("<option></option>")
-        //            .attr("value", 0)
-        //            .text("Select..."));
-
-        //        $.each(data, function (key, obj) {
-        //            //console.log(key)
-        //            console.log(obj)
-        //            console.log(obj.departmentName)
-        //            $("#department").append($("<option></option>")
-        //                .attr("value", obj.departmentId)
-        //                .text(obj.departmentName));
-        //        });
-        //    });
-
-        //}
-        //loadDepartments();
-
-
-        //function loadRoles() {
-        //    var url = "https://localhost:44300/api/v1/roles"
-        //    var $loadhandler = jQuery.ajax({
-        //        type: 'GET',
-        //        url: url,
-        //        contentType: "application/json",
-        //        dataType: 'json',
-        //        crossDomain: true,
-        //    });
-        //    $loadhandler.done(function (data, textStatus, jqXHR) {
-        //        console.log(data);
-
-        //        // set first item as empty
-        //        $("#rights").append($("<option></option>")
-        //            .attr("value", 0)
-        //            .text("Select..."));
-
-        //        $.each(data, function (key, obj) {
-        //            //console.log(key)
-        //            console.log(obj)
-        //            console.log(obj.roleName)
-        //            $("#rights").append($("<option></option>")
-        //                .attr("value", obj.roleId)
-        //                .text(obj.roleName));
-        //        });
-        //    });
-
-        //}
-        //loadRoles();
-
-        //function filter() {
-        //    var value = $("#employeeName").val().toLowerCase();
-        //    $("#datatable tbody tr").filter(function () {
-        //        $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-        //    });
-        //}
-
-        //Using a function technique to define a JavaScript class, WebFormData
-        //function WebFormData(inCollectedEmployeeName, inCollectedEmployeeId, inCollectedDepartment, inCollectedRole) {
-        //    this.employeeName = inCollectedEmployeeName;
-        //    this.employeeId = inCollectedEmployeeId,
-        //        this.department = inCollectedDepartment;
-        //    this.roles = inCollectedRole;
-        //}
-
-        //function search() {
-        //    // clear the whole datatable
-        //    $("#datatable tbody tr").remove()
-
-        //    var employeeID = $("#employeeID").val();
-        //    var employeeName = $("#employeeName").val();
-        //    var departmentName = "";
-
-        //    if ($("#department option:selected").val() != 0) {
-        //        var departmentName = $("#department option:selected").text();
-        //    }
-
-        //    var roles = "";
-        //    if ($("#rights option:selected").val() != 0) {
-        //        var roles = $("#rights option:selected").text();
-        //    }
-
-
-        //    var url = "/User/Search?EmployeeId=" + employeeID + "&EmployeeName="
-        //        + employeeName + "&DepartmentName=" + departmentName + "&Roles=" + roles;
-
-        //    console.log(url);
-
-        //    var $loadhandler = jQuery.ajax({
-        //        type: 'GET',
-        //        url: url,
-        //        dataType: 'json',
-        //        contentType: "application/json"
-        //    });
-        //    $loadhandler.done(function (data, textStatus, jqXHR) {
-        //        console.log("RETURNED DATA" + data);
-
-        //        // if data is empty, show alert message
-        //        if (data == "") {
-        //            console.log("empty");
-        //            var alert_message = "No search result found";
-        //            $tableBodyElement = $('#datatable');
-        //            $rowElement = $('<tr></tr>');
-        //            $cellElement = $('<td></td>', { text: alert_message }).attr("colspan", 7);
-        //            $rowElement.append($cellElement);
-        //            $tableBodyElement.append($rowElement);
-        //        }
-
-        //        // once I get my data, I need to paginate
-
-
-        //        // vars for table
-        //        $tableBodyElement = $('#datatable');
-
-        //        var userDataList = data;
-        //        var employeeId = '';
-        //        var employeeName = '';
-        //        var departmentName = '';
-        //        var rolesName = '';
-        //        var status = '';
-
-        //        console.log("LENGTH = " + userDataList.length)
-        //        // repopulate datatable
-        //        for (i = 0; i < userDataList.length; i++) {
-        //            console.log("loop counter = " + i)
-
-        //            myList = userDataList[i];
-
-        //            employeeId = myList.employeeId;
-        //            employeeName = myList.employeeName;
-        //            departmentName = myList.departmentName;
-        //            rolesName = myList.roles;
-        //            status = myList.isDisabled;
-        //            if (status) {
-        //                status = 'Inactive'
-        //            } else {
-        //                status = 'Active'
-        //            }
-
-        //            console.log(employeeId);
-        //            console.log(employeeName);
-        //            console.log(departmentName);
-        //            console.log(rolesName);
-        //            console.log(status);
-
-        //            $rowElement = $('<tr></tr>');
-        //            $cellElement = $('<td></td>', { text: employeeId });
-        //            $rowElement.append($cellElement);
-
-        //            $cellElement = $('<td></td>', { text: employeeName });
-        //            $rowElement.append($cellElement);
-
-        //            $cellElement = $('<td></td>', { text: departmentName });
-        //            $rowElement.append($cellElement);
-
-        //            $cellElement = $('<td></td>', { text: rolesName });
-        //            $rowElement.append($cellElement);
-
-        //            $cellElement = $('<td></td>', { text: status });
-        //            $rowElement.append($cellElement);
-
-        //            $hyperLinkElement = $('<button>Edit</button>');
-        //            $hyperLinkElement.onclick = function () { edit(employeeId) }
-        //            $hyperLinkElement.addClass('btn btn-primary');
-        //            $cellElement = $('<td></td>');
-        //            $cellElement.append($hyperLinkElement);
-        //            $rowElement.append($cellElement);
-
-        //            $hyperLinkElement = $('<button>Change Password</button>');
-        //            $hyperLinkElement.onclick = function () { changePassword(employeeId) }
-        //            $hyperLinkElement.addClass('btn btn-primary');
-        //            $cellElement = $('<td></td>');
-        //            $cellElement.append($hyperLinkElement);
-        //            $rowElement.append($cellElement);
-
-        //            $tableBodyElement.append($rowElement);
-        //        }
-        //    });
-        //}
     </script>
 
 }
@@ -316,27 +130,13 @@
         <div class="first-row">
             <div class="rightsColumn" id="rightsColumn">
                 <label for="rights">Access Rights:</label>
-                @*<select class="form-control" id="rights">
-                    </select>*@
+                @*remove select tag here as datatable will create and populate it automatically*@
             </div>
             <div class="departmentColumn" id="departmentColumn">
                 <label for="department">Department:</label>
-                @*<select class="form-control" id="department">*@
-                @*</select>*@
+                @*remove select tag here as datatable will create and populate it automatically*@
             </div>
         </div>
-        @*<div class="second-row">
-                <div class="rightsColumn" id="rightsColumn">
-                    <label for="rights">Access Rights:</label>
-                    <select class="form-control" id="rights">
-                    </select>
-                </div>
-            </div>*@
-        @*<div class="button-row">
-                <button onclick="search()" class="searchButton orange-background">
-                    Search
-                </button>
-            </div>*@
     </div>
     <table id="datatable" class="table table-bordered">
         <thead class="blue-background">
@@ -389,46 +189,6 @@
             }
         </tbody>
     </table>
-
-    @*@{
-            var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
-            var nextDisabled = !Model.HasNextPage ? "disabled" : "";
-        }
-        <nav aria-label="Pagination" class="col-12">
-            <ul class="pagination justify-content-end">
-                <li class="page-item @prevDisabled">
-                    <a class="page-link"
-                       asp-route-pageIndex="@(Model.PageIndex - 1)"
-                       asp-controller="User"
-                       asp-action="SetPage"
-                       aria-label="Previous">
-                        <span aria-hidden="true">&laquo;</span>
-                        <span class="sr-only">Previous</span>
-                    </a>
-                </li>
-                @foreach (var i in Model.PageIndexesToDisplay)
-                {
-                    var activeClass = i.IsActive ? "active" : "";
-
-                    <li class="page-item @activeClass">
-                        <a class="page-link"
-                           asp-route-pageIndex="@(i.Index)"
-                           asp-controller="User"
-                           asp-action="SetPage">@i.Index</a>
-                    </li>
-                }
-                <li class="page-item @nextDisabled">
-                    <a class="page-link"
-                       asp-route-pageIndex="@(Model.PageIndex + 1)"
-                       asp-controller="User"
-                       asp-action="SetPage"
-                       aria-label="Next">
-                        <span aria-hidden="true">&raquo;</span>
-                        <span class="sr-only">Next</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>*@
 </div>
 
 
