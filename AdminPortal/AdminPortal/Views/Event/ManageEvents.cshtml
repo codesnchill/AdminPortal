@@ -2,31 +2,84 @@
     Layout = "../Shared/_Layout.cshtml";
 }
 
-@model PaginatedList<AdminPortal.Models.Event>
+@model IEnumerable<Event>
 
 @section Scripts {
+    <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
     <script>
-        function edit(id) {
-            location.href = "/Event/EditEvent/" + id;
-        }
 
-        function add() {
-            location.href = "/Event/AddEvent/";
-        }
+        // datatable
+        $(document).ready(function () {
+            var oTable =
+                $('#datatable').DataTable({
+                    "pageLength": 4,
+                    "lengthChange": false,
+                    "sDom": 'ltipr'
+                });
+
+            // bind datatable search function to searchbar
+            $('#eventName').keyup(function () {
+                oTable.search($(this).val()).draw();
+            });
+
+            $.fn.dataTableExt.afnFiltering.push(
+                function( settings, data, dataIndex ) {
+                    var min = moment($('#startDate').val()).format("DD/M/YYYY");
+                    var max = moment($('#endDate').val()).format("DD/M/YYYY");
+
+                    var column_startDate = data[1] || 1; // Our date column in the table
+                    column_startDate = column_startDate.split(/,?\s+/)[0];
+
+                    var column_endDate = data[2] || 2; // Our date column in the table
+                    column_endDate = column_endDate.split(/,?\s+/)[0];
+
+                    var startDate   = moment(min, "DD/M/YYYY");
+                    var endDate = moment(max, "DD/M/YYYY");
+
+                    var orig_startDate = moment(column_startDate, "DD/M/YYYY");
+                    var orig_endDate = moment(column_endDate, "DD/M/YYYY");
+
+                    console.log(startDate);
+                    console.log(endDate);
+                    console.log(orig_startDate);
+                    if (startDate.diff(endDate) > 0) { return false } // if start date is later than end date, return false
+                    if ((min == "" || max == "") ||
+                        (orig_startDate.isBetween(startDate, endDate)) ||
+                        (orig_endDate.isBetween(startDate, endDate)) ||
+                        (startDate.isBetween(orig_startDate, orig_endDate)) ||
+                        (endDate.isBetween(orig_startDate, orig_endDate)) ||
+                        (startDate.isSame(orig_startDate)) ||
+                        (endDate.isSame(orig_startDate)) ||
+                        (startDate.isSame(orig_endDate)) ||
+                        (endDate.isSame(orig_endDate))
+                    ){
+                        return true;
+                    }
+                    return false;
+
+                }
+            );
+
+            //// Event listener to the two range filtering inputs to redraw on input
+            $('#startDate, #endDate').change(function () {
+                oTable.draw();
+            });
 
 
-        var display = true;
-        function show() {
-            if (display) {
-                $("#advSearch").hide();
-                display = false;
-            } else {
-                $("#advSearch").show();
-                display = true;
+            var display = true;
+            function show() {
+                if (display) {
+                    $("#advSearch").hide();
+                    display = false;
+                } else {
+                    $("#advSearch").show();
+                    display = true;
+                }
             }
-        }
 
-
+        });
         function loadDepartments() {
             var url = "https://localhost:44300/api/v1/departments"
             var $loadhandler = jQuery.ajax({
@@ -70,7 +123,7 @@
     <div class="search-bar">
         <div class="input-field-search">
             <img src="../images/search.png" alt="Magnifying Glass logo">
-            <input type='text' name='eventName' size='15' placeholder='Search by Event Name...' />
+            <input type='text' name='eventName' size='15' placeholder='Search by Event Name...' id="eventName" />
         </div>
 
 
@@ -88,7 +141,7 @@
         <div class="first-row">
             <div class="startDateColumn">
                 <label for="startDate">Start Date:</label>
-                <input type="date" class="form-control" name="startDate">
+                <input type="date" class="form-control" name="startDate" id="startDate">
             </div>
             <div class="departmentColumn">
                 <label for="department">Department:</label>
@@ -99,7 +152,7 @@
         <div class="second-row">
             <div class="endDateColumn">
                 <label for="endDate">End Date:</label>
-                <input type="date" class="form-control" name="endDate">
+                <input type="date" class="form-control" name="endDate" id="endDate">
             </div>
 
         </div>
@@ -120,6 +173,8 @@
                 <th>Actions</th>
             </tr>
         </thead>
+        <tfoot>
+        </tfoot>
         <tbody>
             @foreach (var item in Model)
             {
@@ -144,43 +199,4 @@
             }
         </tbody>
     </table>
-    @{
-        var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
-        var nextDisabled = !Model.HasNextPage ? "disabled" : "";
-    }
-    <nav aria-label="Pagination" class="col-12">
-        <ul class="pagination justify-content-end">
-            <li class="page-item @prevDisabled">
-                <a class="page-link"
-                   asp-route-pageIndex="@(Model.PageIndex - 1)"
-                   asp-controller="Event"
-                   asp-action="SetPage"
-                   aria-label="Previous">
-                    <span aria-hidden="true">&laquo;</span>
-                    <span class="sr-only">Previous</span>
-                </a>
-            </li>
-            @foreach (var i in Model.PageIndexesToDisplay)
-            {
-                var activeClass = i.IsActive ? "active" : "";
-
-                <li class="page-item @activeClass">
-                    <a class="page-link"
-                       asp-route-pageIndex="@(i.Index)"
-                       asp-controller="Event"
-                       asp-action="SetPage">@i.Index</a>
-                </li>
-            }
-            <li class="page-item @nextDisabled">
-                <a class="page-link"
-                   asp-route-pageIndex="@(Model.PageIndex + 1)"
-                   asp-controller="Event"
-                   asp-action="SetPage"
-                   aria-label="Next">
-                    <span aria-hidden="true">&raquo;</span>
-                    <span class="sr-only">Next</span>
-                </a>
-            </li>
-        </ul>
-    </nav>
 </div>

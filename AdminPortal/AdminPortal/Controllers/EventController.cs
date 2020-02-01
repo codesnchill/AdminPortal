@@ -15,6 +15,8 @@ namespace AdminPortal.Controllers
         public PaginatedList<Event> eventList { get; private set; }
         public IActionResult ManageEvents()
         {
+            List<Event> myEventList = new List<Event>();
+
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri("https://localhost:44300/api/v1/");
@@ -29,8 +31,8 @@ namespace AdminPortal.Controllers
                     readTask.Wait();
 
                     events = readTask.Result;
-
-                    eventList = PaginatedList<Event>.Create(events, 1, 4, 5);
+                    myEventList = events.ToList();
+                    //eventList = PaginatedList<Event>.Create(events, 1, 4, 5);
 
                     //HttpContext.Session["employeeList"] = employeeList;
                 }
@@ -46,7 +48,7 @@ namespace AdminPortal.Controllers
 
             }
 
-            return View(eventList);
+            return View(myEventList);
         }
 
         public IActionResult AddEvent()
