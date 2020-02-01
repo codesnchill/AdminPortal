@@ -29,15 +29,15 @@
         });// end of document
 
         function edit(id) {
-            location.href = "/Milestone/EditReward/" + id;
+            location.href = "/Milestone/EditDeletedReward/" + id;
         }
 
         function add() {
             location.href = "/Milestone/AddReward/";
         }
 
-        function viewDeleted() {
-            location.href = "/Milestone/ManageDeletedMilestones";
+        function view() {
+               location.href = "/Milestone/ManageMilestones";
         }
     </script>
 }
@@ -48,13 +48,13 @@
 
 <div class="right-section white-background">
     <div class="title">
-        <p class="title-control">Manage Milestones</p>
+        <p class="title-control">Manage Deleted Milestones</p>
     </div>
     <div class="view-buttons">
-        <button class="view-details" type="button">
+        <button onclick="view()" class="view-details" type="button">
             View Reward Details
         </button>
-        <button onclick="viewDeleted()" class="view-deleted" type="button">
+        <button class="view-deleted" type="button">
             View Deleted Reward
         </button>
 
@@ -65,11 +65,6 @@
         <div class="input-field-search">
             <img src="../images/search.png" alt="Magnifying Glass logo">
             <input id="reward" type='text' name='reward' size='15' placeholder='Search by Reward Name...' />
-        </div>
-
-
-        <div class="new-reward-button">
-            <button class="orange-background" name="Add" onclick="add()">Add New Reward</button>
         </div>
 
     </div>

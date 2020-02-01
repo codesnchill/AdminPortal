@@ -198,8 +198,37 @@ p.title-control {
 .right-section hr.divider {
     border: 1px solid lightgray;
     border-bottom: none;
-    margin-top: 55px;
+    margin:0;
 }
+
+.right-section .view-buttons {
+    height: 55px;
+    width: 340px;
+    display: flex;
+}
+
+    .right-section .view-buttons button {
+        color: black;
+        font-weight: bold;
+        text-align: center;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+    }
+
+        .right-section .view-buttons button:hover {
+            border-bottom: 1px solid #086795;
+            color: #086795;
+            border-bottom-width: medium;
+        }
+
+    .right-section .view-buttons .view-details {
+        flex: 1;
+    }
+
+    .right-section .view-buttons .view-deleted {
+        flex: 1;
+    }
 
 
 .right-section .search-bar {
