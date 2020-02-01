@@ -5,20 +5,27 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using AdminPortal.Models;
+using System.Windows;
+using Newtonsoft.Json;
+using Microsoft.AspNetCore.Http;
+
 
 namespace AdminPortal.Controllers
 {
+
     public class MilestoneController : Controller
     {
         IEnumerable<Milestone> reward = null;
-        public PaginatedList<Milestone> rewardList { get; private set; }
+        const string RewardListSessionName = "_RewardList";
         public IActionResult ManageMilestones()
         {
+            List<Milestone> rewardList = new List<Milestone>();
+
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri("https://localhost:44300/api/v1/");
                 //HTTP GET
-                var responseTask = client.GetAsync("milestone");
+                var responseTask = client.GetAsync("milestone?deleted=false");
                 responseTask.Wait();
 
                 var result = responseTask.Result;
@@ -28,9 +35,10 @@ namespace AdminPortal.Controllers
                     readTask.Wait();
 
                     reward = readTask.Result;
+                    rewardList = reward.ToList();
 
-                    rewardList = PaginatedList<Milestone>.Create(reward, 1, 4, 5);
-
+                    // store employee in session
+                    HttpContext.Session.SetComplexData(RewardListSessionName, rewardList);
                     //HttpContext.Session["employeeList"] = employeeList;
                 }
                 else //web api sent error response 
@@ -45,42 +53,8 @@ namespace AdminPortal.Controllers
 
             }
 
+            //make sure it returns the whole list retrieve from database (not the paginated list)
             return View(rewardList);
-        }
-
-        public IActionResult SetPage(string pageIndex)
-        {
-            //int pageIndex = int.Parse(RouteData.Values["pageIndex"].ToString());
-            int pageIn = int.Parse(pageIndex);
-            using (var client = new HttpClient())
-            {
-                client.BaseAddress = new Uri("https://localhost:44300/api/v1/");
-                //HTTP GET
-                var responseTask = client.GetAsync("milestone");
-                responseTask.Wait();
-
-                var result = responseTask.Result;
-                if (result.IsSuccessStatusCode)
-                {
-                    var readTask = result.Content.ReadAsAsync<IList<Milestone>>();
-                    readTask.Wait();
-
-                    reward = readTask.Result;
-
-                    rewardList = PaginatedList<Milestone>.Create(reward, pageIn, 4, 5);
-                }
-                else //web api sent error response 
-                {
-                    //log response status here..
-
-                    reward = Enumerable.Empty<Milestone>();
-
-                    ModelState.AddModelError(string.Empty, "Server error. Please contact administrator.");
-                }
-
-
-            }
-            return View("ManageMilestones", rewardList);
         }
 
         public IActionResult AddReward()
@@ -91,6 +65,54 @@ namespace AdminPortal.Controllers
         public IActionResult EditReward()
         {
             return View();
+        }
+
+        public IActionResult EditDeletedReward()
+        {
+            return View();
+        }
+
+        IEnumerable<Milestone> deletedReward = null;
+
+        const string DeletedRewardListSessionName = "_DeletedRewardList";
+        public IActionResult ManageDeletedMilestones()
+        {
+            List<Milestone> rewardList = new List<Milestone>();
+
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("https://localhost:44300/api/v1/");
+                //HTTP GET
+                var responseTask = client.GetAsync("milestone?deleted=true");
+                responseTask.Wait();
+
+                var result = responseTask.Result;
+                if (result.IsSuccessStatusCode)
+                {
+                    var readTask = result.Content.ReadAsAsync<IList<Milestone>>();
+                    readTask.Wait();
+
+                    deletedReward = readTask.Result;
+                    rewardList = deletedReward.ToList();
+
+                    // store employee in session
+                    HttpContext.Session.SetComplexData(DeletedRewardListSessionName, rewardList);
+                    //HttpContext.Session["employeeList"] = employeeList;
+                }
+                else //web api sent error response 
+                {
+                    //log response status here..
+
+                    deletedReward = Enumerable.Empty<Milestone>();
+
+                    ModelState.AddModelError(string.Empty, "Server error. Please contact administrator.");
+                }
+
+
+            }
+
+            //make sure it returns the whole list retrieve from database (not the paginated list)
+            return View(rewardList);
         }
     }
 }

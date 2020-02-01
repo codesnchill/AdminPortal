@@ -323,11 +323,7 @@ p.title-control {
     font-weight: normal;
 }
 
-.employeeColumn label,
-input {
-    display: inline-block;
-    vertical-align: middle;
-}
+
 
 .departmentColumn label,
 select {
@@ -335,17 +331,7 @@ select {
     vertical-align: middle;
 }
 
-.search-fields .first-row .employeeColumn {
-    flex: 1;
-}
 
-    .search-fields .first-row .employeeColumn input {
-        height: 40px;
-        width: 15vw;
-        margin-left: 30px;
-        border: none;
-        border-bottom: 1px solid lightgray;
-    }
 
 .search-fields .first-row .departmentColumn {
     flex: 1;
@@ -357,7 +343,7 @@ select {
     }
 
 .departmentColumn select {
-    width: 40%;
+    width: 30%;
     height: 40px;
     margin-left: 49px;
 }
@@ -375,11 +361,6 @@ select {
     vertical-align: middle;
 }
 
-.statusColumn label,
-select {
-    display: inline-block;
-    vertical-align: middle;
-}
 
 .second-row label {
     font-size: 16px;
@@ -394,31 +375,12 @@ select {
 
 
 .rightsColumn select {
-    width: 23%;
+    width: 30%;
     height: 40px;
-    margin-left: 25px;
+    margin-left: 30px;
 }
 
-.button-row {
-    display: flex;
-    flex: 1;
-    justify-content: center;
-}
 
-.searchButton {
-    width: 25%;
-    height: 45px;
-    border: 1px solid transparent;
-    border-radius: 8px;
-    margin-top: 10px;
-    margin-right: 5px;
-}
-
-.button-row button {
-    color: #fff;
-    font-weight: bold;
-    font-size: 15px;
-}
 
 #datatable {
     width: 95%;

@@ -2,10 +2,62 @@
     Layout = "../Shared/_Layout.cshtml";
 }
 
-@model PaginatedList<AdminPortal.Models.Employee>
+@* Change model to IEnumerable<model> *@
+@model IEnumerable<Employee>
 
 @section Scripts {
+    @* DATATABLE scripts implementation *@
+    <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap.min.js"></script>
     <script>
+
+        // datatable
+        $(document).ready(function () {
+            var oTable =
+                $('#datatable').DataTable({
+                     "pageLength": 4,
+                    "lengthChange": false,
+                    "sDom": 'ltipr',
+                    initComplete: function () {
+                        this.api().columns([2, 3]).every(function () { // columns([2, 3]) this line states which column of the datatable you want to add filter to (Index start at 0) *Need change in other pages
+                            var column = this;
+
+                            // bind dropdown filter of datatable to searchbar dropdowns
+                            var $dropdownId = null;
+                            if (column[0] == 2) {
+                                $dropdownId = $('.departmentColumn');
+                            } else if (column[0] == 3) {
+                                $dropdownId = $('.rightsColumn');
+                            }
+                            // end of binding
+
+                            var select = $('<select><option value=""></option></select>')
+                                .appendTo($dropdownId)
+                                .on('change', function () {
+                                    var val = $.fn.dataTable.util.escapeRegex(
+                                        $(this).val()
+                                    );
+
+                                    column
+                                        .search(val ? '^' + val + '$' : '', true, false)
+                                        .draw();
+                                }).addClass("form-control");
+
+                            column.data().unique().sort().each(function (d, j) {
+                                select.append('<option value="' + d + '">' + d + '</option>')
+                            });
+                        });
+                    }
+                });
+
+            // bind datatable search function to searchbar
+            $('#employeeName').keyup(function () {
+                oTable.search($(this).val()).draw();
+            });
+            // end of binding
+
+        });// end of document
+
         function edit(id) {
             location.href = "/User/EditUser/" + id;
         }
@@ -22,7 +74,7 @@
             location.href = "/User/ManageDeletedUser";
         }
 
-        
+
 
         var display = true;
         function show() {
@@ -35,115 +87,6 @@
             }
         }
 
-        function loadDepartments() {
-            var url = "https://localhost:44300/api/v1/departments"
-            var $loadhandler = jQuery.ajax({
-                type: 'GET',
-                url: url,
-                contentType: "application/json",
-                dataType: 'json',
-                crossDomain: true,
-            });
-            $loadhandler.done(function (data, textStatus, jqXHR) {
-                console.log(data);
-                $.each(data, function (key, obj) {
-                    //console.log(key)
-                    console.log(obj)
-                    console.log(obj.departmentName)
-                    $("#department").append($("<option></option>")
-                        .attr("value", obj.departmentId)
-                        .text(obj.departmentName));
-                });
-            });
-
-        }
-        loadDepartments();
-
-
-          function loadRoles() {
-            var url = "https://localhost:44300/api/v1/roles"
-            var $loadhandler = jQuery.ajax({
-                type: 'GET',
-                url: url,
-                contentType: "application/json",
-                dataType: 'json',
-                crossDomain: true,
-            });
-            $loadhandler.done(function (data, textStatus, jqXHR) {
-                console.log(data);
-                $.each(data, function (key, obj) {
-                    //console.log(key)
-                    console.log(obj)
-                    console.log(obj.roleName)
-                    $("#rights").append($("<option></option>")
-                        .attr("value", obj.roleId)
-                        .text(obj.roleName));
-                });
-            });
-
-        }
-        loadRoles();
-
-        function filter() {
-            var value = $("#employeeName").val().toLowerCase();
-            $("#datatable tbody tr").filter(function() {
-              $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-            });
-        }
-
-        //Using a function technique to define a JavaScript class, WebFormData
-        function WebFormData(inCollectedEmployeeName, inCollectedEmployeeId, inCollectedDepartment, inCollectedRole) {
-            this.employeeName = inCollectedEmployeeName;
-            this.employeeId = inCollectedEmployeeId,
-            this.department = inCollectedDepartment;
-            this.roles = inCollectedRole;
-        }
-
-        function search() {
-            var employeeID = $("#employeeID").val();
-            console.log(employeeID);
-            var employeeName = $("#employeeName").val();
-            console.log(employeeName);
-            var departmentName = $("#department option:selected").text();
-            console.log(departmentName);
-            var roles = $("#rights option:selected").text(); 
-            console.log(roles);
-            
-
-            var url = "/User/Search?EmployeeId=" + employeeID + "&EmployeeName="
-                + employeeName + "&DepartmentName=" + 'CREDIT%20CONTROL' + "&Roles=" + roles;
-
-            console.log(url);
-            var $loadhandler = jQuery.ajax({
-                type: 'GET',
-                url: url,
-                dataType: 'json',
-                contentType: "application/json"
-            });
-            $loadhandler.done(function (data, textStatus, jqXHR) {
-                console.log("RETURNED DATA" + data);
-                $.each(data, function (key, obj) {
-                    //console.log(key)
-                    console.log(obj)
-                    console.log(obj[0].EmployeeName)
-
-                    // clear the whole datatable
-                    $("#datatable tbody tr").remove()
-
-					$rowElement.append($cellElement);
-                    // repopulate datatable
-
-                    //$("#datatable tbody tr").append(
-                    //    $('<td>').text(obj[0].employeeID),
-                    //    $('<td>').text(obj[0].employeeName),
-                    //    $('<td>').text(obj[0].departmentName),
-                    //    $('<td>').text(obj[0].roleName),
-                    //    $('<td>').text(obj[0].status)
-                    //);
-
-                });
-            });
-        }
     </script>
 
 }
@@ -170,7 +113,7 @@
     <div class="search-bar">
         <div class="input-field-search">
             <img src="../images/search.png" alt="Magnifying Glass logo">
-            <input onkeyup="filter()" id="employeeName" type='text' name='employeeName' size='15' placeholder='Search by Employee Name...' />
+            <input id="employeeName" type='text' name='employeeName' size='15' placeholder='Search by Employee Name...' />
         </div>
 
 
@@ -186,27 +129,16 @@
 
     <div id="advSearch" class="search-fields">
         <div class="first-row">
-            <div class="employeeColumn">
-                <label for="employeeID">Employee ID:</label>
-                <input id="employeeID" type="text" name="employeeID" size='15' placeholder='Search by Employee ID...'>
-            </div>
-            <div class="departmentColumn">
+            <div class="departmentColumn" id="departmentColumn">
                 <label for="department">Department:</label>
-                <select class="form-control" id="department">
-                </select>
+                @*remove select tag here as datatable will create and populate it automatically*@
             </div>
         </div>
         <div class="second-row">
-            <div class="rightsColumn">
+            <div class="rightsColumn" id="rightsColumn">
                 <label for="rights">Access Rights:</label>
-                <select class="form-control" id="rights">
-                </select>
+                @*remove select tag here as datatable will create and populate it automatically*@
             </div>
-        </div>
-        <div class="button-row">
-            <button onclick="search()" class="searchButton orange-background">
-                Search
-            </button>
         </div>
     </div>
     <table id="datatable" class="table table-bordered">
@@ -221,6 +153,7 @@
                 <th>Actions</th>
             </tr>
         </thead>
+
         <tbody>
             @foreach (var item in Model)
             {
@@ -259,47 +192,6 @@
             }
         </tbody>
     </table>
-
-    @{
-        var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
-        var nextDisabled = !Model.HasNextPage ? "disabled" : "";
-    }
-    <nav aria-label="Pagination" class="col-12">
-        <ul class="pagination justify-content-end">
-            <li class="page-item @prevDisabled">
-                <a class="page-link"
-                   asp-route-pageIndex="@(Model.PageIndex - 1)"
-                   asp-controller="User"
-                   asp-action="SetPage"
-                   aria-label="Previous">
-                    <span aria-hidden="true">&laquo;</span>
-                    <span class="sr-only">Previous</span>
-                </a>
-            </li>
-            @foreach (var i in Model.PageIndexesToDisplay)
-            {
-                var activeClass = i.IsActive ? "active" : "";
-
-                <li class="page-item @activeClass">
-                    <a class="page-link"
-                       asp-route-pageIndex="@(i.Index)"
-                   asp-controller="User"
-                         asp-action="SetPage"
-                       >@i.Index</a>
-                </li>
-            }
-            <li class="page-item @nextDisabled">
-                <a class="page-link"
-                   asp-route-pageIndex="@(Model.PageIndex + 1)"
-                   asp-controller="User"
-                   asp-action="SetPage"
-                   aria-label="Next">
-                    <span aria-hidden="true">&raquo;</span>
-                    <span class="sr-only">Next</span>
-                </a>
-            </li>
-        </ul>
-    </nav>
 </div>
 
 

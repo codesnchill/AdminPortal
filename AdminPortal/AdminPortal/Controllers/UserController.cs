@@ -32,12 +32,13 @@ namespace AdminPortal.Controllers
     public class UserController : Controller
     {
         IEnumerable<Employee> employee = null;
-        public PaginatedList<Employee> employeeList { get; private set; }
 
         const string EmployeeListSessionName = "_EmployeeList";
 
         public IActionResult ManageUser()
         {
+            List<Employee> myEmployeeList = new List<Employee>();
+
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri("https://localhost:44300/api/v1/");
@@ -52,8 +53,7 @@ namespace AdminPortal.Controllers
                     readTask.Wait();
 
                     employee = readTask.Result;
-                    var myEmployeeList = employee.ToList();
-                    employeeList = PaginatedList<Employee>.Create(employee, 1, 4, 5);
+                    myEmployeeList = employee.ToList();
 
                     // store employee in session
                     HttpContext.Session.SetComplexData(EmployeeListSessionName, myEmployeeList);
@@ -71,64 +71,9 @@ namespace AdminPortal.Controllers
 
             }
 
-            return View(employeeList);
+            //make sure it returns the whole list retrieve from database (not the paginated list)
+            return View(myEmployeeList);
         }
-
-        public IActionResult SetPage(string pageIndex)
-        {
-            //int pageIndex = int.Parse(RouteData.Values["pageIndex"].ToString());
-            int pageIn = int.Parse(pageIndex);
-            if (string.IsNullOrWhiteSpace(HttpContext.Session.GetString(EmployeeListSessionName)))
-            {
-
-                using (var client = new HttpClient())
-                {
-                    client.BaseAddress = new Uri("https://localhost:44300/api/v1/");
-                    //HTTP GET
-                    var responseTask = client.GetAsync("users?isDisabled=false");
-                    responseTask.Wait();
-
-                    var result = responseTask.Result;
-                    if (result.IsSuccessStatusCode)
-                    {
-                        var readTask = result.Content.ReadAsAsync<IList<Employee>>();
-                        readTask.Wait();
-
-                        employee = readTask.Result;
-                        var myEmployeeList = employee.ToList();
-                        employeeList = PaginatedList<Employee>.Create(employee, pageIn, 4, 5);
-
-                        // store employee in session
-                        HttpContext.Session.SetComplexData(EmployeeListSessionName, myEmployeeList);
-                    }
-                    else //web api sent error response 
-                    {
-                        //log response status here..
-
-                        employee = Enumerable.Empty<Employee>();
-
-                        ModelState.AddModelError(string.Empty, "Server error. Please contact administrator.");
-                    }
-
-
-                }
-
-            }
-            else
-            {
-                employee = HttpContext.Session.GetComplexData<IEnumerable<Employee>>(EmployeeListSessionName);
-
-                employeeList = PaginatedList<Employee>.Create(employee, pageIn, 4, 5);
-
-            }
-
-
-
-
-            return View("ManageUser", employeeList);
-        }
-
-
 
         public IActionResult AddUser()
         {
@@ -150,104 +95,13 @@ namespace AdminPortal.Controllers
             return View();
         }
 
-        [HttpGet]
-        public JsonResult Search([FromQuery] EmployeeSearchQuery employeeQuery)
-        {
-            List<dynamic> employeeList = new List<dynamic>();
-
-            if (string.IsNullOrWhiteSpace(HttpContext.Session.GetString(EmployeeListSessionName)))
-            {
-
-                using (var client = new HttpClient())
-                {
-                    client.BaseAddress = new Uri("https://localhost:44300/api/v1/");
-                    //HTTP GET
-                    var responseTask = client.GetAsync("users");
-                    responseTask.Wait();
-
-                    var result = responseTask.Result;
-                    if (result.IsSuccessStatusCode)
-                    {
-                        var readTask = result.Content.ReadAsAsync<IList<Employee>>();
-                        readTask.Wait();
-
-                        employee = readTask.Result;
-                        employee = employee.ToList();
-
-                        // store employee in session
-                        HttpContext.Session.SetComplexData(EmployeeListSessionName, employee);
-
-                        // do filter
-                        if (!string.IsNullOrWhiteSpace(employeeQuery.EmployeeName))
-                            employee = employee.Where(u => u.EmployeeName.Contains(employeeQuery.EmployeeName));
-                        if (!string.IsNullOrWhiteSpace(employeeQuery.EmployeeId))
-                            employee = employee.Where(u => u.EmployeeName.Contains(employeeQuery.EmployeeId));
-                        if (!string.IsNullOrWhiteSpace(employeeQuery.DepartmentName))
-                            employee = employee.Where(u => u.DepartmentName.Equals(employeeQuery.DepartmentName));
-                        if (!string.IsNullOrWhiteSpace(employeeQuery.Roles))
-                            employee = employee.Where(u => u.Roles.Equals(employeeQuery.Roles));
-                    }
-                    else //web api sent error response 
-                    {
-                        //log response status here..
-
-                        employee = Enumerable.Empty<Employee>();
-
-                        ModelState.AddModelError(string.Empty, "Server error. Please contact administrator.");
-                    }
-
-                }
-
-            }
-            else
-            {
-                employee = HttpContext.Session.GetComplexData<IEnumerable<Employee>>(EmployeeListSessionName);
-
-                // do filter
-                if (!string.IsNullOrWhiteSpace(employeeQuery.EmployeeName))
-                    employee = employee.Where(u => u.EmployeeName.Contains(employeeQuery.EmployeeName));
-                if (!string.IsNullOrWhiteSpace(employeeQuery.EmployeeId))
-                    employee = employee.Where(u => u.EmployeeId.Contains(employeeQuery.EmployeeId));
-                if (!string.IsNullOrWhiteSpace(employeeQuery.DepartmentName))
-                    employee = employee.Where(u => u.DepartmentName.Equals(employeeQuery.DepartmentName));
-                if (!string.IsNullOrWhiteSpace(employeeQuery.Roles))
-                    employee = employee.Where(u => u.Roles.Equals(employeeQuery.Roles));
-            }
-
-            var employeeResult = employee.Select(employee => new
-            {
-                DepartmentName = employee.DepartmentName,
-                EmployeeName = employee.EmployeeName,
-                EmployeeBio = employee.EmployeeBio,
-                Roles = employee.Roles,
-                EmployeeId = employee.EmployeeId,
-                IsDisabled = employee.IsDisabled,
-                totalPoints = employee.totalPoints
-            });
-
-            foreach (var oneResult in employeeResult)
-            {
-                employeeList.Add(new
-                {
-                    departmentName = oneResult.DepartmentName,
-                    employeeName = oneResult.EmployeeName,
-                    employeeBio = oneResult.EmployeeBio,
-                    roles = oneResult.Roles,
-                    employeeId = oneResult.EmployeeId,
-                    isDisabled = oneResult.IsDisabled,
-                    totalPoints = oneResult.totalPoints
-                });
-            }
-            return new JsonResult(employeeList);
-        }
-
-
         IEnumerable<Employee> deletedEmployee = null;
-        public PaginatedList<Employee> deletedEmployeeList { get; private set; }
 
         const string DeletedEmployeeListSessionName = "_DEmployeeList";
         public IActionResult ManageDeletedUser()
         {
+            List<Employee> myEmployeeList = new List<Employee>();
+
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri("https://localhost:44300/api/v1/");
@@ -262,8 +116,7 @@ namespace AdminPortal.Controllers
                     readTask.Wait();
 
                     deletedEmployee = readTask.Result;
-                    var myEmployeeList = deletedEmployee.ToList();
-                    deletedEmployeeList = PaginatedList<Employee>.Create(deletedEmployee, 1, 4, 5);
+                    myEmployeeList = deletedEmployee.ToList();
 
                     // store employee in session
                     HttpContext.Session.SetComplexData(DeletedEmployeeListSessionName, myEmployeeList);
@@ -281,64 +134,12 @@ namespace AdminPortal.Controllers
 
             }
 
-            return View(deletedEmployeeList);
+            //make sure it returns the whole list retrieve from database (not the paginated list)
+            return View(myEmployeeList);
         }
 
 
-        public IActionResult SetPage2(string pageIndex)
-        {
-            //int pageIndex = int.Parse(RouteData.Values["pageIndex"].ToString());
-            int pageIn = int.Parse(pageIndex);
-            if (string.IsNullOrWhiteSpace(HttpContext.Session.GetString(DeletedEmployeeListSessionName)))
-            {
-
-                using (var client = new HttpClient())
-                {
-                    client.BaseAddress = new Uri("https://localhost:44300/api/v1/");
-                    //HTTP GET
-                    var responseTask = client.GetAsync("users?isDisabled=true");
-                    responseTask.Wait();
-
-                    var result = responseTask.Result;
-                    if (result.IsSuccessStatusCode)
-                    {
-                        var readTask = result.Content.ReadAsAsync<IList<Employee>>();
-                        readTask.Wait();
-
-                        deletedEmployee = readTask.Result;
-                        var myEmployeeList = deletedEmployee.ToList();
-                        deletedEmployeeList = PaginatedList<Employee>.Create(deletedEmployee, pageIn, 4, 5);
-
-                        // store employee in session
-                        HttpContext.Session.SetComplexData(DeletedEmployeeListSessionName, myEmployeeList);
-                    }
-                    else //web api sent error response 
-                    {
-                        //log response status here..
-
-                        deletedEmployee = Enumerable.Empty<Employee>();
-
-                        ModelState.AddModelError(string.Empty, "Server error. Please contact administrator.");
-                    }
-
-
-                }
-
-            }
-            else
-            {
-                deletedEmployee = HttpContext.Session.GetComplexData<IEnumerable<Employee>>(EmployeeListSessionName);
-
-                deletedEmployeeList = PaginatedList<Employee>.Create(employee, pageIn, 4, 5);
-
-            }
-
-
-
-
-            return View("ManageDeletedUser", deletedEmployeeList);
-        }
-
+     
 
 
     }
