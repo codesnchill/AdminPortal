@@ -198,14 +198,13 @@ p.title-control {
 .right-section hr.divider {
     border: 1px solid lightgray;
     border-bottom: none;
-    margin-top: 55px;
+    margin: 0;
 }
 
 .right-section .view-buttons {
     height: 55px;
-    width: 300px;
+    width: 320px;
     display: flex;
-    padding-left: 2px;
 }
 
     .right-section .view-buttons button {
@@ -230,6 +229,7 @@ p.title-control {
     .right-section .view-buttons .view-deleted {
         flex: 1;
     }
+    
 
 .right-section .search-bar {
     border-radius: 10px 10px 0px 0px;

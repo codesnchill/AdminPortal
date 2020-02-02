@@ -29,15 +29,12 @@
 
 
         function edit(questionId) {
-            location.href = "/Game/EditQuestion/?gameid=" + gameId + "&questionid=" + questionId;
+            location.href = "/Game/EditDeletedQuestion/?gameid=" + gameId + "&questionid=" + questionId;
         }
 
-        function add() {
-            location.href = "/Game/AddQuestion/" + gameId;
-        }
 
-        function viewDeleted() {
-            location.href = "/Game/ManageDeletedGames";
+        function view() {
+            location.href = "/Game/ManageGames";
         }
 
         //when user select a different game for dropdown
@@ -80,13 +77,13 @@
 
 <div class="right-section white-background">
     <div class="title">
-        <p class="title-control">Manage Games</p>
+        <p class="title-control">Manage Deleted Games</p>
     </div>
     <div class="view-buttons">
-        <button class="view-details" type="button">
+        <button onclick="view()" class="view-details" type="button">
             View Game Details
         </button>
-        <button onclick="viewDeleted()" class="view-deleted" type="button">
+        <button class="view-deleted" type="button">
             View Deleted Details
         </button>
 
@@ -103,10 +100,6 @@
             <label for="games">Select a game</label>
             <select class="form-control" id="games">
             </select>
-        </div>
-
-        <div class="new-game-button">
-            <button class="orange-background" name="Add" onclick="add()">Add new question</button>
         </div>
     </div>
     <table id="datatable" class="table table-bordered">

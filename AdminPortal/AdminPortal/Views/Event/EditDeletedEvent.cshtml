@@ -185,46 +185,15 @@
         }
 
 
-        function deleteEvent() {
-            var noty = new Noty({
-                text: 'Continue the delete action?',
-                layout: 'center',
-                template: '<div class="noty_message" style="height:50px;"><span class="noty_text"></span>',
-                buttons: [
-                    Noty.button('Cancel', 'btn btn-default', function () {
-                        noty.close();
-                    }),
+        function retrieveEvent() {
 
-                    Noty.button('Delete', 'btn btn-danger', function () {
-                        var url = "https://localhost:44300/api/v1/events/markdelete/" + g_eventId;
-                        $deleteHandler = jQuery.ajax({
-                            type: 'DELETE',
-                            url: url,
-                        })//end of jQuery.ajax() call
-
-                        $deleteHandler.done(function (data, textStatus, jqXHR) {
-                            $('body').fadeOut(500, redirectPage);
-                            noty.close();
-                        })
-
-                        $deleteHandler.fail(function (data, textStatus, jqXHR) {
-                            console.log(data);
-                            new Noty({
-                                text: data.responseJSON.message, type: 'error',
-                                layout: 'center',
-                                template: '<div class="noty_message"><span class="noty_text"></span>'
-                            }).show();//end of noty()
-                        });//end of $deleteCourseHandler.fail()
-                    })
-                ]
-            }).show();
-        }//end of on click
-
-        function redirectPage() {
-            location.href = "/Event/ManageEvents";
         }
 
-          function view() {
+        function redirectPage() {
+            location.href = "/Event/ManageDeletedEvents";
+        }
+
+        function view() {
             location.href = "/Event/ManageEvents";
         }
 
@@ -242,7 +211,7 @@
 
 <div class="right-section white-background">
     <div class="title">
-        <p class="title-control">Manage Events</p>
+        <p class="title-control">Edit Deleted Events</p>
     </div>
     <div class="view-buttons">
         <button onclick="view()" class="view-details" type="button">
@@ -296,7 +265,7 @@
             </select>
         </div>
         <div class="row8-buttons">
-            <button onclick="deleteEvent()" class="delete">Delete</button>
+            <button onclick="retrieveEvent()" class="delete">Delete</button>
             <button onclick="save()" class="save">Save</button>
             <button onclick="redirectPage()" class="cancel">Cancel</button>
         </div>

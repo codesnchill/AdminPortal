@@ -66,6 +66,51 @@ namespace AdminPortal.Controllers
             return View();
         }
 
-      
+        public IActionResult EditDeletedEvent()
+        {
+            return View();
+        }
+
+        IEnumerable<Event> deletedEvents = null;
+        const string DeletedEventListSessionName = "_DeletedEventList";
+        public IActionResult ManageDeletedEvents ()
+        {
+            List<Event> eventList = new List<Event>();
+
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("https://localhost:44300/api/v1/");
+                //HTTP GET
+                var responseTask = client.GetAsync("events?deleted=true");
+                responseTask.Wait();
+
+                var result = responseTask.Result;
+                if (result.IsSuccessStatusCode)
+                {
+                    var readTask = result.Content.ReadAsAsync<IList<Event>>();
+                    readTask.Wait();
+
+                    deletedEvents = readTask.Result;
+                    eventList = deletedEvents.ToList();
+
+                    // store employee in session
+                    HttpContext.Session.SetComplexData(DeletedEventListSessionName, eventList);
+                    //HttpContext.Session["employeeList"] = employeeList;
+                }
+                else //web api sent error response 
+                {
+                    //log response status here..
+
+                    deletedEvents = Enumerable.Empty<Event>();
+
+                    ModelState.AddModelError(string.Empty, "Server error. Please contact administrator.");
+                }
+
+
+            }
+
+            //make sure it returns the whole list retrieve from database (not the paginated list)
+            return View(eventList);
+        }
     }
 }
