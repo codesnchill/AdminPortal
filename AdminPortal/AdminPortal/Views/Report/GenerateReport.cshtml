@@ -3,6 +3,8 @@
 }
 
 @section Scripts {
+    <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
     <script>
 
@@ -13,7 +15,7 @@
         $('#generate').on('click', function () {
             selectedReportType = $('#report :selected').text();
             startDate = new Date($('#startDate').val());
-            //startDate = startDate.getDate() + "/" + (startDate.getMonth() + 1) + "/" + startDate.getFullYear() + " " + startDate.getHours() + ':' + startDate.getMinutes() + ':' + startDate.getSeconds(); 
+            //startDate = startDate.getDate() + "/" + (startDate.getMonth() + 1) + "/" + startDate.getFullYear() + " " + startDate.getHours() + ':' + startDate.getMinutes() + ':' + startDate.getSeconds();
             startDate = startDate.getFullYear() + "-" + ("0" + (startDate.getMonth() + 1)).slice(-2) + "-" + ("0" + startDate.getDate()).slice(-2);
             endDate = new Date($('#endDate').val());
             endDate = endDate.getFullYear() + "-" + ("0" + (endDate.getMonth() + 1)).slice(-2) + "-" + ("0" + endDate.getDate()).slice(-2);
@@ -37,47 +39,96 @@
 }
 
 @section CSS {
-    <link rel="stylesheet" href="~/styles/managepoints.css">
+    <link rel="stylesheet" href="~/styles/managereport.css">
 }
 
 <div class="right-section white-background">
     <div class="title">
-        <p class="title-control">Generate report</p>
+        <p class="title-control">Manage Reports</p>
     </div>
 
     <hr class="divider">
 
+    <div class="selection-bar">
+        <div class="input-field-search">
+            <img src="../images/search.png" alt="Magnifying Glass logo">
+            <input type='text' name='questionName' size='15' placeholder='Search by Question Name...' id="questionName" />
+        </div>
+
+        <div class="left-selection">
+            <label for="report">Report Type:</label>
+            <select class="form-control" id="report">
+                <option value="1">Milestone Report</option>
+                <option value="2">Audit Log Report</option>
+                <option value="3">Department Ranking Report</option>
+                <option value="4">Individual Ranking Report</option>
+            </select>
+        </div>
+
+        <div class="generate-report-button">
+            <button id="generate" class="orange-background" name="Generate" onclick="add()">Generate</button>
+        </div>
+    </div>
 
     <div id="advSearch" class="search-fields">
-
         <div class="first-row">
-            <div class="reportTypeColumn">
-                <label for="report">Report Type:</label>
-                <select class="form-control" id="report">
-                    <option value="1">Milestone Report</option>
-                    <option value="2">Audit Log Report</option>
-                    <option value="3">Department Ranking Report</option>
-                    <option value="4">Individual Ranking Report</option>
-                </select>
-            </div>
-
-        </div>
-        <div class="second-row">
             <div class="startDateColumn">
                 <label for="startDate">Start Date:</label>
                 <input type="date" class="form-control" name="startDate" id="startDate">
             </div>
+        </div>
+        <div class="second-row">
             <div class="endDateColumn">
                 <label for="endDate">End Date:</label>
                 <input type="date" class="form-control" name="endDate" id="endDate">
             </div>
 
         </div>
-
-        <div class="button-row">
-            <button class="searchButton orange-background" id="generate">
-                Generate
-            </button>
-        </div>
     </div>
+
 </div>
+
+
+
+
+    @*<div class="right-section white-background">
+        <div class="title">
+            <p class="title-control">Generate report</p>
+        </div>
+
+        <hr class="divider">
+
+
+        <div id="advSearch" class="search-fields">
+
+            <div class="first-row">
+                <div class="reportTypeColumn">
+                    <label for="report">Report Type:</label>
+                    <select class="form-control" id="report">
+                        <option value="1">Milestone Report</option>
+                        <option value="2">Audit Log Report</option>
+                        <option value="3">Department Ranking Report</option>
+                        <option value="4">Individual Ranking Report</option>
+                    </select>
+                </div>
+
+            </div>
+            <div class="second-row">
+                <div class="startDateColumn">
+                    <label for="startDate">Start Date:</label>
+                    <input type="date" class="form-control" name="startDate" id="startDate">
+                </div>
+                <div class="endDateColumn">
+                    <label for="endDate">End Date:</label>
+                    <input type="date" class="form-control" name="endDate" id="endDate">
+                </div>
+
+            </div>
+
+            <div class="button-row">
+                <button class="searchButton orange-background" id="generate">
+                    Generate
+                </button>
+            </div>
+        </div>
+    </div>*@
