@@ -48,12 +48,13 @@
 
                     var orig_startDate = moment(column_startDate, "DD/M/YYYY");
                     var orig_endDate = moment(column_endDate, "DD/M/YYYY");
-
+                    
                     console.log(startDate);
                     console.log(endDate);
                     console.log(orig_startDate);
                     if (startDate.diff(endDate) > 0) { return false } // if start date is later than end date, return false
                     if ((min == "" || max == "") ||
+                        (min == "Invalid date" || max == "Invalid date") ||
                         (orig_startDate.isBetween(startDate, endDate)) ||
                         (orig_endDate.isBetween(startDate, endDate)) ||
                         (startDate.isBetween(orig_startDate, orig_endDate)) ||
