@@ -29,12 +29,13 @@
         <input type="password" name="password" class="input" required="required" id="password">
 
         <button class="login-button" onclick="login()">Submit</button>
-
     </div>
 </body>
 
 <link href="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.css" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.js" type="text/javascript"></script>
+@*<script type="text/javascript" src="~/Script/tokenHelper.js"></script>*@
+
 <script>
     //Using a function technique to define a JavaScript class, WebFormData
     function WebFormData(inCollectedUsername, inCollectedPassword) {
@@ -53,7 +54,7 @@
 
         console.log(webFormDataInString);
 
-        var url = "https://localhost:44300/api/signin"
+        var url = "https://localhost:44300/api/v1/signin"
 
         $loginHandler = jQuery.ajax({
             type: 'POST',
@@ -66,7 +67,8 @@
             console.log("SUCCESS");
 
             var tokenSessionObject = {
-                token : data.message.toString(),
+                token: data.token.toString(),
+                refresh_token: data.refreshToken.toString(),
                 token_expiration : data.token_expiration.toString() //Timezone is in UTC
             }
 
@@ -77,8 +79,9 @@
             var token = sessionObject.token;
 
             //store token in session
-            console.log(token);
-            console.log(expirationDate);
+            console.log("Token: " + token);
+            console.log("Expiration(UTC): " + expirationDate);
+            console.log("Refresh token: " + sessionObject.refresh_token)
 
             //redirect to homepage
         });//end of $loginHandler.done()
