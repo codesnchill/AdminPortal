@@ -99,7 +99,7 @@ namespace AdminPortal.Controllers
 
         IEnumerable<Question> questions1 = null;
         [HttpGet]
-        public IActionResult LoadGuessTheEmployeeQuiz()
+        public JsonResult LoadGuessTheEmployeeQuiz()
         {
             List<Question> questionList = new List<Question>();
             using (var client = new HttpClient())
@@ -135,7 +135,7 @@ namespace AdminPortal.Controllers
             }
 
             //make sure it returns the whole list retrieve from database (not the paginated list)
-            return View("ManageGames", questionList);
+            return new JsonResult(questionList);
         }
 
         public IActionResult EditQuestion()
