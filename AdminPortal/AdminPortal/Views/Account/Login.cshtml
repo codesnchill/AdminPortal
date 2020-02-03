@@ -73,6 +73,7 @@
             }
 
             sessionStorage.setItem("tokenSessionObject", JSON.stringify(tokenSessionObject));
+            sessionStorage.setItem("employeeId", collectedUsername);
 
             var sessionObject = JSON.parse(sessionStorage.getItem('tokenSessionObject'));
             var expirationDate = sessionObject.token_expiration;
