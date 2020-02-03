@@ -1,0 +1,21 @@
+﻿body {
+}
+
+.blue-background {
+    background: #086795;
+}
+#datatable {
+    width: 95%;
+    margin-left: 13px;
+}
+
+    #datatable thead {
+        color: #fff;
+    }
+
+    #datatable th {
+        text-align: center;
+    }
+    #datatable td{
+        text-align:center;
+    }

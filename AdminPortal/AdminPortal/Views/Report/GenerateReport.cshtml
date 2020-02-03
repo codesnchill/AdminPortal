@@ -1,6 +1,8 @@
 ﻿@{
     Layout = "../Shared/_Layout.cshtml";
 }
+@model Report
+
 
 @section Scripts {
     <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
@@ -11,6 +13,7 @@
         var selectedReportType = '';
         var startDate = '';
         var endDate = '';
+        var report = '';
 
         $('#generate').on('click', function () {
             selectedReportType = $('#report :selected').text();
@@ -22,23 +25,28 @@
             console.log(selectedReportType);
             console.log("FROM " + startDate + " TO " + endDate);
 
-            if (selectedReportType == "Audit Log Report") {
-                window.localStorage.setItem("report", "audit");
-                localStorage.setItem("startDate", startDate);
-                localStorage.setItem("endDate", endDate);
-                location.href = "/Report/AuditReport"
-            } else if (selectedReportType == "Milestone Report") {
-                window.localStorage.setItem("report", "milestone");
-                localStorage.setItem("startDate", startDate);
-                localStorage.setItem("endDate", endDate);
-                location.href = "/Report/MilestoneReport"
-            } else if (selectedReportType == "Department Ranking Report") {
-                window.localStorage.setItem("report", "department");
-                localStorage.setItem("startDate", startDate);
-                localStorage.setItem("endDate", endDate);
-                location.href = "/Report/MilestoneReport"
+            localStorage.setItem('start', startDate);
+            localStorage.setItem('end', endDate);
+        });
+            // Function to change form action.
+        $("#report").change(function () {
+            var selected = $(this).children(":selected").text();
+            switch (selected) {
+                case "Milestone Report":
+                    $("#myform").attr('action', 'MilestoneReport');
+                    alert("Form Action is Changed to 'MilestoneReport'n Press Submit to Confirm");
+                    break;
+                case "Audit Log Report":
+                    $("#myform").attr('action', 'AuditReport');
+                    alert("Form Action is Changed to 'AuditReport'n Press Submit to Confirm");
+                    break;
+                case "Department Ranking Report":
+                    $("#myform").attr('action', 'RankingReport');
+                    alert("Form Action is Changed to 'RankingReport'n Press Submit to Confirm");
+                    break;
+                default:
+                    $("#myform").attr('action', 'MilestoneReport');
             }
-
         });
     </script>
 }
@@ -53,87 +61,39 @@
     </div>
 
     <hr class="divider">
+    <form id="myform" name="myform" method="get">
+        <div class="selection-bar">
 
-    <div class="selection-bar">
-        <div class="input-field-search">
-            <img src="../images/search.png" alt="Magnifying Glass logo">
-            <input type='text' name='questionName' size='15' placeholder='Search by Question Name...' id="questionName" />
-        </div>
-
-        <div class="left-selection">
-            <label for="report">Report Type:</label>
-            <select class="form-control" id="report">
-                <option value="1">Milestone Report</option>
-                <option value="2">Audit Log Report</option>
-                <option value="3">Department Ranking Report</option>
-                <option value="4">Individual Ranking Report</option>
-            </select>
-        </div>
-
-        <div class="generate-report-button">
-            <button id="generate" class="orange-background" name="Generate" onclick="add()">Generate</button>
-        </div>
-    </div>
-
-    <div id="advSearch" class="search-fields">
-        <div class="first-row">
-            <div class="startDateColumn">
-                <label for="startDate">Start Date:</label>
-                <input type="date" class="form-control" name="startDate" id="startDate">
-            </div>
-        </div>
-        <div class="second-row">
-            <div class="endDateColumn">
-                <label for="endDate">End Date:</label>
-                <input type="date" class="form-control" name="endDate" id="endDate">
+            <div class="left-selection">
+                <label for="report">Report Type:</label>
+                <select class="form-control" id="report" asp-for="ReportType">
+                    <option selected hidden>Choose here</option>
+                    <option value="milestone">Milestone Report</option>
+                    <option value="audit">Audit Log Report</option>
+                    <option value="ranking">Department Ranking Report</option>
+                </select>
             </div>
 
+            <div class="generate-report-button">
+                <button id="generate" class="orange-background" name="Generate" type="submit">Generate</button>
+            </div>
         </div>
-    </div>
-
-</div>
-
-
-
-
-    @*<div class="right-section white-background">
-        <div class="title">
-            <p class="title-control">Generate report</p>
-        </div>
-
-        <hr class="divider">
-
 
         <div id="advSearch" class="search-fields">
-
             <div class="first-row">
-                <div class="reportTypeColumn">
-                    <label for="report">Report Type:</label>
-                    <select class="form-control" id="report">
-                        <option value="1">Milestone Report</option>
-                        <option value="2">Audit Log Report</option>
-                        <option value="3">Department Ranking Report</option>
-                        <option value="4">Individual Ranking Report</option>
-                    </select>
-                </div>
-
-            </div>
-            <div class="second-row">
                 <div class="startDateColumn">
                     <label for="startDate">Start Date:</label>
-                    <input type="date" class="form-control" name="startDate" id="startDate">
+                    <input type="date" class="form-control" name="startDate" id="startDate" asp-for="StartDate">
                 </div>
+            </div>
+            <div class="second-row">
                 <div class="endDateColumn">
                     <label for="endDate">End Date:</label>
-                    <input type="date" class="form-control" name="endDate" id="endDate">
+                    <input type="date" class="form-control" name="endDate" id="endDate" asp-for="EndDate">
                 </div>
 
             </div>
-
-            <div class="button-row">
-                <button class="searchButton orange-background" id="generate">
-                    Generate
-                </button>
-            </div>
         </div>
-    </div>*@
+    </form>
+</div>
+
