@@ -5,6 +5,9 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using AdminPortal.Models;
+using System.Windows;
+using Newtonsoft.Json;
+using Microsoft.AspNetCore.Http;
 
 namespace AdminPortal.Controllers
 {
@@ -12,14 +15,16 @@ namespace AdminPortal.Controllers
     {
 
         IEnumerable<Event> events = null;
-        public PaginatedList<Event> eventList { get; private set; }
+        const string EventListSessionName = "_EventList";
         public IActionResult ManageEvents()
         {
+            List<Event> eventList = new List<Event>();
+
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri("https://localhost:44300/api/v1/");
                 //HTTP GET
-                var responseTask = client.GetAsync("events");
+                var responseTask = client.GetAsync("events?deleted=false");
                 responseTask.Wait();
 
                 var result = responseTask.Result;
@@ -29,9 +34,10 @@ namespace AdminPortal.Controllers
                     readTask.Wait();
 
                     events = readTask.Result;
+                    eventList = events.ToList();
 
-                    eventList = PaginatedList<Event>.Create(events, 1, 4, 5);
-
+                    // store employee in session
+                    HttpContext.Session.SetComplexData(EventListSessionName, eventList);
                     //HttpContext.Session["employeeList"] = employeeList;
                 }
                 else //web api sent error response 
@@ -46,6 +52,7 @@ namespace AdminPortal.Controllers
 
             }
 
+            //make sure it returns the whole list retrieve from database (not the paginated list)
             return View(eventList);
         }
 
@@ -59,15 +66,22 @@ namespace AdminPortal.Controllers
             return View();
         }
 
-        public IActionResult SetPage(string pageIndex)
+        public IActionResult EditDeletedEvent()
         {
-            //int pageIndex = int.Parse(RouteData.Values["pageIndex"].ToString());
-            int pageIn = int.Parse(pageIndex);
+            return View();
+        }
+
+        IEnumerable<Event> deletedEvents = null;
+        const string DeletedEventListSessionName = "_DeletedEventList";
+        public IActionResult ManageDeletedEvents ()
+        {
+            List<Event> eventList = new List<Event>();
+
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri("https://localhost:44300/api/v1/");
                 //HTTP GET
-                var responseTask = client.GetAsync("events");
+                var responseTask = client.GetAsync("events?deleted=true");
                 responseTask.Wait();
 
                 var result = responseTask.Result;
@@ -76,22 +90,27 @@ namespace AdminPortal.Controllers
                     var readTask = result.Content.ReadAsAsync<IList<Event>>();
                     readTask.Wait();
 
-                    events = readTask.Result;
+                    deletedEvents = readTask.Result;
+                    eventList = deletedEvents.ToList();
 
-                    eventList = PaginatedList<Event>.Create(events, pageIn, 4, 5);
+                    // store employee in session
+                    HttpContext.Session.SetComplexData(DeletedEventListSessionName, eventList);
+                    //HttpContext.Session["employeeList"] = employeeList;
                 }
                 else //web api sent error response 
                 {
                     //log response status here..
 
-                    events = Enumerable.Empty<Event>();
+                    deletedEvents = Enumerable.Empty<Event>();
 
                     ModelState.AddModelError(string.Empty, "Server error. Please contact administrator.");
                 }
 
 
             }
-            return View("ManageEvents", eventList);
+
+            //make sure it returns the whole list retrieve from database (not the paginated list)
+            return View(eventList);
         }
     }
 }

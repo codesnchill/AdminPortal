@@ -11,15 +11,11 @@
     <script>
 
            function edit(id) {
-            location.href = "/Event/EditEvent/" + id;
+            location.href = "/Event/EditDeletedEvent/" + id;
         }
 
-        function add() {
-            location.href = "/Event/AddEvent/";
-        }
-
-        function viewDeleted() {
-            location.href = "/Event/ManageDeletedEvents";
+        function view() {
+             location.href = "/Event/ManageEvents";
         }
 
         // datatable
@@ -52,7 +48,7 @@
 
                     var orig_startDate = moment(column_startDate, "DD/M/YYYY");
                     var orig_endDate = moment(column_endDate, "DD/M/YYYY");
-                    
+
                     console.log(startDate);
                     console.log(endDate);
                     console.log(orig_startDate);
@@ -80,7 +76,7 @@
                 oTable.draw();
             });
         });
-     
+
             var display = true;
             function show() {
                 if (display) {
@@ -103,13 +99,13 @@
 
 <div class="right-section white-background">
     <div class="title">
-        <p class="title-control">Manage Events</p>
+        <p class="title-control">Manage Deleted Events</p>
     </div>
     <div class="view-buttons">
-        <button class="view-details" type="button">
+        <button onclick="view()" class="view-details" type="button">
             View Event Details
         </button>
-        <button onclick="viewDeleted()" class="view-deleted" type="button">
+        <button class="view-deleted" type="button">
             View Deleted Events
         </button>
 
@@ -126,10 +122,6 @@
         <div class="input-field-search2">
             <input onclick="show()" type="image" src="../images/plus.png" name="plus" alt="Plus Button">
             <label for="plus">Advanced Search</label>
-        </div>
-
-        <div class="new-event-button">
-            <button onclick="add()" class="orange-background" name="Add">Add new event</button>
         </div>
     </div>
 

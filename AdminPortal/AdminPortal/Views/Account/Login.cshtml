@@ -29,13 +29,13 @@
         <input type="password" name="password" class="input" required="required" id="password">
 
         <button class="login-button" onclick="login()">Submit</button>
-     
+
     </div>
 </body>
 
-
+<link href="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.js" type="text/javascript"></script>
 <script>
-
     //Using a function technique to define a JavaScript class, WebFormData
     function WebFormData(inCollectedUsername, inCollectedPassword) {
         this.Username = inCollectedUsername;
@@ -62,13 +62,29 @@
             contentType: 'application/json;',
             data: "'" + webFormDataInString + "'"
         })//end of jQuery.ajax() call
-          $loginHandler.done(function (data, textStatus, jqXHR) {
-                $("#messageAlert").show();
-            });//end of $loginHandler.done()
+        $loginHandler.done(function (data, textStatus, jqXHR) {
+            //redirect to homepage
+            $("#messageAlert").show();
+        });//end of $loginHandler.done()
 
-            //$loginHandler.error(function (data, textStatus, jqXHR) {
-            //    console.log(data.responseJSON.message);
-            //});//end of $loginHandler.error()*/
+        $loginHandler.fail(function (data, textStatus, jqXHR) {
+            var message = data.responseJSON.message;
+
+            if (message.toString().toLowerCase() === "incorrect username or password") {
+			new Noty({
+				text: data.responseJSON.message, type: 'error',
+				layout: 'center',
+                template: '<div class="noty_message"><span class="noty_text"></span>'
+			}).show();
+            }
+            if (message.toString().toLowerCase() === "unauthorised access") {
+			new Noty({
+				text: data.responseJSON.message, type: 'error',
+				layout: 'center',
+                template: '<div class="noty_message"><span class="noty_text"></span>'
+			}).show();
+            }
+        });//end of $loginHandler.fail()*/
 
     }
 

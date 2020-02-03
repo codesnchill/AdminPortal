@@ -92,8 +92,8 @@
 
 .left-section .features {
     width: 100%;
-    height: 450px;
-    padding-top: 7%;
+    height: 470px;
+    padding-top: 1%;
 }
 
     .left-section .features .manage-users {
@@ -178,6 +178,22 @@
             padding-right: 16px;
         }
 
+    .left-section .features .manage-report {
+        display: flex;
+        height: 80px;
+        padding-left: 45px;
+    }
+
+        .left-section .features .manage-report img {
+            height: 35px;
+        }
+
+        .left-section .features .manage-report button {
+            flex: 1;
+            padding-bottom: 40px;
+            padding-right: 37px;
+        }
+
 
 .right-section {
     flex: 4;
@@ -198,8 +214,37 @@ p.title-control {
 .right-section hr.divider {
     border: 1px solid lightgray;
     border-bottom: none;
-    margin-top: 55px;
+    margin: 0;
 }
+
+.right-section .view-buttons {
+    height: 55px;
+    width: 320px;
+    display: flex;
+}
+
+    .right-section .view-buttons button {
+        color: black;
+        font-weight: bold;
+        text-align: center;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+    }
+
+        .right-section .view-buttons button:hover {
+            border-bottom: 1px solid #086795;
+            color: #086795;
+            border-bottom-width: medium;
+        }
+
+    .right-section .view-buttons .view-details {
+        flex: 1;
+    }
+
+    .right-section .view-buttons .view-deleted {
+        flex: 1;
+    }
 
 .selection-bar {
     border-radius: 10px 10px 0px 0px;
@@ -215,8 +260,7 @@ p.title-control {
 
 .left-selection {
     display: flex;
-    flex: 4;
-    padding-left: 20px;
+    flex: 2.5;
 }
 
 .left-section select,
@@ -226,9 +270,9 @@ label {
 }
 
 .left-selection select {
-    width: 30%;
+    width: 65%;
     height: 35px;
-    margin-left: 20px;
+    margin-left:10px;
 }
 
 .left-selection label {
@@ -237,7 +281,24 @@ label {
     color: gray;
 }
 
+.right-section .selection-bar .input-field-search {
+    display: flex;
+    flex: 3;
+    padding-left: 20px;
+}
 
+    .right-section .selection-bar .input-field-search img {
+        height: 22px;
+        margin-top: 5px;
+    }
+
+    .right-section .selection-bar .input-field-search input {
+        width: 250px;
+        height: 30px;
+        border: none;
+        padding-left: 12px;
+        font-size: 15px;
+    }
 
 .new-game-button {
     flex: 1;

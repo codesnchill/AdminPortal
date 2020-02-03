@@ -92,8 +92,8 @@
 
 .left-section .features {
     width: 100%;
-    height: 450px;
-    padding-top: 7%;
+    height: 470px;
+    padding-top: 1%;
 }
 
     .left-section .features .manage-users {
@@ -178,6 +178,21 @@
             padding-right: 16px;
         }
 
+    .left-section .features .manage-report {
+        display: flex;
+        height: 80px;
+        padding-left: 45px;
+    }
+
+        .left-section .features .manage-report img {
+            height: 35px;
+        }
+
+        .left-section .features .manage-report button {
+            flex: 1;
+            padding-bottom: 40px;
+            padding-right: 37px;
+        }
 
 .right-section {
     flex: 4;
@@ -198,14 +213,13 @@ p.title-control {
 .right-section hr.divider {
     border: 1px solid lightgray;
     border-bottom: none;
-    margin-top: 55px;
+    margin: 0;
 }
 
 .right-section .view-buttons {
     height: 55px;
-    width: 300px;
+    width: 320px;
     display: flex;
-    padding-left: 2px;
 }
 
     .right-section .view-buttons button {
@@ -230,6 +244,7 @@ p.title-control {
     .right-section .view-buttons .view-deleted {
         flex: 1;
     }
+    
 
 .right-section .search-bar {
     border-radius: 10px 10px 0px 0px;
