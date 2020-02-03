@@ -21,7 +21,39 @@
             $('#questionName').keyup(function () {
                 oTable.search($(this).val()).draw();
             });
+
+          
         });
+
+        function loadGuessQuiz() {
+            var url = "/Game/LoadGuessTheEmployeeQuiz"
+            //Note: jQuery.ajax(..) is also often written is $.ajax(..)
+            $.ajax({
+                url: url,
+                method: 'GET',
+                dataType: 'json',
+                cache: false,
+            })
+        };
+        
+
+        function loadCompanyQuiz() {
+            var url = "/Game/LoadCompanyQuiz"
+            var result="";
+            //Note: jQuery.ajax(..) is also often written is $.ajax(..)
+            $.ajax({
+                url: url,
+                method: 'GET',
+                dataType: 'json',
+                cache: false,
+                async: false, 
+                success: function (data) {
+                    result = data; 
+                }
+            });
+            return result;
+       }
+
 
 
         // default game id for dropdown
@@ -43,6 +75,96 @@
         //when user select a different game for dropdown
         $("#games").change(function () {
             gameId = $(this).find(':selected').val();
+            console.log("game id: " + gameId);
+            var datatable = $("#datatable").DataTable();
+            if (gameId == 1) {
+                var guessQuizData = loadGuessQuiz();
+                console.log("data :" + guessQuizData);
+                datatable.clear().rows.add(guessQuizData).draw();
+            }
+            if (gameId == 2) {
+                //var companyQuizData = loadCompanyQuiz();
+                //console.log("data :" + companyQuizData);
+                var url = "/Game/LoadCompanyQuiz"
+                //Note: jQuery.ajax(..) is also often written is $.ajax(..)
+                var $loadhandler = jQuery.ajax({
+                    url: url,
+                    method: 'GET',
+                    dataType: 'json',
+                    cache: false,
+                    //success: function (data) {
+                    //    datatable.clear().rows.add(data).draw();
+                    //}
+
+                });
+                $loadhandler.done(function (data, textStatus, jqXHR) {
+                    console.log("RETURNED DATA" + data);
+                    // if data is empty, show alert message
+                    if (data == "") {
+                        console.log("empty");
+                        var alert_message = "No search result found";
+                        $tableBodyElement = $('#datatable');
+                        $rowElement = $('<tr></tr>');
+                        $cellElement = $('<td></td>', { text: alert_message }).attr("colspan", 7);
+                        $rowElement.append($cellElement);
+                        $tableBodyElement.append($rowElement);
+                    }
+                    // once I get my data, I need to paginate
+                    // vars for table
+                    $tableBodyElement = $('#datatable');
+                    var questionDataList = data;
+                    var employeeId = '';
+                    var employeeName = '';
+                    var departmentName = '';
+                    var rolesName = '';
+                    var status = '';
+                    console.log("LENGTH = " + userDataList.length)
+                    // repopulate datatable
+                    for (i = 0; i < userDataList.length; i++) {
+                        console.log("loop counter = " + i)
+                        myList = userDataList[i];
+                        employeeId = myList.employeeId;
+                        employeeName = myList.employeeName;
+                        departmentName = myList.departmentName;
+                        rolesName = myList.roles;
+                        status = myList.isDisabled;
+                        if (status) {
+                            status = 'Inactive'
+                        } else {
+                            status = 'Active'
+                        }
+                        console.log(employeeId);
+                        console.log(employeeName);
+                        console.log(departmentName);
+                        console.log(rolesName);
+                        console.log(status);
+                        $rowElement = $('<tr></tr>');
+                        $cellElement = $('<td></td>', { text: employeeId });
+                        $rowElement.append($cellElement);
+                        $cellElement = $('<td></td>', { text: employeeName });
+                        $rowElement.append($cellElement);
+                        $cellElement = $('<td></td>', { text: departmentName });
+                        $rowElement.append($cellElement);
+                        $cellElement = $('<td></td>', { text: rolesName });
+                        $rowElement.append($cellElement);
+                        $cellElement = $('<td></td>', { text: status });
+                        $rowElement.append($cellElement);
+                        $hyperLinkElement = $('<button>Edit</button>');
+                        $hyperLinkElement.onclick = function () { edit(employeeId) }
+                        $hyperLinkElement.addClass('btn btn-primary');
+                        $cellElement = $('<td></td>');
+                        $cellElement.append($hyperLinkElement);
+                        $rowElement.append($cellElement);
+                        $hyperLinkElement = $('<button>Change Password</button>');
+                        $hyperLinkElement.onclick = function () { changePassword(employeeId) }
+                        $hyperLinkElement.addClass('btn btn-primary');
+                        $cellElement = $('<td></td>');
+                        $cellElement.append($hyperLinkElement);
+                        $rowElement.append($cellElement);
+                        $tableBodyElement.append($rowElement);
+                    }
+                });
+            }
         });
 
 
