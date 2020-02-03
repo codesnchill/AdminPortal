@@ -78,6 +78,45 @@
 
         }
 
+
+        //Using a function technique to define a JavaScript class, WebFormData
+        function WebFormData3(inCollectedReward, inCollectedPointNeeded, inCollectedReEnable) {
+            this.Reward = inCollectedReward;
+            this.PointNeeded = inCollectedPointNeeded;
+            this.ReEnable = inCollectedReEnable;
+        }
+
+        function retrieve() {
+            var collectedReward = $('#reward').val();
+            var collectedPoints = $('#points').val();
+            var collectedReEnable = true;
+            //Create a WebFormData object, webFormData. Have its field values
+            //populated with the collected course data
+            var webFormData = new WebFormData3(collectedReward, collectedPoints, collectedReEnable);
+            //Convert the webFromData into a JSON string
+            var webFormDataInString = JSON.stringify(webFormData);
+
+            console.log("JSON RESULTS for add: " + webFormDataInString);
+
+            var url = "https://localhost:44300/api/v1/milestone/details/" + g_rewardId;
+
+            $updateCourseHandler = jQuery.ajax({
+                type: 'PUT',
+                url: url,
+                dataType: 'json',
+                contentType: 'application/json;',
+                data: "'" + webFormDataInString + "'"
+            })//end of jQuery.ajax() call
+            $updateCourseHandler.done(function (data, textStatus, jqXHR) {
+                alert("Reward Updated Successfully");
+                location.href = "/Milestone/ManageDeletedMilestones";
+            });//end of $updateCourseHandler.done()
+
+            $updateCourseHandler.error(function (data, textStatus, jqXHR) {
+                console.log(data.responseJSON.message);
+            });//end of $updateCourseHandler.error()*/
+        }
+
    
 
         function clickback() {
