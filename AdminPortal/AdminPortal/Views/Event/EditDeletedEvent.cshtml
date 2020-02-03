@@ -185,7 +185,65 @@
         }
 
 
+        
+        //Using a function technique to define a JavaScript class, WebFormData
+        function WebFormData2(inCollectedReEnabled, inCollectedStartDateTime, inCollectedEndDateTime,
+            inCollectedEventName, inCollectedEventDescription, inCollectedDepartmentId) {
+            this.ReEnable = inCollectedReEnabled;
+            this.startDateTime = inCollectedStartDateTime;
+            this.endDateTime = inCollectedEndDateTime;
+            this.EventName = inCollectedEventName;
+            this.EventDescription = inCollectedEventDescription;
+            this.DepartmentList = inCollectedDepartmentId;
+
+        }
+
         function retrieveEvent() {
+
+            var collectedReEnable = true;
+            var collectedStartDate = $('#startDate').val();
+            var collectedEndDate = $('#endDate').val();
+            var collectedStartTime = $('#startTime').val();
+            var collectedEndTime = $('#endTime').val();
+            var collectedEventName = $('#eventName').val();
+            var collectedEventDescription = $('#eventDescription').val();
+            var collectedDepartment = $('#department').val();
+// Start Date-Time Combined
+            var collectedStartDateTime = collectedStartDate + ' ' + collectedStartTime;
+            var collectedStartDateTime2 = convertUTCDateToLocalDate(new Date(collectedStartDateTime));
+            collectedStartDateTime2 = collectedStartDateTime.replace('Z', '').replace('.000', '').replace(/\s+/, 'T');
+//End Date-Time Combined
+            var collectedEndDateTime = collectedEndDate + ' ' + collectedEndTime;
+            var collectedEndDateTime2 = convertUTCDateToLocalDate(new Date(collectedEndDateTime));
+            collectedEndDateTime2 = collectedEndDateTime.replace('Z', '').replace('.000', '').replace(/\s+/, 'T');
+            //Create a WebFormData object, webFormData. Have its field values
+            //populated with the collected course data
+            var webFormData = new WebFormData2(collectedReEnable, collectedStartDateTime2, collectedEndDateTime2,
+                collectedEventName, collectedEventDescription, collectedDepartment);
+            //Convert the webFromData into a JSON string
+            var webFormDataInString = JSON.stringify(webFormData);
+
+            console.log("Event Details: " + webFormDataInString);
+            //Convert the webFromData into a JSON string
+
+            var url = "https://localhost:44300/api/v1/events/" + g_eventId;
+
+            $updateCourseHandler = jQuery.ajax({
+                type: 'PUT',
+                url: url,
+                dataType: 'json',
+                contentType: 'application/json;',
+                data: "'" + webFormDataInString + "'"
+            })//end of jQuery.ajax() call
+            $updateCourseHandler.done(function (data, textStatus, jqXHR) {
+                alert("Event Updated Successfully");
+                location.href = "/Event/EditDeletedEvent";
+
+            });//end of $updateCourseHandler.done()
+
+            $updateCourseHandler.error(function (data, textStatus, jqXHR) {
+                //  console.log(data.responseJSON.message);
+            });//end of $updateCourseHandler.error()*/
 
         }
 
@@ -265,7 +323,7 @@
             </select>
         </div>
         <div class="row8-buttons">
-            <button onclick="retrieveEvent()" class="delete">Delete</button>
+            <button onclick="retrieveEvent()" class="delete">Retrieve</button>
             <button onclick="save()" class="save">Save</button>
             <button onclick="redirectPage()" class="cancel">Cancel</button>
         </div>
