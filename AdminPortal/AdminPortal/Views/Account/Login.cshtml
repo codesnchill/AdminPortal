@@ -63,10 +63,25 @@
             data: "'" + webFormDataInString + "'"
         })//end of jQuery.ajax() call
         $loginHandler.done(function (data, textStatus, jqXHR) {
-            //redirect to homepage
-            $("#messageAlert").show();
-        });//end of $loginHandler.done()
+            console.log("SUCCESS");
 
+            var tokenSessionObject = {
+                token : data.message.toString(),
+                token_expiration : data.token_expiration.toString() //Timezone is in UTC
+            }
+
+            sessionStorage.setItem("tokenSessionObject", JSON.stringify(tokenSessionObject));
+
+            var sessionObject = JSON.parse(sessionStorage.getItem('tokenSessionObject'));
+            var expirationDate = sessionObject.token_expiration;
+            var token = sessionObject.token;
+
+            //store token in session
+            console.log(token);
+            console.log(expirationDate);
+
+            //redirect to homepage
+        });//end of $loginHandler.done()
         $loginHandler.fail(function (data, textStatus, jqXHR) {
             var message = data.responseJSON.message;
 
