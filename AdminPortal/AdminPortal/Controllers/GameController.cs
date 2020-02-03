@@ -19,7 +19,7 @@ namespace AdminPortal.Controllers
             {
                 client.BaseAddress = new Uri("https://localhost:44300/api/v1/");
                 //HTTP GET
-                var responseTask = client.GetAsync("games/1");
+                var responseTask = client.GetAsync("games/1?deleted=false");
                 responseTask.Wait();
 
                 var result = responseTask.Result;
@@ -75,7 +75,7 @@ namespace AdminPortal.Controllers
             {
                 client.BaseAddress = new Uri("https://localhost:44300/api/v1/");
                 //HTTP GET
-                var responseTask = client.GetAsync("games/1");
+                var responseTask = client.GetAsync("games/1?deleted=true");
                 responseTask.Wait();
 
                 var result = responseTask.Result;

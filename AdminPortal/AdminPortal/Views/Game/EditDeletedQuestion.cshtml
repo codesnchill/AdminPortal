@@ -161,6 +161,75 @@
 
         }
 
+
+          //Using a function technique to define a JavaScript class, WebFormData
+        function WebFormData2(inCollectedQuestion1, inCollectedAnswer, inCollectedPoints, inCollectedChoices, inCollectedReEnable) {
+            this.Question = inCollectedQuestion1;
+            this.Answer = inCollectedAnswer;
+            this.Points = inCollectedPoints;
+            this.Choices = inCollectedChoices;
+            this.ReEnable = inCollectedReEnable;
+
+        }
+
+        function retrieveQuestion() {
+            var collectedQuestion = $('#question').val();
+            var collectedPoint = 2;
+            var collectedReEnable = true;
+            var collectedChoices = [];
+
+            //get the text input of the choice using the val of answer (choiceId)
+            var selectedChoiceId = $('#answer').val();
+            var collectedAnswer = $('#' + selectedChoiceId).val();
+
+            var collectedChoicesArray1 = {
+                ChoiceId: choiceId1,
+                Choice: $('#' + choiceId1).val()
+            };
+
+            var collectedChoicesArray2 = {
+                ChoiceId: choiceId2,
+                Choice: $('#' + choiceId2).val()
+            };
+
+            var collectedChoicesArray3 = {
+                ChoiceId: choiceId3,
+                Choice: $('#' + choiceId3).val()
+            };
+
+            var collectedChoicesArray4 = {
+                ChoiceId: choiceId4,
+                Choice: $('#' + choiceId4).val()
+            };
+            collectedChoices.push(collectedChoicesArray1, collectedChoicesArray2, collectedChoicesArray3, collectedChoicesArray4);
+            console.log(collectedChoices);
+
+            //Create a WebFormData object, webFormData. Have its field values
+            //populated with the collected course data
+            var webFormData = new WebFormData2(collectedQuestion,
+                collectedAnswer, collectedPoint, collectedChoices, collectedReEnable);
+            //Convert the webFromData into a JSON string
+            var webFormDataInString = JSON.stringify(webFormData);
+
+            console.log(webFormDataInString);
+
+            var url = "https://localhost:44300/api/v1/games/" + gameId + "/questions/" + questionId
+
+            $updateCourseHandler = jQuery.ajax({
+                type: 'PUT',
+                url: url,
+                dataType: 'json',
+                contentType: 'application/json;',
+                data: "'" + webFormDataInString + "'"
+            })//end of jQuery.ajax() call
+            $updateCourseHandler.done(function (data, textStatus, jqXHR) {
+                $("#messageAlert").show();
+            });//end of $updateCourseHandler.done()
+
+            $updateCourseHandler.error(function (data, textStatus, jqXHR) {
+                console.log(data.responseJSON.message);
+            });//end of $updateCourseHandler.error()*/
+        }
     
 
      function redirectPage(){
