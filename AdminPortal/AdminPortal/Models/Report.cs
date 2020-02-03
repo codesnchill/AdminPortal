@@ -7,7 +7,9 @@ namespace AdminPortal.Models
 {
     public class Report
     {
-        public DateTime DateTime { get; set; }
-        
+        public string ReportType { get; set; }
+        public string StartDate { get; set; }
+        public string EndDate { get; set; }
+
     }
 }

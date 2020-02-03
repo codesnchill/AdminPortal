@@ -7,6 +7,7 @@ namespace AdminPortal.Models
 {
     public class Milestone
     {
+        public string EmployeeId { get; set; }
 
         public int RewardId { get; set; }
         public string Reward { get; set; }

@@ -8,12 +8,10 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-<<<<<<< HEAD
+
 using Rotativa.AspNetCore;
-=======
 using Microsoft.AspNetCore.Session;
 
->>>>>>> ecaa318620013e9c6c1e505303c783f485d48c1f
 
 namespace AdminPortal
 {
