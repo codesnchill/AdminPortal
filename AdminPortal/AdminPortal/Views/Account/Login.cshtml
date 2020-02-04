@@ -52,11 +52,10 @@
         //Convert the webFromData into a JSON string
         var webFormDataInString = JSON.stringify(webFormData);
 
-        console.log(webFormDataInString);
-
         var url = "https://localhost:44300/api/v1/signin"
+        var urlGetEmployeeDetails = "https://localhost:44300/api/v1/users/"
 
-        $loginHandler = jQuery.ajax({
+        $loginHandler = $.ajax({
             type: 'POST',
             url: url,
             dataType: 'json',
@@ -64,27 +63,42 @@
             data: "'" + webFormDataInString + "'"
         })//end of jQuery.ajax() call
         $loginHandler.done(function (data, textStatus, jqXHR) {
-            console.log("SUCCESS");
 
             var tokenSessionObject = {
-                token: data.token.toString(),
-                refresh_token: data.refreshToken.toString(),
-                token_expiration : data.token_expiration.toString() //Timezone is in UTC
-            }
+                token: data.token,
+                refresh_token: data.refreshToken,
+                token_expiration: data.token_expiration //Timezone is in UTC
+            };
 
             sessionStorage.setItem("tokenSessionObject", JSON.stringify(tokenSessionObject));
-            sessionStorage.setItem("employeeId", collectedUsername);
 
-            var sessionObject = JSON.parse(sessionStorage.getItem('tokenSessionObject'));
-            var expirationDate = sessionObject.token_expiration;
-            var token = sessionObject.token;
+            //get admin's details
+            $adminDetailsHandler = $.ajax({
+                type: 'GET',    
+                beforeSend: function(request) {
+                  request.setRequestHeader("Authorization", "Bearer " + data.token);
+                },
+                url: urlGetEmployeeDetails + collectedUsername,
+                dataType: 'json',
+                contentType: 'application/json;',
+                data: "'" + webFormDataInString + "'"
+            })//end of jQuery.ajax() call
 
-            //store token in session
-            console.log("Token: " + token);
-            console.log("Expiration(UTC): " + expirationDate);
-            console.log("Refresh token: " + sessionObject.refresh_token)
+            $adminDetailsHandler.done(function (data, textStatus, jqXHR) {
 
-            //redirect to homepage
+                data = data[0];
+
+                var employeeDetailsObject = {
+                    employeeName : data.employeeName,
+                    employeeImageURl: data.imageUrl,
+                    employeeId : data.employeeId
+                };
+
+                sessionStorage.setItem("employeeDetailsObject", JSON.stringify(employeeDetailsObject));
+                //redirect to homepage
+                location.href = "/Home/Index";
+            });
+
         });//end of $loginHandler.done()
         $loginHandler.fail(function (data, textStatus, jqXHR) {
             var message = data.responseJSON.message;
