@@ -34,6 +34,7 @@
 
 <link href="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.css" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.js" type="text/javascript"></script>
+<script type="text/javascript" src="~/Script/baseURL.js"></script>
 @*<script type="text/javascript" src="~/Script/tokenHelper.js"></script>*@
 
 <script>
@@ -52,8 +53,9 @@
         //Convert the webFromData into a JSON string
         var webFormDataInString = JSON.stringify(webFormData);
 
-        var signinURL = "https://localhost:44300/api/v1/signin"
-        var urlGetEmployeeDetails = "https://localhost:44300/api/v1/users/"
+        const baseURL = getBaseURL();
+        var signinURL = baseURL + "/api/v1/signin"
+        var urlGetEmployeeDetails = baseURL + "/api/v1/users/"
 
         $loginHandler = $.ajax({
             type: 'POST',
