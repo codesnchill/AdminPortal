@@ -205,8 +205,14 @@
             return newDate;
         }
 
+        function WebFormDataForDelete(inCUDBy) {
+               this.CUDBy = inCUDBy;
+        }
 
         function deleteEvent() {
+            var collectedCUDBy = JSON.parse(sessionStorage.getItem('employeeDetailsObject')).employeeId;
+            var webFormData = new WebFormDataForDelete(collectedCUDBy);
+            var webFormDataInString = JSON.stringify(webFormData);
             var noty = new Noty({
                 text: 'Continue the delete action?',
                 layout: 'center',
@@ -218,24 +224,33 @@
 
                     Noty.button('Delete', 'btn btn-danger', function () {
                         var url = baseURL + "/api/v1/events/markdelete/" + g_eventId;
-                        $deleteHandler = jQuery.ajax({
-                            type: 'DELETE',
-                            url: url,
-                        })//end of jQuery.ajax() call
+                        if (tokenIsValid()) {
+                            bearerToken = JSON.parse(sessionStorage.getItem('tokenSessionObject')).token;
+                            $deleteHandler = jQuery.ajax({
+                                type: 'DELETE',
+                                beforeSend: function (request) {
+                                    request.setRequestHeader("Authorization", "Bearer " + bearerToken);
+                                },
+                                url: url,
+                                dataType: 'json',
+                                contentType: 'application/json;',
+                                data: "'" + webFormDataInString + "'"
+                            })//end of jQuery.ajax() call
 
-                        $deleteHandler.done(function (data, textStatus, jqXHR) {
-                            $('body').fadeOut(500, redirectPage);
-                            noty.close();
-                        })
+                            $deleteHandler.done(function (data, textStatus, jqXHR) {
+                                $('body').fadeOut(500, redirectPage);
+                                noty.close();
+                            })
 
-                        $deleteHandler.fail(function (data, textStatus, jqXHR) {
-                            console.log(data);
-                            new Noty({
-                                text: data.responseJSON.message, type: 'error',
-                                layout: 'center',
-                                template: '<div class="noty_message"><span class="noty_text"></span>'
-                            }).show();//end of noty()
-                        });//end of $deleteCourseHandler.fail()
+                            $deleteHandler.fail(function (data, textStatus, jqXHR) {
+                                console.log(data);
+                                new Noty({
+                                    text: data.responseJSON.message, type: 'error',
+                                    layout: 'center',
+                                    template: '<div class="noty_message"><span class="noty_text"></span>'
+                                }).show();//end of noty()
+                            });//end of $deleteCourseHandler.fail()
+                        }
                     })
                 ]
             }).show();

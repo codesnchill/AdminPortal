@@ -5,6 +5,8 @@
 @*@model IEnumerable<AdminPortal.Models.Employee>*@
 
 @section Scripts {
+    <script type="text/javascript" src="~/Script/tokenHelper.js"></script>
+    <script type="text/javascript" src="~/Script/baseURL.js"></script>
     <script>
         // Start of getting userId from addressbar
         var gameId = getIdFromAddressBar();
@@ -14,23 +16,26 @@
             return id;
         }
 
+        var baseURL = getBaseURL();
+
+
         var choiceId1;
         var choiceId2;
         var choiceId3;
         var choiceId4;
 
-          //Using a function technique to define a JavaScript class, WebFormData
+        //Using a function technique to define a JavaScript class, WebFormData
         function WebFormData(inCollectedQuestion1, inCollectedPoints, inCollectedUrl, inCollectedAnswer, inCollectedChoice1,
-        inCollectedChoice2, inCollectedChoice3, inCollectedChoice4) {
+            inCollectedChoice2, inCollectedChoice3, inCollectedChoice4, inCUDBy) {
             this.Question = inCollectedQuestion1;
             this.Points = inCollectedPoints;
             this.ImageUrl = inCollectedUrl;
-            this.Answer = inCollectedAnswer; 
+            this.Answer = inCollectedAnswer;
             this.Choice1 = inCollectedChoice1;
             this.Choice2 = inCollectedChoice2;
             this.Choice3 = inCollectedChoice3;
             this.Choice4 = inCollectedChoice4;
-          
+            this.CUDBy = inCUDBy;
         }
 
         function clickSave() {
@@ -46,38 +51,42 @@
             var collectedChoice2 = $('#choice2').val();
             var collectedChoice3 = $('#choice3').val();
             var collectedChoice4 = $('#choice4').val();
+            var collectedCUDBy = JSON.parse(sessionStorage.getItem('employeeDetailsObject')).employeeId;
 
-         
 
             //Create a WebFormData object, webFormData. Have its field values
             //populated with the collected course data
             var webFormData = new WebFormData(collectedQuestion,
-               collectedPoint, collectedImageUrl, collectedAnswer, collectedChoice1, collectedChoice2, collectedChoice3, collectedChoice4);
+                collectedPoint, collectedImageUrl, collectedAnswer, collectedChoice1, collectedChoice2, collectedChoice3, collectedChoice4, collectedCUDBy);
             //Convert the webFromData into a JSON string
             var webFormDataInString = JSON.stringify(webFormData);
 
             console.log(webFormDataInString);
 
-            var url = "https://localhost:44300/api/v1/games/" + gameId 
+            var url = baseURL + "/api/v1/games/" + gameId
+            if (tokenIsValid()) {
+                bearerToken = JSON.parse(sessionStorage.getItem('tokenSessionObject')).token;
+                $updateCourseHandler = jQuery.ajax({
+                    type: 'POST',
+                    beforeSend: function (request) {
+                        request.setRequestHeader("Authorization", "Bearer " + bearerToken);
+                    },
+                    url: url,
+                    dataType: 'json',
+                    contentType: 'application/json;',
+                    data: "'" + webFormDataInString + "'"
+                })//end of jQuery.ajax() call
+                $updateCourseHandler.done(function (data, textStatus, jqXHR) {
+                    $("#messageAlert").show();
+                });//end of $updateCourseHandler.done()
 
-            $updateCourseHandler = jQuery.ajax({
-                type: 'POST',
-                url: url,
-                dataType: 'json',
-                contentType: 'application/json;',
-                data: "'" + webFormDataInString + "'"
-            })//end of jQuery.ajax() call
-            $updateCourseHandler.done(function (data, textStatus, jqXHR) {
-                $("#messageAlert").show();
-            });//end of $updateCourseHandler.done()
-
-            $updateCourseHandler.error(function (data, textStatus, jqXHR) {
-                console.log(data.responseJSON.message);
-            });//end of $updateCourseHandler.error()*/
-
+                $updateCourseHandler.error(function (data, textStatus, jqXHR) {
+                    console.log(data.responseJSON.message);
+                });//end of $updateCourseHandler.error()*/
+            }
         }
 
-           function redirectPage() {
+        function redirectPage() {
             location.href = "/Game/ManageGames";
         }
 

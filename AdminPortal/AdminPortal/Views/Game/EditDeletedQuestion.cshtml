@@ -3,6 +3,8 @@
 }
 
 @section Scripts {
+    <script type="text/javascript" src="~/Script/tokenHelper.js"></script>
+    <script type="text/javascript" src="~/Script/baseURL.js"></script>
     <script src="~/lib/noty.min.js"></script>
     <script>
         // Start of getting gameId from addressbar
@@ -12,6 +14,7 @@
         var choiceId3;
         var choiceId4;
 
+        var baseURL = getBaseURL();
 
         function getGameIdFromAddressBar() {
             var urlArray = window.location.href.split('?');
@@ -30,74 +33,79 @@
 
 
         function getGameDetails() {
-            var url = "https://localhost:44300/api/v1/games/" + gameId + "/questions/" + questionId;
-            $loadUserDataHandler = jQuery.ajax({
-                type: 'GET',
-                url: url,
-                contentType: "application/json",
-                dataType: 'json',
-                crossDomain: true,
-            })
-            $loadUserDataHandler.done(function (data, textStatus, jqXHR) {
-                console.log(data);
-                var game = data;
-                Question1 = game[0].question1;
-                answer = game[0].answer
-                Choices = game[0].choices;
+            if (tokenIsValid()) {
+                bearerToken = JSON.parse(sessionStorage.getItem('tokenSessionObject')).token;
+                var url = baseURL + "/api/v1/games/" + gameId + "/questions/" + questionId;
+                $loadUserDataHandler = jQuery.ajax({
+                    type: 'GET',
+                    beforeSend: function (request) {
+                        request.setRequestHeader("Authorization", "Bearer " + bearerToken);
+                    },
+                    url: url,
+                    contentType: "application/json",
+                    dataType: 'json',
+                    crossDomain: true,
+                })
+                $loadUserDataHandler.done(function (data, textStatus, jqXHR) {
+                    console.log(data);
+                    var game = data;
+                    Question1 = game[0].question1;
+                    answer = game[0].answer
+                    Choices = game[0].choices;
 
-                console.log("Question: " + Question1);
-                $('#question').val(Question1);
-                //change the id of the choices input to the real id (from database) of the choices
-                $('#choice1').prop('id', Choices[0].choiceId);
-                $('#choice2').prop('id', Choices[1].choiceId);
-                $('#choice3').prop('id', Choices[2].choiceId);
-                $('#choice4').prop('id', Choices[3].choiceId);
+                    console.log("Question: " + Question1);
+                    $('#question').val(Question1);
+                    //change the id of the choices input to the real id (from database) of the choices
+                    $('#choice1').prop('id', Choices[0].choiceId);
+                    $('#choice2').prop('id', Choices[1].choiceId);
+                    $('#choice3').prop('id', Choices[2].choiceId);
+                    $('#choice4').prop('id', Choices[3].choiceId);
 
-                choiceId1 = Choices[0].choiceId;
-                choiceId2 = Choices[1].choiceId;
-                choiceId3 = Choices[2].choiceId;
-                choiceId4 = Choices[3].choiceId;
+                    choiceId1 = Choices[0].choiceId;
+                    choiceId2 = Choices[1].choiceId;
+                    choiceId3 = Choices[2].choiceId;
+                    choiceId4 = Choices[3].choiceId;
 
-                $('#' + choiceId1).val(Choices[0].choice);
-                $('#' + choiceId2).val(Choices[1].choice);
-                $('#' + choiceId3).val(Choices[2].choice);
-                $('#' + choiceId4).val(Choices[3].choice);
+                    $('#' + choiceId1).val(Choices[0].choice);
+                    $('#' + choiceId2).val(Choices[1].choice);
+                    $('#' + choiceId3).val(Choices[2].choice);
+                    $('#' + choiceId4).val(Choices[3].choice);
 
-                var i = 0;
-                var answerId;
-                for (i = 0; i < Choices.length; i++) {
+                    var i = 0;
+                    var answerId;
+                    for (i = 0; i < Choices.length; i++) {
 
-                    if (Choices[i].choice == answer) {
-                        answerId = Choices[i].choiceId;
+                        if (Choices[i].choice == answer) {
+                            answerId = Choices[i].choiceId;
+                        }
+                        $("#answer").append($("<option></option>")
+                            .attr("value", Choices[i].choiceId)
+                            .text("Choice " + (i + 1)));
+
                     }
-                    $("#answer").append($("<option></option>")
-                        .attr("value", Choices[i].choiceId)
-                        .text("Choice " + (i + 1)));
 
-                }
+                    console.log("answerId " + answerId);
 
-                console.log("answerId " + answerId);
+                    $('#answer option').filter(function () {
+                        return $(this).val() == answerId;
+                    }).prop('selected', true);
 
-                $('#answer option').filter(function () {
-                    return $(this).val() == answerId;
-                }).prop('selected', true);
+                    console.log("Choices: " + Choices);
+                    console.log("Answer: " + answer);
 
-                console.log("Choices: " + Choices);
-                console.log("Answer: " + answer);
-
-            }) //end of done
-
+                }) //end of done
+            }
 
         }
         getGameDetails();
 
 
         //Using a function technique to define a JavaScript class, WebFormData
-        function WebFormData(inCollectedQuestion1, inCollectedAnswer, inCollectedChoices) {
+        function WebFormData(inCollectedQuestion1, inCollectedAnswer, inCollectedChoices, inCUDBy) {
             this.Question = inCollectedQuestion1;
             this.Answer = inCollectedAnswer;
             this.Choices = inCollectedChoices;
-
+              this.CUDBy = inCUDBy;
         }
 
         function clickSave() {
@@ -105,7 +113,7 @@
             var collectedQuestion = $('#question').val();
             var collectedPoint = 2;
             var collectedChoices = [];
-
+             var collectedCUDBy = JSON.parse(sessionStorage.getItem('employeeDetailsObject')).employeeId;
             //get the text input of the choice using the val of answer (choiceId)
             var selectedChoiceId = $('#answer').val();
             var collectedAnswer = $('#' + selectedChoiceId).val();
@@ -135,40 +143,44 @@
             //Create a WebFormData object, webFormData. Have its field values
             //populated with the collected course data
             var webFormData = new WebFormData(collectedQuestion,
-                collectedAnswer, collectedChoices);
+                collectedAnswer, collectedChoices, collectedCUDBy);
             //Convert the webFromData into a JSON string
             var webFormDataInString = JSON.stringify(webFormData);
 
             console.log(webFormDataInString);
 
-            var url = "https://localhost:44300/api/v1/games/" + gameId + "/questions/" + questionId
+            var url = baseURL + "/api/v1/games/" + gameId + "/questions/" + questionId
+            if (tokenIsValid()) {
+                bearerToken = JSON.parse(sessionStorage.getItem('tokenSessionObject')).token;
+                $updateCourseHandler = jQuery.ajax({
+                    type: 'PUT',
+                    beforeSend: function (request) {
+                        request.setRequestHeader("Authorization", "Bearer " + bearerToken);
+                    },
+                    url: url,
+                    dataType: 'json',
+                    contentType: 'application/json;',
+                    data: "'" + webFormDataInString + "'"
+                })//end of jQuery.ajax() call
+                $updateCourseHandler.done(function (data, textStatus, jqXHR) {
+                    $("#messageAlert").show();
+                });//end of $updateCourseHandler.done()
 
-            $updateCourseHandler = jQuery.ajax({
-                type: 'PUT',
-                url: url,
-                dataType: 'json',
-                contentType: 'application/json;',
-                data: "'" + webFormDataInString + "'"
-            })//end of jQuery.ajax() call
-            $updateCourseHandler.done(function (data, textStatus, jqXHR) {
-                $("#messageAlert").show();
-            });//end of $updateCourseHandler.done()
-
-            $updateCourseHandler.error(function (data, textStatus, jqXHR) {
-                console.log(data.responseJSON.message);
-            });//end of $updateCourseHandler.error()*/
-
+                $updateCourseHandler.error(function (data, textStatus, jqXHR) {
+                    console.log(data.responseJSON.message);
+                });//end of $updateCourseHandler.error()*/
+            }
         }
 
 
-          //Using a function technique to define a JavaScript class, WebFormData
-        function WebFormData2(inCollectedQuestion1, inCollectedAnswer, inCollectedPoints, inCollectedChoices, inCollectedReEnable) {
+        //Using a function technique to define a JavaScript class, WebFormData
+        function WebFormData2(inCollectedQuestion1, inCollectedAnswer, inCollectedPoints, inCollectedChoices, inCollectedReEnable, inCUDBy) {
             this.Question = inCollectedQuestion1;
             this.Answer = inCollectedAnswer;
             this.Points = inCollectedPoints;
             this.Choices = inCollectedChoices;
             this.ReEnable = inCollectedReEnable;
-
+              this.CUDBy = inCUDBy;
         }
 
         function retrieveQuestion() {
@@ -176,7 +188,7 @@
             var collectedPoint = 2;
             var collectedReEnable = true;
             var collectedChoices = [];
-
+             var collectedCUDBy = JSON.parse(sessionStorage.getItem('employeeDetailsObject')).employeeId;
             //get the text input of the choice using the val of answer (choiceId)
             var selectedChoiceId = $('#answer').val();
             var collectedAnswer = $('#' + selectedChoiceId).val();
@@ -206,39 +218,44 @@
             //Create a WebFormData object, webFormData. Have its field values
             //populated with the collected course data
             var webFormData = new WebFormData2(collectedQuestion,
-                collectedAnswer, collectedPoint, collectedChoices, collectedReEnable);
+                collectedAnswer, collectedPoint, collectedChoices, collectedReEnable, collectedCUDBy);
             //Convert the webFromData into a JSON string
             var webFormDataInString = JSON.stringify(webFormData);
 
             console.log(webFormDataInString);
 
-            var url = "https://localhost:44300/api/v1/games/" + gameId + "/questions/" + questionId
+            var url = baseURL + "/api/v1/games/" + gameId + "/questions/" + questionId
+            if (tokenIsValid()) {
+                bearerToken = JSON.parse(sessionStorage.getItem('tokenSessionObject')).token;
+                $updateCourseHandler = jQuery.ajax({
+                    type: 'PUT',
+                    beforeSend: function (request) {
+                        request.setRequestHeader("Authorization", "Bearer " + bearerToken);
+                    },
+                    url: url,
+                    dataType: 'json',
+                    contentType: 'application/json;',
+                    data: "'" + webFormDataInString + "'"
+                })//end of jQuery.ajax() call
+                $updateCourseHandler.done(function (data, textStatus, jqXHR) {
+                    $("#messageAlert").show();
+                });//end of $updateCourseHandler.done()
 
-            $updateCourseHandler = jQuery.ajax({
-                type: 'PUT',
-                url: url,
-                dataType: 'json',
-                contentType: 'application/json;',
-                data: "'" + webFormDataInString + "'"
-            })//end of jQuery.ajax() call
-            $updateCourseHandler.done(function (data, textStatus, jqXHR) {
-                $("#messageAlert").show();
-            });//end of $updateCourseHandler.done()
-
-            $updateCourseHandler.error(function (data, textStatus, jqXHR) {
-                console.log(data.responseJSON.message);
-            });//end of $updateCourseHandler.error()*/
+                $updateCourseHandler.error(function (data, textStatus, jqXHR) {
+                    console.log(data.responseJSON.message);
+                });//end of $updateCourseHandler.error()*/
+            }
         }
-    
 
-     function redirectPage(){
+
+        function redirectPage() {
             location.href = "/Game/ManageDeletedGames";
         }
 
 
-          function viewDeleted() {
+        function viewDeleted() {
             location.href = "/Game/ManageDeletedGames";
-        } 
+        }
 
         function view() {
             location.href = "/Game/ManageGames";
