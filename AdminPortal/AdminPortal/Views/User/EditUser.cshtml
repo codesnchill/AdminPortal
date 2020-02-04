@@ -129,11 +129,12 @@
         }
 
          //Using a function technique to define a JavaScript class, WebFormData
-        function WebFormData(inCollectedEmployeeName, inCollectedDepartmentId, inCollectedRole, inCollectedStatus) {
+        function WebFormData(inCollectedEmployeeName, inCollectedDepartmentId, inCollectedRole, inCollectedStatus, inCollectedAdmin) {
         	this.EmployeeName = inCollectedEmployeeName;
             this.DepartmentId = inCollectedDepartmentId;
             this.RoleId = inCollectedRole;
             this.IsDisabled = inCollectedStatus;
+            this.IsAdmin = inCollectedAdmin;
         }
 
         function save() {
@@ -143,6 +144,7 @@
             var collectedRole = $('#rights').val();
             var collectedStatus = $('#status').val();
             var collectedReason = $('#reason').val();
+            var collectedAdmin = $('#admin').val();
 
             if (collectedStatus === "true" && !collectedReason) {
                 markDelete();
@@ -151,7 +153,7 @@
             //Create a WebFormData object, webFormData. Have its field values
             //populated with the collected course data
             var webFormData = new WebFormData(collectedEmployeeName,
-                collectedDepartmentId, collectedRole, collectedStatus);
+                collectedDepartmentId, collectedRole, collectedStatus, collectedAdmin);
             //Convert the webFromData into a JSON string
             var webFormDataInString = JSON.stringify(webFormData);
 
@@ -264,9 +266,16 @@
             <select class="form-control" id="department">
             </select>
         </div>
-        <div class="row4-rights">
-            <label class="normal-weight" for="rights">Access Rights:</label>
+        <div class="row4-roles">
+            <label class="normal-weight" for="rights">Roles:</label>
             <select class="form-control" id="rights">
+            </select>
+        </div>
+        <div class="row8-rights">
+            <label class="normal-weight" for="admin">Access Rights:</label>
+            <select class="form-control" id="admin">
+                <option value="0">User</option>
+                <option value="1">Admin</option>
             </select>
         </div>
         <div class="row5-status">
@@ -280,6 +289,7 @@
             <label class="normal-weight" for="reason">Reason for change:</label>
             <input type='text' name='reason' id="reason" />
         </div>
+
         <div class="row6-buttons">
             <button class="delete">Delete</button>
             <button onclick="save()" class="save">Save</button>

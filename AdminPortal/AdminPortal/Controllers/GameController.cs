@@ -98,6 +98,8 @@ namespace AdminPortal.Controllers
 
 
         IEnumerable<Question> questions1 = null;
+        const string EmployeeQuizSessionList = "_GuessTheEmployeeQuestionList";
+
         [HttpGet]
         public JsonResult LoadGuessTheEmployeeQuiz()
         {
@@ -119,7 +121,7 @@ namespace AdminPortal.Controllers
                     questionList = questions1.ToList();
 
                     // store employee in session
-                    HttpContext.Session.SetComplexData(QuestionListSessionName, questionList);
+                    HttpContext.Session.SetComplexData(EmployeeQuizSessionList, questionList);
                     //HttpContext.Session["employeeList"] = employeeList;
                 }
                 else //web api sent error response 
@@ -192,6 +194,94 @@ namespace AdminPortal.Controllers
 
             //make sure it returns the whole list retrieve from database (not the paginated list)
             return View(questionList);
+        }
+
+
+          IEnumerable<Question> deletedQuestions1 = null;
+        const string DeletedCompanyQuizListSessionName = "_DeletedGameQuestionList";
+
+        [HttpGet]
+        public JsonResult LoadDeletedCompanyQuiz()
+        {
+            List<Question> questionList = new List<Question>();
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("https://localhost:44300/api/v1/");
+                //HTTP GET
+                var responseTask = client.GetAsync("games/2?deleted=true");
+                responseTask.Wait();
+
+                var result = responseTask.Result;
+                if (result.IsSuccessStatusCode)
+                {
+                    var readTask = result.Content.ReadAsAsync<IList<Question>>();
+                    readTask.Wait();
+
+                    deletedQuestions1 = readTask.Result;
+                    questionList = deletedQuestions1.ToList();
+
+                    // store employee in session
+                    HttpContext.Session.SetComplexData(DeletedCompanyQuizListSessionName, questionList);
+                    //HttpContext.Session["employeeList"] = employeeList;
+                }
+                else //web api sent error response 
+                {
+                    //log response status here..
+
+                    deletedQuestions1 = Enumerable.Empty<Question>();
+
+                    ModelState.AddModelError(string.Empty, "Server error. Please contact administrator.");
+                }
+
+
+            }
+
+            //make sure it returns the whole list retrieve from database (not the paginated list)
+            return new JsonResult(questionList);
+        }
+
+        IEnumerable<Question> deletedQuestions2 = null;
+        const string DeletedEmployeeListSessionName = "_GuessTheEmployeeQuestionList";
+
+
+        [HttpGet]
+        public JsonResult LoadDeletedGuessTheEmployeeQuiz()
+        {
+            List<Question> questionList = new List<Question>();
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("https://localhost:44300/api/v1/");
+                //HTTP GET
+                var responseTask = client.GetAsync("games/1?deleted=true");
+                responseTask.Wait();
+
+                var result = responseTask.Result;
+                if (result.IsSuccessStatusCode)
+                {
+                    var readTask = result.Content.ReadAsAsync<IList<Question>>();
+                    readTask.Wait();
+
+                    deletedQuestions2 = readTask.Result;
+                    questionList = deletedQuestions2.ToList();
+
+                    // store employee in session
+                    HttpContext.Session.SetComplexData(DeletedEmployeeListSessionName, questionList);
+                    //HttpContext.Session["employeeList"] = employeeList;
+                }
+                else //web api sent error response 
+                {
+                    //log response status here..
+
+                    deletedQuestions2 = Enumerable.Empty<Question>();
+
+                    ModelState.AddModelError(string.Empty, "Server error. Please contact administrator.");
+                }
+
+
+            }
+
+            //make sure it returns the whole list retrieve from database (not the paginated list)
+            return new JsonResult(questionList);
         }
     }
 }

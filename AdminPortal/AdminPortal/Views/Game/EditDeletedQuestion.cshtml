@@ -93,10 +93,9 @@
 
 
         //Using a function technique to define a JavaScript class, WebFormData
-        function WebFormData(inCollectedQuestion1, inCollectedAnswer, inCollectedPoints, inCollectedChoices) {
+        function WebFormData(inCollectedQuestion1, inCollectedAnswer, inCollectedChoices) {
             this.Question = inCollectedQuestion1;
             this.Answer = inCollectedAnswer;
-            this.Points = inCollectedPoints;
             this.Choices = inCollectedChoices;
 
         }
@@ -136,7 +135,7 @@
             //Create a WebFormData object, webFormData. Have its field values
             //populated with the collected course data
             var webFormData = new WebFormData(collectedQuestion,
-                collectedAnswer, collectedPoint, collectedChoices);
+                collectedAnswer, collectedChoices);
             //Convert the webFromData into a JSON string
             var webFormDataInString = JSON.stringify(webFormData);
 

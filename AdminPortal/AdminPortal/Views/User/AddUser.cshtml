@@ -70,12 +70,13 @@
         loadRoles();
 
         //Using a function technique to define a JavaScript class, WebFormData
-        function WebFormData(inCollectedEmployeeId, inCollectedEmployeeName, inCollectedDepartmentId, inCollectedRole, inCollectedStatus) {
+        function WebFormData(inCollectedEmployeeId, inCollectedEmployeeName, inCollectedDepartmentId, inCollectedRole, inCollectedStatus, inCollectedAdmin) {
             this.EmployeeId = inCollectedEmployeeId;
             this.EmployeeName = inCollectedEmployeeName;
             this.DepartmentId = inCollectedDepartmentId;
             this.RolesId = inCollectedRole;
             this.IsDisabled = inCollectedStatus;
+            this.IsAdmin = inCollectedAdmin;
         }
 
         function clickSave() {
@@ -84,10 +85,11 @@
             var collectedDepartmentId = $('#department').val();
             var collectedRole = $('#rights').val();
             var collectedStatus = $('#status').val();
+            var collectedAdmin = $('#admin').val();
             //Create a WebFormData object, webFormData. Have its field values
             //populated with the collected course data
             var webFormData = new WebFormData(collectedEmployeeId, collectedEmployeeName,
-                collectedDepartmentId, collectedRole, collectedStatus);
+                collectedDepartmentId, collectedRole, collectedStatus, collectedAdmin);
             //Convert the webFromData into a JSON string
             var webFormDataInString = JSON.stringify(webFormData);
 
@@ -202,10 +204,17 @@
                 <option value="" selected disabled hidden>Select...</option>
             </select>
         </div>
-        <div class="row4-rights">
-            <label class="normal-weight" for="rights">Access Rights:</label>
+        <div class="row4-roles">
+            <label class="normal-weight" for="rights">Roles</label>
             <select class="form-control" id="rights">
                 <option value="" selected disabled hidden>Select...</option>
+            </select>
+        </div>
+        <div class="row8-rights">
+            <label class="normal-weight" for="admin">Access Rights:</label>
+            <select class="form-control" id="admin">
+                <option value="0">User</option>
+                <option value="1">Admin</option>
             </select>
         </div>
         <div class="row5-status">

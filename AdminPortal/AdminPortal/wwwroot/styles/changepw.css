@@ -293,7 +293,7 @@ input {
 
 .row1-employeeID input {
     height: 35px;
-    margin-left: 50px;
+    margin-left: 72px;
 }
 
 .row2-employeeName {
@@ -329,7 +329,7 @@ input {
 
     .row3-currentPassword input {
         height: 35px;
-        margin-left: 20px;
+        margin-left: 60px;
     }
 
 .row4-newPassword {
