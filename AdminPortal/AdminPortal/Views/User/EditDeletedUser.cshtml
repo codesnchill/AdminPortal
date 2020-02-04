@@ -6,10 +6,12 @@
 @model IEnumerable<AdminPortal.Models.Employee>
 
 @section Scripts {
+    <script type="text/javascript" src="~/Script/tokenHelper.js"></script>
+    <script type="text/javascript" src="~/Script/baseURL.js"></script>
     <script>
 
 
-         function viewUser() {
+        function viewUser() {
             location.href = "/User/ManageUser";
         }
 
@@ -18,53 +20,64 @@
         }
 
 
-        function loadDepartments() {
-            var url = "https://localhost:44300/api/v1/departments"
-            var $loadhandler = jQuery.ajax({
-                type: 'GET',
-                url: url,
-                contentType: "application/json",
-                dataType: 'json',
-                crossDomain: true,
-            });
-            $loadhandler.done(function (data, textStatus, jqXHR) {
-                console.log(data);
-                $.each(data, function (key, obj) {
-                    //console.log(key)
-                    console.log(obj)
-                    console.log(obj.departmentName)
-                    $("#department").append($("<option></option>")
-                        .attr("value", obj.departmentId)
-                        .text(obj.departmentName));
-                });
-            });
+       var baseURL = getBaseURL();
 
+        function loadDepartments() {
+            if (tokenIsValid()) {
+                bearerToken = JSON.parse(sessionStorage.getItem('tokenSessionObject')).token;
+                var url = baseURL + "/api/v1/departments"
+                var $loadhandler = jQuery.ajax({
+                    type: 'GET',
+                    beforeSend: function (request) {
+                        request.setRequestHeader("Authorization", "Bearer " + bearerToken);
+                    },
+                    url: url,
+                    contentType: "application/json",
+                    dataType: 'json',
+                    crossDomain: true,
+                });
+                $loadhandler.done(function (data, textStatus, jqXHR) {
+                    console.log(data);
+                    $.each(data, function (key, obj) {
+                        //console.log(key)
+                        console.log(obj)
+                        console.log(obj.departmentName)
+                        $("#department").append($("<option></option>")
+                            .attr("value", obj.departmentId)
+                            .text(obj.departmentName));
+                    });
+                });
+            }
         }
         loadDepartments();
 
 
-        function loadRoles() {
-            var url = "https://localhost:44300/api/v1/roles"
-            var $loadhandler = jQuery.ajax({
-                type: 'GET',
-                url: url,
-                contentType: "application/json",
-                dataType: 'json',
-                crossDomain: true,
-            });
-            $loadhandler.done(function (data, textStatus, jqXHR) {
-                console.log(data);
-                $.each(data, function (key, obj) {
-                    //console.log(key)
-                    console.log(obj)
-                    console.log(obj.roleName)
-                    $("#rights").append($("<option></option>")
-                        .attr("value", obj.roleId)
-                        .text(obj.roleName));
+         function loadRoles() {
+            if (tokenIsValid()) {
+                bearerToken = JSON.parse(sessionStorage.getItem('tokenSessionObject')).token;
+                var url = baseURL + "/api/v1/roles"
+                var $loadhandler = jQuery.ajax({
+                    type: 'GET',
+                    beforeSend: function (request) {
+                    request.setRequestHeader("Authorization", "Bearer " + bearerToken);
+                    },
+                    url: url,
+                    contentType: "application/json",
+                    dataType: 'json',
+                    crossDomain: true,
                 });
-                getUserDetails();
-            });
-
+                $loadhandler.done(function (data, textStatus, jqXHR) {
+                    console.log(data);
+                    $.each(data, function (key, obj) {
+                        //console.log(key)
+                        console.log(obj)
+                        console.log(obj.roleName)
+                        $("#rights").append($("<option></option>")
+                            .attr("value", obj.roleId)
+                            .text(obj.roleName));
+                    });
+                });
+            }
         }
         loadRoles();
 
@@ -79,61 +92,71 @@
 
 
 
+        
         function getUserDetails() {
-            var url = "https://localhost:44300/api/v1/users/" + g_userId
-            $loadUserDataHandler = jQuery.ajax({
-                type: 'GET',
-                url: url,
-                contentType: "application/json",
-                dataType: 'json',
-                crossDomain: true,
-            })
-            $loadUserDataHandler.done(function (data, textStatus, jqXHR) {
-                console.log(data);
-                var user = data;
-                employeeId = user[0].employeeId
-                employeeName = user[0].employeeName;
-                departmentName = user[0].departmentName;
-                departmentId = user[0].departmentID;
-                roles = user[0].roles.rolesName;
-                isDisabled = user[0].isDisabled;
+            if (tokenIsValid()) {
+                bearerToken = JSON.parse(sessionStorage.getItem('tokenSessionObject')).token;
+                var url = baseURL + "/api/v1/users/" + g_userId
+                //var url = "https://localhost:44300/api/v1/users/" + g_userId
+                $loadUserDataHandler = jQuery.ajax({
+                    type: 'GET',
+                    beforeSend: function (request) {
+                    request.setRequestHeader("Authorization", "Bearer " + bearerToken);
+                    },
+                    url: url,
+                    contentType: "application/json",
+                    dataType: 'json',
+                    crossDomain: true,
+                })
+                $loadUserDataHandler.done(function (data, textStatus, jqXHR) {
+                    console.log(data);
+                    var user = data;
+                    employeeId = user[0].employeeId
+                    employeeName = user[0].employeeName;
+                    departmentName = user[0].departmentName;
+                    departmentId = user[0].departmentID;
+                    roles = user[0].roles.rolesName;
+                    isDisabled = user[0].isDisabled;
 
-                console.log("Employee ID: " + employeeId + " Employee Name:" + employeeName);
+                    console.log("Employee ID: " + employeeId + " Employee Name:" + employeeName);
 
-                $('#employeeId').val(employeeId);
-                $('#employeeName').val(employeeName);
-
-
-                $('#department option').filter(function () {
-                    return $(this).val() == departmentId;
-                }).prop('selected', true);
-
-                $('#rights option').filter(function () {
-                    return $(this).text() == roles;
-                }).prop('selected', true);
-
-                $('#status option').filter(function () {
-
-                    var value = 'Active';
-
-                    if (isDisabled == true) {
-                        value = 'Inactive';
-                    }
-
-                    return $(this).text() == value;
-                }).prop('selected', true);
-
-            }) //end of done
+                    $('#employeeId').val(employeeId);
+                    $('#employeeName').val(employeeName);
 
 
+                    $('#department option').filter(function () {
+                        return $(this).val() == departmentId;
+                    }).prop('selected', true);
+
+                    $('#rights option').filter(function () {
+                        return $(this).text() == roles;
+                    }).prop('selected', true);
+
+                    $('#status option').filter(function () {
+
+                        var value = 'Active';
+
+                        if (isDisabled == true) {
+                            value = 'Inactive';
+                        }
+
+                        return $(this).text() == value;
+                    }).prop('selected', true);
+
+                }) //end of done
+
+            }
         }
+        getUserDetails();
 
-         //Using a function technique to define a JavaScript class, WebFormData
-        function WebFormData(inCollectedEmployeeName, inCollectedDepartmentId, inCollectedRole, inCollectedStatus) {
-        	this.EmployeeName = inCollectedEmployeeName;
+        //Using a function technique to define a JavaScript class, WebFormData
+        function WebFormData(inCollectedEmployeeName, inCollectedDepartmentId, inCollectedRole, inCollectedStatus, inCollectedAdmin, inCollectCUDBy) {
+            this.EmployeeName = inCollectedEmployeeName;
             this.DepartmentId = inCollectedDepartmentId;
             this.RoleId = inCollectedRole;
             this.IsDisabled = inCollectedStatus;
+            this.IsAdmin = inCollectedAdmin;
+            this.CUDBy = inCollectCUDBy;
         }
 
         function save() {
@@ -142,36 +165,44 @@
             var collectedDepartmentId = $('#department').val();
             var collectedRole = $('#rights').val();
             var collectedStatus = $('#status').val();
+              var collectedAdmin = $('#admin').val();
+             var collectedCUDBy = JSON.parse(sessionStorage.getItem('employeeDetailsObject')).employeeId;
 
             //Create a WebFormData object, webFormData. Have its field values
             //populated with the collected course data
             var webFormData = new WebFormData(collectedEmployeeName,
-                collectedDepartmentId, collectedRole, collectedStatus);
+                collectedDepartmentId, collectedRole, collectedStatus, collectedAdmin, collectedCUDBy);
             //Convert the webFromData into a JSON string
             var webFormDataInString = JSON.stringify(webFormData);
 
             console.log(webFormDataInString);
 
-            var url = "https://localhost:44300/api/v1/users/" + g_userId
+            var url = baseURL + "/api/v1/users/" + g_userId
+            //var url = "https://localhost:44300/api/v1/users/" + g_userId
+            if (tokenIsValid()) {
 
-            $updateCourseHandler = jQuery.ajax({
-                type: 'PUT',
-                url: url,
-                dataType: 'json',
-                contentType: 'application/json;',
-                data: "'" + webFormDataInString + "'"
-            })//end of jQuery.ajax() call
-            $updateCourseHandler.done(function (data, textStatus, jqXHR) {
-                $("#messageAlert").show();
-            });//end of $updateCourseHandler.done()
+                bearerToken = JSON.parse(sessionStorage.getItem('tokenSessionObject')).token;
+                $updateCourseHandler = jQuery.ajax({
+                    type: 'PUT',
+                    beforeSend: function (request) {
+                        request.setRequestHeader("Authorization", "Bearer " + bearerToken);
+                    },
+                    url: url,
+                    dataType: 'json',
+                    contentType: 'application/json;',
+                    data: "'" + webFormDataInString + "'"
+                })//end of jQuery.ajax() call
+                $updateCourseHandler.done(function (data, textStatus, jqXHR) {
+                    $("#messageAlert").show();
+                });//end of $updateCourseHandler.done()
 
-            $updateCourseHandler.error(function (data, textStatus, jqXHR) {
-                console.log(data.responseJSON.message);
-            });//end of $updateCourseHandler.error()*/
-
+                $updateCourseHandler.error(function (data, textStatus, jqXHR) {
+                    console.log(data.responseJSON.message);
+                });//end of $updateCourseHandler.error()*/
+            }
         }
 
-       
+
         function redirectPage() {
             location.href = "/User/ManageDeletedUser";
         }
@@ -231,8 +262,8 @@
         <div class="row8-rights">
             <label class="normal-weight" for="admin">Access Rights:</label>
             <select class="form-control" id="admin">
-                <option value="0">User</option>
-                <option value="1">Admin</option>
+                <option value="false">User</option>
+                <option value="true">Admin</option>
             </select>
         </div>
         <div class="row5-status">
