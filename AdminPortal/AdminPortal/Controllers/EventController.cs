@@ -18,6 +18,7 @@ namespace AdminPortal.Controllers
         const string EventListSessionName = "_EventList";
         public IActionResult ManageEvents()
         {
+           
             List<Event> eventList = new List<Event>();
 
             using (var client = new HttpClient())

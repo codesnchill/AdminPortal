@@ -4,9 +4,11 @@
 
 @section Scripts {
     <script src="~/Script/select2.min.js"></script>
+    <script type="text/javascript" src="~/Script/tokenHelper.js"></script>
+    <script type="text/javascript" src="~/Script/baseURL.js"></script>
     <script>
 
-         function viewUser() {
+        function viewUser() {
             location.href = "/User/ManageUser";
         }
 
@@ -19,64 +21,77 @@
             $(".mySelect2").select2();
         });
 
+        var baseURL = getBaseURL();
 
         function loadDepartments() {
-            var url = "https://localhost:44300/api/v1/departments"
-            var $loadhandler = jQuery.ajax({
-                type: 'GET',
-                url: url,
-                contentType: "application/json",
-                dataType: 'json',
-                crossDomain: true,
-            });
-            $loadhandler.done(function (data, textStatus, jqXHR) {
-                console.log(data);
-                $.each(data, function (key, obj) {
-                    //console.log(key)
-                    console.log(obj)
-                    console.log(obj.departmentName)
-                    $("#department").append($("<option></option>")
-                        .attr("value", obj.departmentId)
-                        .text(obj.departmentName));
-                });
-            });
+            if (tokenIsValid()) {
+                bearerToken = JSON.parse(sessionStorage.getItem('tokenSessionObject')).token;
 
+                var url = baseURL + "/api/v1/departments"
+                var $loadhandler = jQuery.ajax({
+                    type: 'GET',
+                    beforeSend: function (request) {
+                        request.setRequestHeader("Authorization", "Bearer " + bearerToken);
+                    },
+                    url: url,
+                    contentType: "application/json",
+                    dataType: 'json',
+                    crossDomain: true,
+                });
+                $loadhandler.done(function (data, textStatus, jqXHR) {
+                    console.log(data);
+                    $.each(data, function (key, obj) {
+                        //console.log(key)
+                        console.log(obj)
+                        console.log(obj.departmentName)
+                        $("#department").append($("<option></option>")
+                            .attr("value", obj.departmentId)
+                            .text(obj.departmentName));
+                    });
+                });
+            }
         }
         loadDepartments();
 
 
         function loadRoles() {
-            var url = "https://localhost:44300/api/v1/roles"
-            var $loadhandler = jQuery.ajax({
-                type: 'GET',
-                url: url,
-                contentType: "application/json",
-                dataType: 'json',
-                crossDomain: true,
-            });
-            $loadhandler.done(function (data, textStatus, jqXHR) {
-                console.log(data);
-                $.each(data, function (key, obj) {
-                    //console.log(key)
-                    console.log(obj)
-                    console.log(obj.roleName)
-                    $("#rights").append($("<option></option>")
-                        .attr("value", obj.roleId)
-                        .text(obj.roleName));
+            if (tokenIsValid()) {
+                bearerToken = JSON.parse(sessionStorage.getItem('tokenSessionObject')).token;
+                var url = baseURL + "/api/v1/roles"
+                var $loadhandler = jQuery.ajax({
+                    type: 'GET',
+                    beforeSend: function (request) {
+                    request.setRequestHeader("Authorization", "Bearer " + bearerToken);
+                    },
+                    url: url,
+                    contentType: "application/json",
+                    dataType: 'json',
+                    crossDomain: true,
                 });
-            });
-
+                $loadhandler.done(function (data, textStatus, jqXHR) {
+                    console.log(data);
+                    $.each(data, function (key, obj) {
+                        //console.log(key)
+                        console.log(obj)
+                        console.log(obj.roleName)
+                        $("#rights").append($("<option></option>")
+                            .attr("value", obj.roleId)
+                            .text(obj.roleName));
+                    });
+                });
+            }
         }
         loadRoles();
 
         //Using a function technique to define a JavaScript class, WebFormData
-        function WebFormData(inCollectedEmployeeId, inCollectedEmployeeName, inCollectedDepartmentId, inCollectedRole, inCollectedStatus, inCollectedAdmin) {
+        function WebFormData(inCollectedEmployeeId, inCollectedEmployeeName, inCollectedDepartmentId, inCollectedRole, inCollectedStatus, inCollectedAdmin, inCollectedCUDBy) {
             this.EmployeeId = inCollectedEmployeeId;
             this.EmployeeName = inCollectedEmployeeName;
             this.DepartmentId = inCollectedDepartmentId;
             this.RolesId = inCollectedRole;
             this.IsDisabled = inCollectedStatus;
             this.IsAdmin = inCollectedAdmin;
+            this.CUDBy = inCollectedCUDBy;
         }
 
         function clickSave() {
@@ -86,33 +101,39 @@
             var collectedRole = $('#rights').val();
             var collectedStatus = $('#status').val();
             var collectedAdmin = $('#admin').val();
+            var collectedCUDBy = JSON.parse(sessionStorage.getItem('employeeDetailsObject')).employeeId;
             //Create a WebFormData object, webFormData. Have its field values
             //populated with the collected course data
             var webFormData = new WebFormData(collectedEmployeeId, collectedEmployeeName,
-                collectedDepartmentId, collectedRole, collectedStatus, collectedAdmin);
+                collectedDepartmentId, collectedRole, collectedStatus, collectedAdmin, collectedCUDBy);
             //Convert the webFromData into a JSON string
             var webFormDataInString = JSON.stringify(webFormData);
 
             console.log("JSON RESULTS for add: " + webFormDataInString);
 
-            var url = "https://localhost:44300/api/v1/users"
+            var url = baseURL + "/api/v1/users"
+            
+            if (tokenIsValid()) {
+                bearerToken = JSON.parse(sessionStorage.getItem('tokenSessionObject')).token;
+                $updateCourseHandler = jQuery.ajax({
+                    type: 'POST',
+                    beforeSend: function (request) {
+                        request.setRequestHeader("Authorization", "Bearer " + bearerToken);
+                    },
+                    url: url,
+                    dataType: 'json',
+                    contentType: 'application/json;',
+                    data: "'" + webFormDataInString + "'"
+                })//end of jQuery.ajax() call
+                $updateCourseHandler.done(function (data, textStatus, jqXHR) {
+                    alert("User added Successfully");
 
-            $updateCourseHandler = jQuery.ajax({
-                type: 'POST',
-                url: url,
-                dataType: 'json',
-                contentType: 'application/json;',
-                data: "'" + webFormDataInString + "'"
-            })//end of jQuery.ajax() call
-            $updateCourseHandler.done(function (data, textStatus, jqXHR) {
-                alert("User added Successfully");
+                });//end of $updateCourseHandler.done()
 
-            });//end of $updateCourseHandler.done()
-
-            $updateCourseHandler.error(function (data, textStatus, jqXHR) {
-                console.log(data.responseJSON.message);
-            });//end of $updateCourseHandler.error()*/
-
+                $updateCourseHandler.error(function (data, textStatus, jqXHR) {
+                    console.log(data.responseJSON.message);
+                });//end of $updateCourseHandler.error()*/
+            }
         }
 
 
@@ -136,7 +157,7 @@
 
             console.log("JSON RESULTS for register: " + webFormDataInString2);
 
-            var url = "https://localhost:44300/api/signUp"
+            var url = "https://localhost:44300/api/v1/signUp"
 
             $updateRegisterHandler = jQuery.ajax({
                 type: 'POST',
@@ -213,8 +234,8 @@
         <div class="row8-rights">
             <label class="normal-weight" for="admin">Access Rights:</label>
             <select class="form-control" id="admin">
-                <option value="0">User</option>
-                <option value="1">Admin</option>
+                <option value="false">User</option>
+                <option value="true">Admin</option>
             </select>
         </div>
         <div class="row5-status">

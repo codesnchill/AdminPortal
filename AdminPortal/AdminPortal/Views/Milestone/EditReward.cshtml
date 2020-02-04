@@ -1,4 +1,4 @@
-﻿
+﻿ses
 @{
     Layout = "../Shared/_Layout.cshtml";
 }
@@ -6,6 +6,7 @@
 @section Scripts{
     <link href="~/lib/noty.css" rel="stylesheet">
     <script src="~/lib/noty.min.js"></script>
+    <script type="text/javascript" src="~/Script/tokenHelper.js"></script>
     <script>
 
         var g_rewardId = getIdFromAddressBar();
@@ -79,6 +80,7 @@
         }
 
         function deleteReward() {
+            var collectedCUDBy = JSON.parse(sessionStorage.getItem('employeeDetailsObject')).employeeId;
             var noty = new Noty({
                 text: 'Continue the delete action?',
                 layout: 'center',
