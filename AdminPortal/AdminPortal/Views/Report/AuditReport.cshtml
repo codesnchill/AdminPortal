@@ -29,6 +29,8 @@
 </head>
 <body>
     <h1>Audit Report</h1>
+    <label>From : @Html.DisplayFor(modelItem => Model.First().startDate)</label>
+    <label>To : @Html.DisplayFor(modelItem => Model.First().endDate)</label>
     <table id="datatable" class="table table-bordered">
         <thead class="blue-background">
             <tr>
@@ -62,96 +64,4 @@
 </html>
 
 <script>
-    var report = localStorage.getItem("report");
-    var startDate = localStorage.getItem("startDate");
-    var endDate = localStorage.getItem("endDate");
-
-    var url = "/Report/MilestoneReport?ReportType=" + report + "&StartDate=" + startDate + "&EndDate=" + endDate;
-    $(document).ready(function () {
-        var oTable =
-            $('#datatable').DataTable({
-                "pageLength": 4,
-                "lengthChange": false,
-                "sDom": 'ltipr',
-            });
-
-        loadData();
-        function loadData() {
-            //Note: jQuery.ajax(..) is also often written is $.ajax(..)
-            var $loadhandler = jQuery.ajax({
-                type: 'GET',
-                url: url,
-                dataType: 'json',
-                contentType: "application/json"
-            });
-
-
-            $loadDataHandler.done(function (data, textStatus, jqXHR) {
-                //This done method will
-                //The (data) input parameter automatically captures the response from the
-                //Get() API method which is labelled to handle this GET request.
-
-                //I usually use the following code to inspect the returned result captured by the data input parameter from the web server.
-                console.log(data);
-
-                $(document).ready(function () {
-
-                    var t = $('#datatable').DataTable({
-                    });
-                    t.on('order.dt search.dt', function () {
-                        t.column(0, { search: 'applied', order: 'applied' }).nodes().each(function (cell, i) {
-                            cell.innerHTML = i + 1;
-                        });
-                    }).draw();
-
-                });
-                //After inspecting the data object with the console.log
-                //I have clear picture of the structure and used the following variable to represent the response.
-                //var rewardList = data;
-                //var Admin = '';
-                //var Action = '';
-                //var DateTime = '';
-                //var Target = '';
-                //var $tableElement = null;
-                //var $cellElement = null;
-                //var $rowElement = null;
-                //$tableBodyElement = $('#tableBody');
-
-                //for (index = 0; index < rewardList.length; index++) {
-                //    rewardList = rewardList[index];
-
-                //    Admin = rewardList.AdminName;
-                //    Action = rewardList.Action;
-                //    DateTime = rewardList.DateTimeReceived;
-
-
-                //    $rowElement = $('<tr></tr>');
-                //    $cellElement = $('<td></td>');
-
-                //    $cellElement = $('<td></td>', { text: Admin });
-                //    $rowElement.append($cellElement);
-
-                //    $cellElement = $('<td></td>', { text: Action });
-                //    $rowElement.append($cellElement);
-
-                //    $cellElement = $('<td></td>', { text: DateTime });
-                //    $rowElement.append($cellElement);
-
-                //    $cellElement = $('<td></td>', { text: Target });
-                //    $rowElement.append($cellElement);
-
-
-                //    $tableBodyElement.append($rowElement);
-            }
-
-            //end of for loop.
-        }//end of JavaScript anonymous function
-        )//end of the done() method;
-    $loadDataHandler.fail(function (data, textStatus, jqXHR) {
-        new Noty({
-            text: 'Ajax call has failed due to : ' + data.statusText, type: 'error',
-            layout: 'center'
-        }).show();//end of noty()
-    })//end of $loadDataHandler.fail()
-    }//end of $loadDataHandler();
 </script>

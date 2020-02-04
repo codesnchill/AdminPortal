@@ -10,6 +10,8 @@ namespace AdminPortal.Models
         public string DepartmentName { get; set; }
         public int Placement { get; set; }
         public double AvgPoint { get; set; }
+        public string startDate { get; set; }
+        public string endDate { get; set; }
 
     }
 }

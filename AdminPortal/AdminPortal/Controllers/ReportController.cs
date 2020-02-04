@@ -19,9 +19,6 @@ namespace AdminPortal.Controllers
         IEnumerable<RankingReport> rankingreport = null;
 
         IEnumerable<AuditReport> auditreport = null;
-        public PaginatedList<Milestone> reportList { get; private set; }
-        public PaginatedList<AuditReport> auditreportList { get; private set; }
-        public PaginatedList<RankingReport> rankingreportList { get; private set; }
         public IActionResult GenerateReport()
         {
             return View();
@@ -30,6 +27,7 @@ namespace AdminPortal.Controllers
         [HttpGet]
         public IActionResult AuditReport(string ReportType, string StartDate, string EndDate)
         {
+            List<AuditReport> auditreportList = new List<AuditReport>();
             var type = ReportType;
             var start = StartDate;
             var end = EndDate;
@@ -48,7 +46,13 @@ namespace AdminPortal.Controllers
                     readTask.Wait();
 
                     auditreport = readTask.Result;
-                    auditreportList = PaginatedList<AuditReport>.Create(auditreport, 1, 4, 5);
+                    
+                    auditreportList = auditreport.ToList();
+                    foreach (var i in auditreport)
+                    {
+                        i.startDate = start;
+                        i.endDate = end;
+                    }
                 }
                 else //web api sent error response 
                 {
@@ -58,7 +62,7 @@ namespace AdminPortal.Controllers
 
                     ModelState.AddModelError(string.Empty, "Server error. Please contact administrator.");
                 }
-                return View(auditreportList);
+                return new ViewAsPdf(auditreportList);
 
             }
         }
@@ -66,6 +70,7 @@ namespace AdminPortal.Controllers
         [HttpGet]
         public IActionResult MilestoneReport(string ReportType, string StartDate, string EndDate)
         {
+            List<Milestone> reportList = new List<Milestone>();
             //var type = employeeQuery.ReportType;
             //var start = employeeQuery.StartDate;
             //var end = employeeQuery.EndDate;
@@ -86,7 +91,12 @@ namespace AdminPortal.Controllers
                     readTask.Wait();
 
                     report = readTask.Result;
-                    reportList = PaginatedList<Milestone>.Create(report, 1, 4, 5);
+                    reportList = report.ToList();
+                    foreach (var i in reportList)
+                    {
+                        i.startDate = start;
+                        i.endDate = end;
+                    }
                 }
                 else //web api sent error response 
                 {
@@ -107,6 +117,7 @@ namespace AdminPortal.Controllers
         [HttpGet]
         public IActionResult RankingReport(string ReportType, string StartDate, string EndDate)
         {
+            List<RankingReport> rankingreportList = new List<RankingReport>();
             //var type = employeeQuery.ReportType;
             //var start = employeeQuery.StartDate;
             //var end = employeeQuery.EndDate;
@@ -127,7 +138,12 @@ namespace AdminPortal.Controllers
                     readTask.Wait();
 
                     rankingreport = readTask.Result;
-                    rankingreportList = PaginatedList<RankingReport>.Create(rankingreport, 1, 4, 5);
+                    rankingreportList = rankingreport.ToList();
+                    foreach (var i in rankingreport)
+                    {
+                        i.startDate = start;
+                        i.endDate = end;
+                    }
                 }
                 else //web api sent error response 
                 {

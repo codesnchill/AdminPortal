@@ -18,5 +18,7 @@ namespace AdminPortal.Models
         public string CreatedBy { get; set; }
         public DateTime? DeletedAt { get; set; }
         public string DeletedBy { get; set; }
+        public string startDate { get; set; }
+        public string endDate { get; set; }
     }
 }

@@ -26,35 +26,35 @@
         <link rel="stylesheet" href="~/styles/report.css">
         <title>Admin Panel</title>
     </head>
+
     <body>
         <h1>Milestone Report</h1>
-        <label id="StartDate"></label>
-        <label id="EndDate"></label>
-
-        <table id="datatable" class="table table-bordered">
-            <thead class="blue-background">
-                <tr>
-                    <th>EmployeeId</th>
-                    <th>DateTimeReceived</th>
-                    <th>Reward</th>
-                </tr>
-            </thead>
-            <tbody id="tableBody">
-                @foreach (var item in Model)
-                {
+    <label>From : @Html.DisplayFor(modelItem => Model.First().startDate)</label>
+    <label>To : @Html.DisplayFor(modelItem => Model.First().endDate)</label>
+            <table id="datatable" class="table table-bordered">
+                <thead class="blue-background">
                     <tr>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.EmployeeId)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.CreatedAt)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Reward)
-                        </td>
+                        <th>EmployeeId</th>
+                        <th>DateTimeReceived</th>
+                        <th>Reward</th>
                     </tr>
-                }
-            </tbody>
-        </table>
+                </thead>
+                <tbody id="tableBody">
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.EmployeeId)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.CreatedAt)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Reward)
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
     </body>
-</html>
+    </html>

@@ -11,5 +11,7 @@ namespace AdminPortal.Models
         public string Action { get; set; }
         public DateTime CreatedAt { get; set; }
         public string Target { get; set; }
+        public string startDate { get; set; }
+        public string endDate { get; set; }
     }
 }
