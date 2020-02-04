@@ -7,23 +7,24 @@
 @section Scripts {
     <script src="~/Script/select2.min.js"></script>
     <script type="text/javascript" src="~/Script/tokenHelper.js"></script>
+    <script type="text/javascript" src="~/Script/baseURL.js"></script>
 
     <script>
         $(document).ready(function () {
             $(".mySelect2").select2();
         });
 
-
+        var baseURL = getBaseURL();
 
         function loadDepartments() {
             if (tokenIsValid()) {
                 bearerToken = JSON.parse(sessionStorage.getItem('tokenSessionObject')).token;
 
-                var url = "https://localhost:44300/api/v1/departments"
+                var url = baseURL + "/api/v1/departments"
                 var $loadhandler = jQuery.ajax({
                     type: 'GET',
-                    beforeSend: function(request) {
-                      request.setRequestHeader("Authorization", "Bearer " + bearerToken);
+                    beforeSend: function (request) {
+                        request.setRequestHeader("Authorization", "Bearer " + bearerToken);
                     },
                     url: url,
                     contentType: "application/json",
@@ -82,21 +83,21 @@
 
             console.log("Event Details: " + webFormDataInString);
 
-            var url = "https://localhost:44300/api/v1/events"
+            var url = baseURL + "/api/v1/events"
 
             if (tokenIsValid()) {
 
                 bearerToken = JSON.parse(sessionStorage.getItem('tokenSessionObject')).token;
 
                 $updateCourseHandler = jQuery.ajax({
-                type: 'POST',
-                beforeSend: function(request) {
-                  request.setRequestHeader("Authorization", "Bearer " + bearerToken);
-                },
-                url: url,
-                dataType: 'json',
-                contentType: 'application/json;',
-                data: "'" + webFormDataInString + "'"
+                    type: 'POST',
+                    beforeSend: function (request) {
+                        request.setRequestHeader("Authorization", "Bearer " + bearerToken);
+                    },
+                    url: url,
+                    dataType: 'json',
+                    contentType: 'application/json;',
+                    data: "'" + webFormDataInString + "'"
                 })//end of jQuery.ajax() call
                 $updateCourseHandler.done(function (data, textStatus, jqXHR) {
                     alert("Event Added Successfully");

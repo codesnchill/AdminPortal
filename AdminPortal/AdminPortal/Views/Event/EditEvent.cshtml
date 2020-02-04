@@ -8,6 +8,8 @@
     <script src="~/lib/noty.min.js"></script>
     <script src="~/Script/select2.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.7.0/moment.min.js" type="text/javascript"></script>
+    <script type="text/javascript" src="~/Script/tokenHelper.js"></script>
+    <script type="text/javascript" src="~/Script/baseURL.js"></script>
     <link href="~/lib/noty.css" />
     <script>
 
@@ -18,11 +20,17 @@
 
         });
 
+        var baseURL = getBaseURL();
 
         function loadDepartments() {
-            var url = "https://localhost:44300/api/v1/departments"
+            if (tokenIsValid()) {
+                bearerToken = JSON.parse(sessionStorage.getItem('tokenSessionObject')).token;
+            var url = baseURL + "/api/v1/departments"
             var $loadhandler = jQuery.ajax({
                 type: 'GET',
+                   beforeSend: function (request) {
+                        request.setRequestHeader("Authorization", "Bearer " + bearerToken);
+                    },
                 url: url,
                 contentType: "application/json",
                 dataType: 'json',
@@ -39,7 +47,7 @@
                         .text(obj.departmentName));
                 });
             });
-
+            }
         }
         loadDepartments();
 
@@ -54,9 +62,17 @@
 
 
         function getEventDetails() {
-            var url = "https://localhost:44300/api/v1/events/" + g_eventId
-            $loadUserDataHandler = jQuery.ajax({
-                type: 'GET',
+            var url = baseURL + "/api/v1/events/" + g_eventId
+
+            if (tokenIsValid()) {
+
+                bearerToken = JSON.parse(sessionStorage.getItem('tokenSessionObject')).token;
+
+                $loadUserDataHandler = jQuery.ajax({
+                    type: 'GET',
+                    beforeSend: function (request) {
+                        request.setRequestHeader("Authorization", "Bearer " + bearerToken);
+                    },
                 url: url,
                 contentType: "application/json",
                 dataType: 'json',
@@ -103,8 +119,7 @@
                 //}).prop('selected', true);
 
             }) //end of done
-
-
+            }
         }
 
 
@@ -112,13 +127,13 @@
 
         //Using a function technique to define a JavaScript class, WebFormData
         function WebFormData(inCollectedStartDateTime, inCollectedEndDateTime,
-            inCollectedEventName, inCollectedEventDescription, inCollectedDepartmentId) {
-
+            inCollectedEventName, inCollectedEventDescription, inCollectedDepartmentId, inCUDBy) {
             this.startDateTime = inCollectedStartDateTime;
             this.endDateTime = inCollectedEndDateTime;
             this.EventName = inCollectedEventName;
             this.EventDescription = inCollectedEventDescription;
             this.DepartmentList = inCollectedDepartmentId;
+            this.CUDBy = inCUDBy;
 
         }
 
@@ -130,7 +145,7 @@
             var collectedEventName = $('#eventName').val();
             var collectedEventDescription = $('#eventDescription').val();
             var collectedDepartment = $('#department').val();
-
+            var collectedCUDBy = JSON.parse(sessionStorage.getItem('employeeDetailsObject')).employeeId;
 
 
 
@@ -145,16 +160,22 @@
             //Create a WebFormData object, webFormData. Have its field values
             //populated with the collected course data
             var webFormData = new WebFormData(collectedStartDateTime2, collectedEndDateTime2,
-                collectedEventName, collectedEventDescription, collectedDepartment);
+                collectedEventName, collectedEventDescription, collectedDepartment, collectedCUDBy);
             //Convert the webFromData into a JSON string
             var webFormDataInString = JSON.stringify(webFormData);
 
             console.log("Event Details: " + webFormDataInString);
 
-            var url = "https://localhost:44300/api/v1/events/" + g_eventId;
+            var url = baseURL + "/api/v1/events/" + g_eventId;
 
-            $updateCourseHandler = jQuery.ajax({
+            if (tokenIsValid()) {
+
+                bearerToken = JSON.parse(sessionStorage.getItem('tokenSessionObject')).token;
+                 $updateCourseHandler = jQuery.ajax({
                 type: 'PUT',
+                 beforeSend: function(request) {
+                  request.setRequestHeader("Authorization", "Bearer " + bearerToken);
+                },
                 url: url,
                 dataType: 'json',
                 contentType: 'application/json;',
@@ -169,7 +190,7 @@
             $updateCourseHandler.error(function (data, textStatus, jqXHR) {
                 //  console.log(data.responseJSON.message);
             });//end of $updateCourseHandler.error()*/
-
+            }
         }
 
 
@@ -196,7 +217,7 @@
                     }),
 
                     Noty.button('Delete', 'btn btn-danger', function () {
-                        var url = "https://localhost:44300/api/v1/events/markdelete/" + g_eventId;
+                        var url = baseURL + "/api/v1/events/markdelete/" + g_eventId;
                         $deleteHandler = jQuery.ajax({
                             type: 'DELETE',
                             url: url,
@@ -224,11 +245,11 @@
             location.href = "/Event/ManageEvents";
         }
 
-          function view() {
+        function view() {
             location.href = "/Event/ManageEvents";
         }
 
-          function viewDeleted() {
+        function viewDeleted() {
             location.href = "/Event/ManageDeletedEvents";
         }
     </script>

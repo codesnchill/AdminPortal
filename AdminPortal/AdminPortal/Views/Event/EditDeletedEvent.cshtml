@@ -8,6 +8,8 @@
     <script src="~/lib/noty.min.js"></script>
     <script src="~/Script/select2.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.7.0/moment.min.js" type="text/javascript"></script>
+    <script type="text/javascript" src="~/Script/tokenHelper.js"></script>
+    <script type="text/javascript" src="~/Script/baseURL.js"></script>
     <link href="~/lib/noty.css" />
     <script>
 
@@ -18,28 +20,34 @@
 
         });
 
+        var baseURL = getBaseURL();
 
         function loadDepartments() {
-            var url = "https://localhost:44300/api/v1/departments"
-            var $loadhandler = jQuery.ajax({
-                type: 'GET',
-                url: url,
-                contentType: "application/json",
-                dataType: 'json',
-                crossDomain: true,
-            });
-            $loadhandler.done(function (data, textStatus, jqXHR) {
-                console.log(data);
-                $.each(data, function (key, obj) {
-                    //console.log(key)
-                    console.log(obj)
-                    console.log(obj.departmentName)
-                    $("#department").append($("<option></option>")
-                        .attr("value", obj.departmentId)
-                        .text(obj.departmentName));
+            if (tokenIsValid()) {
+                bearerToken = JSON.parse(sessionStorage.getItem('tokenSessionObject')).token;
+                var url = baseURL + "/api/v1/departments"
+                var $loadhandler = jQuery.ajax({
+                    type: 'GET',
+                    beforeSend: function (request) {
+                        request.setRequestHeader("Authorization", "Bearer " + bearerToken);
+                    },
+                    url: url,
+                    contentType: "application/json",
+                    dataType: 'json',
+                    crossDomain: true,
                 });
-            });
-
+                $loadhandler.done(function (data, textStatus, jqXHR) {
+                    console.log(data);
+                    $.each(data, function (key, obj) {
+                        //console.log(key)
+                        console.log(obj)
+                        console.log(obj.departmentName)
+                        $("#department").append($("<option></option>")
+                            .attr("value", obj.departmentId)
+                            .text(obj.departmentName));
+                    });
+                });
+            }
         }
         loadDepartments();
 
@@ -54,56 +62,62 @@
 
 
         function getEventDetails() {
-            var url = "https://localhost:44300/api/v1/events/" + g_eventId
-            $loadUserDataHandler = jQuery.ajax({
-                type: 'GET',
-                url: url,
-                contentType: "application/json",
-                dataType: 'json',
-                crossDomain: true,
-            })
-            $loadUserDataHandler.done(function (data, textStatus, jqXHR) {
-                console.log(data);
-                var events = data;
-                var startDateTime = events[0].startDateTime;
-                var endDateTime = events[0].endDateTime;
-                eventName = events[0].eventName;
-                eventDescription = events[0].eventDescription;
-                var departmentId = events[0].departmentId.split(',');
 
-                var startDate = startDateTime;
-                console.log("Retrieved Start Date: " + startDate);
-                startDate = startDate.split('T')[0];
-                console.log("Retrieved Start Date after split: " + startDate);
-                var startTime = startDateTime;
-                startTime = startTime.split('T')[1];
-                //  startTime = startTime + ".000Z";
+            var url = baseURL + "/api/v1/events/" + g_eventId
+            if (tokenIsValid()) {
+                bearerToken = JSON.parse(sessionStorage.getItem('tokenSessionObject')).token;
+                $loadUserDataHandler = jQuery.ajax({
+                    type: 'GET',
+                      beforeSend: function (request) {
+                        request.setRequestHeader("Authorization", "Bearer " + bearerToken);
+                    },
+                    url: url,
+                    contentType: "application/json",
+                    dataType: 'json',
+                    crossDomain: true,
+                })
+                $loadUserDataHandler.done(function (data, textStatus, jqXHR) {
+                    console.log(data);
+                    var events = data;
+                    var startDateTime = events[0].startDateTime;
+                    var endDateTime = events[0].endDateTime;
+                    eventName = events[0].eventName;
+                    eventDescription = events[0].eventDescription;
+                    var departmentId = events[0].departmentId.split(',');
 
-                var endDate = endDateTime;
-                endDate = endDate.split('T')[0];
-                var endTime = endDateTime;
-                endTime = endTime.split('T')[1];
-                // endTime = endTime + ".000Z";
+                    var startDate = startDateTime;
+                    console.log("Retrieved Start Date: " + startDate);
+                    startDate = startDate.split('T')[0];
+                    console.log("Retrieved Start Date after split: " + startDate);
+                    var startTime = startDateTime;
+                    startTime = startTime.split('T')[1];
+                    //  startTime = startTime + ".000Z";
 
-                console.log("Start Date: " + startDate + " Start Time: " + startTime);
-                console.log("End Date: " + endDate + " End Time: " + endTime);
-                console.log("Departments: " + departmentId)
-                $('#startDate').val(startDate);
-                $('#endDate').val(endDate);
-                $('#startTime').val(startTime);
-                $('#endTime').val(endTime);
-                $('#eventName').val(eventName);
-                $('#eventDescription').val(eventDescription);
-                $("#department").val(departmentId).select2();
+                    var endDate = endDateTime;
+                    endDate = endDate.split('T')[0];
+                    var endTime = endDateTime;
+                    endTime = endTime.split('T')[1];
+                    // endTime = endTime + ".000Z";
+
+                    console.log("Start Date: " + startDate + " Start Time: " + startTime);
+                    console.log("End Date: " + endDate + " End Time: " + endTime);
+                    console.log("Departments: " + departmentId)
+                    $('#startDate').val(startDate);
+                    $('#endDate').val(endDate);
+                    $('#startTime').val(startTime);
+                    $('#endTime').val(endTime);
+                    $('#eventName').val(eventName);
+                    $('#eventDescription').val(eventDescription);
+                    $("#department").val(departmentId).select2();
 
 
 
-                //$('#department option').filter(function () {
-                //    return $(this).val() == departmentId;
-                //}).prop('selected', true);
+                    //$('#department option').filter(function () {
+                    //    return $(this).val() == departmentId;
+                    //}).prop('selected', true);
 
-            }) //end of done
-
+                }) //end of done
+            }
 
         }
 
@@ -112,14 +126,14 @@
 
         //Using a function technique to define a JavaScript class, WebFormData
         function WebFormData(inCollectedStartDateTime, inCollectedEndDateTime,
-            inCollectedEventName, inCollectedEventDescription, inCollectedDepartmentId) {
+            inCollectedEventName, inCollectedEventDescription, inCollectedDepartmentId, inCUDBy) {
 
             this.startDateTime = inCollectedStartDateTime;
             this.endDateTime = inCollectedEndDateTime;
             this.EventName = inCollectedEventName;
             this.EventDescription = inCollectedEventDescription;
             this.DepartmentList = inCollectedDepartmentId;
-
+            this.CUDBy = inCUDBy;
         }
 
         function save() {
@@ -130,7 +144,7 @@
             var collectedEventName = $('#eventName').val();
             var collectedEventDescription = $('#eventDescription').val();
             var collectedDepartment = $('#department').val();
-
+            var collectedCUDBy = JSON.parse(sessionStorage.getItem('employeeDetailsObject')).employeeId;
 
 
 
@@ -145,31 +159,35 @@
             //Create a WebFormData object, webFormData. Have its field values
             //populated with the collected course data
             var webFormData = new WebFormData(collectedStartDateTime2, collectedEndDateTime2,
-                collectedEventName, collectedEventDescription, collectedDepartment);
+                collectedEventName, collectedEventDescription, collectedDepartment, collectedCUDBy);
             //Convert the webFromData into a JSON string
             var webFormDataInString = JSON.stringify(webFormData);
 
             console.log("Event Details: " + webFormDataInString);
 
-            var url = "https://localhost:44300/api/v1/events/" + g_eventId;
+            var url = baseURL + "/api/v1/events/" + g_eventId;
+            if (tokenIsValid()) {
+                bearerToken = JSON.parse(sessionStorage.getItem('tokenSessionObject')).token;
+                $updateCourseHandler = jQuery.ajax({
+                    type: 'PUT',
+                     beforeSend: function (request) {
+                        request.setRequestHeader("Authorization", "Bearer " + bearerToken);
+                    },
+                    url: url,
+                    dataType: 'json',
+                    contentType: 'application/json;',
+                    data: "'" + webFormDataInString + "'"
+                })//end of jQuery.ajax() call
+                $updateCourseHandler.done(function (data, textStatus, jqXHR) {
+                    alert("Event Updated Successfully");
+                    location.href = "/Event/EditEvent";
 
-            $updateCourseHandler = jQuery.ajax({
-                type: 'PUT',
-                url: url,
-                dataType: 'json',
-                contentType: 'application/json;',
-                data: "'" + webFormDataInString + "'"
-            })//end of jQuery.ajax() call
-            $updateCourseHandler.done(function (data, textStatus, jqXHR) {
-                alert("Event Updated Successfully");
-                location.href = "/Event/EditEvent";
+                });//end of $updateCourseHandler.done()
 
-            });//end of $updateCourseHandler.done()
-
-            $updateCourseHandler.error(function (data, textStatus, jqXHR) {
-                //  console.log(data.responseJSON.message);
-            });//end of $updateCourseHandler.error()*/
-
+                $updateCourseHandler.error(function (data, textStatus, jqXHR) {
+                    //  console.log(data.responseJSON.message);
+                });//end of $updateCourseHandler.error()*/
+            }
         }
 
 
@@ -185,17 +203,17 @@
         }
 
 
-        
+
         //Using a function technique to define a JavaScript class, WebFormData
         function WebFormData2(inCollectedReEnabled, inCollectedStartDateTime, inCollectedEndDateTime,
-            inCollectedEventName, inCollectedEventDescription, inCollectedDepartmentId) {
+            inCollectedEventName, inCollectedEventDescription, inCollectedDepartmentId, inCUDBy) {
             this.ReEnable = inCollectedReEnabled;
             this.startDateTime = inCollectedStartDateTime;
             this.endDateTime = inCollectedEndDateTime;
             this.EventName = inCollectedEventName;
             this.EventDescription = inCollectedEventDescription;
             this.DepartmentList = inCollectedDepartmentId;
-
+            this.CUDBy = inCUDBy;
         }
 
         function retrieveEvent() {
@@ -208,43 +226,49 @@
             var collectedEventName = $('#eventName').val();
             var collectedEventDescription = $('#eventDescription').val();
             var collectedDepartment = $('#department').val();
-// Start Date-Time Combined
+            var collectedCUDBy = JSON.parse(sessionStorage.getItem('employeeDetailsObject')).employeeId;
+            // Start Date-Time Combined
             var collectedStartDateTime = collectedStartDate + ' ' + collectedStartTime;
             var collectedStartDateTime2 = convertUTCDateToLocalDate(new Date(collectedStartDateTime));
             collectedStartDateTime2 = collectedStartDateTime.replace('Z', '').replace('.000', '').replace(/\s+/, 'T');
-//End Date-Time Combined
+            //End Date-Time Combined
             var collectedEndDateTime = collectedEndDate + ' ' + collectedEndTime;
             var collectedEndDateTime2 = convertUTCDateToLocalDate(new Date(collectedEndDateTime));
             collectedEndDateTime2 = collectedEndDateTime.replace('Z', '').replace('.000', '').replace(/\s+/, 'T');
             //Create a WebFormData object, webFormData. Have its field values
             //populated with the collected course data
             var webFormData = new WebFormData2(collectedReEnable, collectedStartDateTime2, collectedEndDateTime2,
-                collectedEventName, collectedEventDescription, collectedDepartment);
+                collectedEventName, collectedEventDescription, collectedDepartment, collectedCUDBy);
             //Convert the webFromData into a JSON string
             var webFormDataInString = JSON.stringify(webFormData);
 
             console.log("Event Details: " + webFormDataInString);
             //Convert the webFromData into a JSON string
 
-            var url = "https://localhost:44300/api/v1/events/" + g_eventId;
+            var url = baseURL + "/api/v1/events/" + g_eventId;
+            if (tokenIsValid()) {
 
-            $updateCourseHandler = jQuery.ajax({
-                type: 'PUT',
-                url: url,
-                dataType: 'json',
-                contentType: 'application/json;',
-                data: "'" + webFormDataInString + "'"
-            })//end of jQuery.ajax() call
-            $updateCourseHandler.done(function (data, textStatus, jqXHR) {
-                alert("Event Updated Successfully");
-                location.href = "/Event/EditDeletedEvent";
+                bearerToken = JSON.parse(sessionStorage.getItem('tokenSessionObject')).token;
+                $updateCourseHandler = jQuery.ajax({
+                    type: 'PUT',
+                      beforeSend: function(request) {
+                  request.setRequestHeader("Authorization", "Bearer " + bearerToken);
+                },
+                    url: url,
+                    dataType: 'json',
+                    contentType: 'application/json;',
+                    data: "'" + webFormDataInString + "'"
+                })//end of jQuery.ajax() call
+                $updateCourseHandler.done(function (data, textStatus, jqXHR) {
+                    alert("Event Updated Successfully");
+                    location.href = "/Event/EditDeletedEvent";
 
-            });//end of $updateCourseHandler.done()
+                });//end of $updateCourseHandler.done()
 
-            $updateCourseHandler.error(function (data, textStatus, jqXHR) {
-                //  console.log(data.responseJSON.message);
-            });//end of $updateCourseHandler.error()*/
-
+                $updateCourseHandler.error(function (data, textStatus, jqXHR) {
+                    //  console.log(data.responseJSON.message);
+                });//end of $updateCourseHandler.error()*/
+            }
         }
 
         function redirectPage() {
@@ -255,7 +279,7 @@
             location.href = "/Event/ManageEvents";
         }
 
-          function viewDeleted() {
+        function viewDeleted() {
             location.href = "/Event/ManageDeletedEvents";
         }
     </script>
