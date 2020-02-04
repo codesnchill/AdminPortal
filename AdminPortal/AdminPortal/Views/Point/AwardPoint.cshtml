@@ -5,8 +5,10 @@
 @model IEnumerable<AdminPortal.Models.Employee>
 
 @section Scripts {
+    <script type="text/javascript" src="~/Script/tokenHelper.js"></script>
+    <script type="text/javascript" src="~/Script/baseURL.js"></script>
     <script>
-            // Start of getting userId from addressbar
+        // Start of getting userId from addressbar
         var g_userId = getIdFromAddressBar();
         function getIdFromAddressBar() {
             var urlArray = window.location.href.split('/');
@@ -14,82 +16,92 @@
             return id;
         }
 
+          var baseURL = getBaseURL();
 
-          function getUserDetails() {
-            var url = "https://localhost:44300/api/v1/users/" + g_userId
-            $loadUserDataHandler = jQuery.ajax({
-                type: 'GET',
-                url: url,
-                contentType: "application/json",
-                dataType: 'json',
-                crossDomain: true,
-            })
-            $loadUserDataHandler.done(function (data, textStatus, jqXHR) {
-                console.log(data);
-                var user = data;
-                employeeId = user[0].employeeId
-                employeeName = user[0].employeeName;
-                departmentName = user[0].departmentName;
-                totalPoints = user[0].totalPoints;
-
-              
-
-                $('#employeeID').val(employeeId);
-                $('#employeeName').val(employeeName);
-                $('#department').val(departmentName);
-                $('#points').val(totalPoints);
-
-            
-            }) //end of done
+        function getUserDetails() {
+            if (tokenIsValid()) {
+                bearerToken = JSON.parse(sessionStorage.getItem('tokenSessionObject')).token;
+                var url = baseURL + "/api/v1/users/" + g_userId
+                $loadUserDataHandler = jQuery.ajax({
+                    type: 'GET',
+                     beforeSend: function (request) {
+                        request.setRequestHeader("Authorization", "Bearer " + bearerToken);
+                    },
+                    url: url,
+                    contentType: "application/json",
+                    dataType: 'json',
+                    crossDomain: true,
+                })
+                $loadUserDataHandler.done(function (data, textStatus, jqXHR) {
+                    console.log(data);
+                    var user = data;
+                    employeeId = user[0].employeeId
+                    employeeName = user[0].employeeName;
+                    departmentName = user[0].departmentName;
+                    totalPoints = user[0].totalPoints;
 
 
+
+                    $('#employeeID').val(employeeId);
+                    $('#employeeName').val(employeeName);
+                    $('#department').val(departmentName);
+                    $('#points').val(totalPoints);
+
+
+                }) //end of done
+            }
         }
 
         getUserDetails();
 
-        
-         //Using a function technique to define a JavaScript class, WebFormData
-        function WebFormData(inCollectedPoints, inCollectedComments) {
-        	this.Point = inCollectedPoints;
+
+        //Using a function technique to define a JavaScript class, WebFormData
+        function WebFormData(inCollectedPoints, inCollectedComments, inCUDBy) {
+            this.Point = inCollectedPoints;
             this.Comments = inCollectedComments;
+             this.CUDBy = inCUDBy;
         }
 
         function save() {
 
             var collectedPoints = $('#awardingPoints').val();
             var collectedComments = $('#reason').val();
-          
+            var collectedCUDBy = JSON.parse(sessionStorage.getItem('employeeDetailsObject')).employeeId;
             //Create a WebFormData object, webFormData. Have its field values
             //populated with the collected course data
             var webFormData = new WebFormData(collectedPoints,
-                collectedComments);
+                collectedComments, collectedCUDBy);
             //Convert the webFromData into a JSON string
             var webFormDataInString = JSON.stringify(webFormData);
 
             console.log(webFormDataInString);
 
-            var url = "https://localhost:44300/api/v1/points/gift/" + g_userId
+            var url = baseURL + "/api/v1/points/gift/" + g_userId
+            if (tokenIsValid()) {
+                bearerToken = JSON.parse(sessionStorage.getItem('tokenSessionObject')).token;
+                $updateCourseHandler = jQuery.ajax({
+                    type: 'POST',
+                     beforeSend: function (request) {
+                        request.setRequestHeader("Authorization", "Bearer " + bearerToken);
+                    },
+                    url: url,
+                    dataType: 'json',
+                    contentType: 'application/json;',
+                    data: "'" + webFormDataInString + "'"
+                })//end of jQuery.ajax() call
+                $updateCourseHandler.done(function (data, textStatus, jqXHR) {
+                    alert("Points Awarded Successfully");
+                    location.href = "/Point/AwardPoint/" + g_userId;
 
-            $updateCourseHandler = jQuery.ajax({
-                type: 'POST',
-                url: url,
-                dataType: 'json',
-                contentType: 'application/json;',
-                data: "'" + webFormDataInString + "'"
-            })//end of jQuery.ajax() call
-            $updateCourseHandler.done(function (data, textStatus, jqXHR) {
-                alert("Points Awarded Successfully");  
-                location.href = "/Point/AwardPoint/" + g_userId;
-                 
-            });//end of $updateCourseHandler.done()
+                });//end of $updateCourseHandler.done()
 
-            $updateCourseHandler.error(function (data, textStatus, jqXHR) {
-                console.log(data.responseJSON.message);
-            });//end of $updateCourseHandler.error()*/
-
+                $updateCourseHandler.error(function (data, textStatus, jqXHR) {
+                    console.log(data.responseJSON.message);
+                });//end of $updateCourseHandler.error()*/
+            }
         }
 
-          function redirectPage() {
+        function redirectPage() {
             location.href = "/Point/ManagePoints";
         }
 
@@ -110,46 +122,46 @@
 
     <hr class="divider">
 
-    
-        <div class="edit-container">
-            <div class="title-bar orange-background">
-                <p class="panel-header">Award Points</p>
 
-            </div>
-        
-            <div class="row1-employeeID">
-                <label class="normal-weight" for="employeeID">Employee ID:</label>
-                <input type="text" class="form-control" name="employeeID" id="employeeID" readonly>
-            </div>
-            <div class="row2-employeeName">
-                <label class="normal-weight" for="employeeName">Employee Name:</label>
-                <input type='text' class="form-control" name='employeeName' id="employeeName" readonly />
-            </div>
-            <div class="row3-Department">
-                <label class="normal-weight" for="department">Department:</label>
-                <input type='text' class="form-control" name='department' id="department" readonly />
-            </div>
-            <div class="row4-CurrentPoints">
-                <label class="normal-weight" for="currentPoints">Current Points:</label>
-                <input type='text' class="form-control" name='currentPoints' id="points" readonly />
-            </div>
-            <div class="row5-PointsToAward">
-                <label class="normal-weight" for="awardingPoints">Points to award:</label>
-                <input type='text' class="form-control" name='awardingPoints' id="awardingPoints" />
-            </div>
-            <div class="row6-Reason">
-                <label class="normal-weight" for="Reason">Reason for award:</label>
-                <input type='text' class="form-control" name='Reason' id="reason" />
-            </div>
+    <div class="edit-container">
+        <div class="title-bar orange-background">
+            <p class="panel-header">Award Points</p>
 
-
-
-            <div class="row7-buttons">
-
-                <button class="save" onclick="save()">Save</button>
-                <button onclick="clickback()" class="cancel">Cancel</button>
-            </div>
         </div>
-    
+
+        <div class="row1-employeeID">
+            <label class="normal-weight" for="employeeID">Employee ID:</label>
+            <input type="text" class="form-control" name="employeeID" id="employeeID" readonly>
+        </div>
+        <div class="row2-employeeName">
+            <label class="normal-weight" for="employeeName">Employee Name:</label>
+            <input type='text' class="form-control" name='employeeName' id="employeeName" readonly />
+        </div>
+        <div class="row3-Department">
+            <label class="normal-weight" for="department">Department:</label>
+            <input type='text' class="form-control" name='department' id="department" readonly />
+        </div>
+        <div class="row4-CurrentPoints">
+            <label class="normal-weight" for="currentPoints">Current Points:</label>
+            <input type='text' class="form-control" name='currentPoints' id="points" readonly />
+        </div>
+        <div class="row5-PointsToAward">
+            <label class="normal-weight" for="awardingPoints">Points to award:</label>
+            <input type='text' class="form-control" name='awardingPoints' id="awardingPoints" />
+        </div>
+        <div class="row6-Reason">
+            <label class="normal-weight" for="Reason">Reason for award:</label>
+            <input type='text' class="form-control" name='Reason' id="reason" />
+        </div>
+
+
+
+        <div class="row7-buttons">
+
+            <button class="save" onclick="save()">Save</button>
+            <button onclick="clickback()" class="cancel">Cancel</button>
+        </div>
+    </div>
+
 
 </div>

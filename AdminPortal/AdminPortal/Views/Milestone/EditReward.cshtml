@@ -4,6 +4,8 @@
 }
 
 @section Scripts{
+    <script type="text/javascript" src="~/Script/tokenHelper.js"></script>
+    <script type="text/javascript" src="~/Script/baseURL.js"></script>
     <link href="~/lib/noty.css" rel="stylesheet">
     <script src="~/lib/noty.min.js"></script>
     <script type="text/javascript" src="~/Script/tokenHelper.js"></script>
@@ -16,71 +18,91 @@
             return id;
         }
 
+        var baseURL = getBaseURL();
 
         function getRewardDetails() {
-            var url = "https://localhost:44300/api/v1/milestone/details/" + g_rewardId
-            $loadUserDataHandler = jQuery.ajax({
-                type: 'GET',
-                url: url,
-                contentType: "application/json",
-                dataType: 'json',
-                crossDomain: true,
-            })
-            $loadUserDataHandler.done(function (data, textStatus, jqXHR) {
-                console.log(data);
-                var rewards = data;
-                var rewardId = rewards[0].rewardId;
-                var reward = rewards[0].reward;
-                var points = rewards[0].points;
+            var url = baseURL + "/api/v1/milestone/details/" + g_rewardId
+            if (tokenIsValid()) {
+                bearerToken = JSON.parse(sessionStorage.getItem('tokenSessionObject')).token;
+                $loadUserDataHandler = jQuery.ajax({
+                    type: 'GET',
+                    beforeSend: function (request) {
+                        request.setRequestHeader("Authorization", "Bearer " + bearerToken);
+                    },
+                    url: url,
+                    contentType: "application/json",
+                    dataType: 'json',
+                    crossDomain: true,
+                })
+                $loadUserDataHandler.done(function (data, textStatus, jqXHR) {
+                    console.log(data);
+                    var rewards = data;
+                    var rewardId = rewards[0].rewardId;
+                    var reward = rewards[0].reward;
+                    var points = rewards[0].points;
 
-                $('#rewardId').val(rewardId);
-                $('#reward').val(reward);
-                $('#points').val(points);
+                    $('#rewardId').val(rewardId);
+                    $('#reward').val(reward);
+                    $('#points').val(points);
 
-            }) //end of done
+                }) //end of done
+            }
         }
         getRewardDetails();
 
 
         //Using a function technique to define a JavaScript class, WebFormData
-        function WebFormData(inCollectedReward, inCollectedPointNeeded) {
+        function WebFormData(inCollectedReward, inCollectedPointNeeded, inCUDBy) {
             this.Reward = inCollectedReward;
             this.PointNeeded = inCollectedPointNeeded;
+            this.CUDBy = inCUDBy;
         }
 
         function clickSave() {
             var collectedReward = $('#reward').val();
             var collectedPoints = $('#points').val();
+            var collectedCUDBy = JSON.parse(sessionStorage.getItem('employeeDetailsObject')).employeeId;
             //Create a WebFormData object, webFormData. Have its field values
             //populated with the collected course data
-            var webFormData = new WebFormData(collectedReward, collectedPoints);
+            var webFormData = new WebFormData(collectedReward, collectedPoints, collectedCUDBy);
             //Convert the webFromData into a JSON string
             var webFormDataInString = JSON.stringify(webFormData);
 
             console.log("JSON RESULTS for add: " + webFormDataInString);
 
-            var url = "https://localhost:44300/api/v1/milestone/details/" + g_rewardId;
+            var url = baseURL + "/api/v1/milestone/details/" + g_rewardId;
+            if (tokenIsValid()) {
+                bearerToken = JSON.parse(sessionStorage.getItem('tokenSessionObject')).token;
+                $updateCourseHandler = jQuery.ajax({
+                    type: 'PUT',
+                    beforeSend: function (request) {
+                        request.setRequestHeader("Authorization", "Bearer " + bearerToken);
+                    },
+                    url: url,
+                    dataType: 'json',
+                    contentType: 'application/json;',
+                    data: "'" + webFormDataInString + "'"
+                })//end of jQuery.ajax() call
+                $updateCourseHandler.done(function (data, textStatus, jqXHR) {
+                    alert("Reward Updated Successfully");
+                    location.href = "/Milestone/EditReward/" + g_rewardId;
+                });//end of $updateCourseHandler.done()
 
-            $updateCourseHandler = jQuery.ajax({
-                type: 'PUT',
-                url: url,
-                dataType: 'json',
-                contentType: 'application/json;',
-                data: "'" + webFormDataInString + "'"
-            })//end of jQuery.ajax() call
-            $updateCourseHandler.done(function (data, textStatus, jqXHR) {
-                alert("Reward Updated Successfully");
-                location.href = "/Milestone/EditReward/" + g_rewardId;
-            });//end of $updateCourseHandler.done()
+                $updateCourseHandler.error(function (data, textStatus, jqXHR) {
+                    console.log(data.responseJSON.message);
+                });//end of $updateCourseHandler.error()*/
+            }
+        }
 
-            $updateCourseHandler.error(function (data, textStatus, jqXHR) {
-                console.log(data.responseJSON.message);
-            });//end of $updateCourseHandler.error()*/
-
+        function WebFormDataForDelete(inCUDBy) {
+            this.CUDBy = inCUDBy;
         }
 
         function deleteReward() {
             var collectedCUDBy = JSON.parse(sessionStorage.getItem('employeeDetailsObject')).employeeId;
+            var webFormData = new WebFormDataForDelete(collectedCUDBy);
+            var webFormDataInString = JSON.stringify(webFormData);
+
             var noty = new Noty({
                 text: 'Continue the delete action?',
                 layout: 'center',
@@ -91,25 +113,34 @@
                     }),
 
                     Noty.button('Delete', 'btn btn-danger', function () {
-                        var url = "https://localhost:44300/api/v1/milestone/" + g_rewardId;
-                        $deleteHandler = jQuery.ajax({
-                            type: 'DELETE',
-                            url: url,
-                        })//end of jQuery.ajax() call
+                        var url = baseURL + "/api/v1/milestone/" + g_rewardId;
+                        if (tokenIsValid()) {
+                            bearerToken = JSON.parse(sessionStorage.getItem('tokenSessionObject')).token;
+                            $deleteHandler = jQuery.ajax({
+                                type: 'DELETE',
+                                beforeSend: function (request) {
+                                    request.setRequestHeader("Authorization", "Bearer " + bearerToken);
+                                },
+                                url: url,
+                                dataType: 'json',
+                                contentType: 'application/json;',
+                                data: "'" + webFormDataInString + "'"
+                            })//end of jQuery.ajax() call
 
-                        $deleteHandler.done(function (data, textStatus, jqXHR) {
-                            $('body').fadeOut(500, clickback);
-                            noty.close();
-                        })
+                            $deleteHandler.done(function (data, textStatus, jqXHR) {
+                                $('body').fadeOut(500, clickback);
+                                noty.close();
+                            })
 
-                        $deleteHandler.fail(function (data, textStatus, jqXHR) {
-                            console.log(data);
-                            new Noty({
-                                text: data.responseJSON.message, type: 'error',
-                                layout: 'center',
-                                template: '<div class="noty_message"><span class="noty_text"></span>'
-                            }).show();//end of noty()
-                        });//end of $deleteCourseHandler.fail()
+                            $deleteHandler.fail(function (data, textStatus, jqXHR) {
+                                console.log(data);
+                                new Noty({
+                                    text: data.responseJSON.message, type: 'error',
+                                    layout: 'center',
+                                    template: '<div class="noty_message"><span class="noty_text"></span>'
+                                }).show();//end of noty()
+                            });//end of $deleteCourseHandler.fail()
+                        }
                     })
                 ]
             }).show();
@@ -119,7 +150,7 @@
             location.href = "/Milestone/ManageMilestones";
         }
 
-            function viewDeleted() {
+        function viewDeleted() {
             location.href = "/Milestone/ManageDeletedMilestones";
         }
     </script>
@@ -141,33 +172,33 @@
         <button onclick="viewDeleted()" class="view-deleted" type="button">
             View Deleted Reward
         </button>
-        </div>
-        <hr class="divider">
-
-        <div class="edit-container">
-            <div class="title-bar orange-background">
-                <p class="panel-header">Edit Reward</p>
-
-            </div>
-            <div class="row4-rewardId">
-                <label class="normal-weight" for="reward">Reward ID:</label>
-                <input type="text" name="rewardId" id="rewardId" readonly>
-            </div>
-            <div class="row1-reward">
-                <label class="normal-weight" for="reward">Name of Reward:</label>
-                <input type="text" name="reward" id="reward">
-            </div>
-            <div class="row2-points">
-                <label class="normal-weight" for="points">Points Needed:</label>
-                <input type='text' name='points' id="points" />
-            </div>
-
-            <div class="row3-buttons">
-                <button class="delete" onclick="deleteReward()">Delete</button>
-                <button class="save" onclick="clickSave()">Save</button>
-                <button onclick="clickback()" class="cancel">Cancel</button>
-            </div>
-        </div>
-
-
     </div>
+    <hr class="divider">
+
+    <div class="edit-container">
+        <div class="title-bar orange-background">
+            <p class="panel-header">Edit Reward</p>
+
+        </div>
+        <div class="row4-rewardId">
+            <label class="normal-weight" for="reward">Reward ID:</label>
+            <input type="text" name="rewardId" id="rewardId" readonly>
+        </div>
+        <div class="row1-reward">
+            <label class="normal-weight" for="reward">Name of Reward:</label>
+            <input type="text" name="reward" id="reward">
+        </div>
+        <div class="row2-points">
+            <label class="normal-weight" for="points">Points Needed:</label>
+            <input type='text' name='points' id="points" />
+        </div>
+
+        <div class="row3-buttons">
+            <button class="delete" onclick="deleteReward()">Delete</button>
+            <button class="save" onclick="clickSave()">Save</button>
+            <button onclick="clickback()" class="cancel">Cancel</button>
+        </div>
+    </div>
+
+
+</div>

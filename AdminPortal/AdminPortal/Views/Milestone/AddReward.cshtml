@@ -4,42 +4,52 @@
 }
 
 @section Scripts{
+    <script type="text/javascript" src="~/Script/tokenHelper.js"></script>
+    <script type="text/javascript" src="~/Script/baseURL.js"></script>
     <script>
+             var baseURL = getBaseURL();
+
         //Using a function technique to define a JavaScript class, WebFormData
-        function WebFormData(inCollectedReward, inCollectedPointNeeded) {
+        function WebFormData(inCollectedReward, inCollectedPointNeeded, inCUDBy) {
             this.Reward = inCollectedReward;
             this.PointNeeded = inCollectedPointNeeded;
+             this.CUDBy = inCUDBy;
         }
 
         function clickSave() {
             var collectedReward = $('#reward').val();
             var collectedPoints = $('#points').val();
+            var collectedCUDBy = JSON.parse(sessionStorage.getItem('employeeDetailsObject')).employeeId;
             //Create a WebFormData object, webFormData. Have its field values
             //populated with the collected course data
-            var webFormData = new WebFormData(collectedReward, collectedPoints);
+            var webFormData = new WebFormData(collectedReward, collectedPoints, collectedCUDBy);
             //Convert the webFromData into a JSON string
             var webFormDataInString = JSON.stringify(webFormData);
 
             console.log("JSON RESULTS for add: " + webFormDataInString);
 
-            var url = "https://localhost:44300/api/v1/milestone"
+            var url = baseURL +  "/api/v1/milestone"
+            if (tokenIsValid()) {
+                bearerToken = JSON.parse(sessionStorage.getItem('tokenSessionObject')).token;
+                $updateCourseHandler = jQuery.ajax({
+                    type: 'POST',
+                    beforeSend: function (request) {
+                        request.setRequestHeader("Authorization", "Bearer " + bearerToken);
+                    },
+                    url: url,
+                    dataType: 'json',
+                    contentType: 'application/json;',
+                    data: "'" + webFormDataInString + "'"
+                })//end of jQuery.ajax() call
+                $updateCourseHandler.done(function (data, textStatus, jqXHR) {
+                    alert("Reward Added Successfully");
+                    location.href = "/Milestone/AddReward";
+                });//end of $updateCourseHandler.done()
 
-            $updateCourseHandler = jQuery.ajax({
-                type: 'POST',
-                url: url,
-                dataType: 'json',
-                contentType: 'application/json;',
-                data: "'" + webFormDataInString + "'"
-            })//end of jQuery.ajax() call
-            $updateCourseHandler.done(function (data, textStatus, jqXHR) {
-                alert("Reward Added Successfully");
-                location.href = "/Milestone/AddReward";
-            });//end of $updateCourseHandler.done()
-
-            $updateCourseHandler.error(function (data, textStatus, jqXHR) {
-                console.log(data.responseJSON.message);
-            });//end of $updateCourseHandler.error()*/
-
+                $updateCourseHandler.error(function (data, textStatus, jqXHR) {
+                    console.log(data.responseJSON.message);
+                });//end of $updateCourseHandler.error()*/
+            }
         }
 
         function clickback() {

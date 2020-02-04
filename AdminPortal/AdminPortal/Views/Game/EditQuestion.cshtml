@@ -105,14 +105,14 @@
             this.Question = inCollectedQuestion1;
             this.Answer = inCollectedAnswer;
             this.Choices = inCollectedChoices;
-             this.CUDBy = inCUDBy;
+            this.CUDBy = inCUDBy;
         }
 
         function clickSave() {
 
             var collectedQuestion = $('#question').val();
             var collectedChoices = [];
-             var collectedCUDBy = JSON.parse(sessionStorage.getItem('employeeDetailsObject')).employeeId;
+            var collectedCUDBy = JSON.parse(sessionStorage.getItem('employeeDetailsObject')).employeeId;
             //get the text input of the choice using the val of answer (choiceId)
             var selectedChoiceId = $('#answer').val();
             var collectedAnswer = $('#' + selectedChoiceId).val();
@@ -171,12 +171,12 @@
             }
         }
 
-          function WebFormDataForDelete(inCUDBy) {
-               this.CUDBy = inCUDBy;
+        function WebFormDataForDelete(inCUDBy) {
+            this.CUDBy = inCUDBy;
         }
 
         function deleteQuestion() {
-              var collectedCUDBy = JSON.parse(sessionStorage.getItem('employeeDetailsObject')).employeeId;
+            var collectedCUDBy = JSON.parse(sessionStorage.getItem('employeeDetailsObject')).employeeId;
             var webFormData = new WebFormDataForDelete(collectedCUDBy);
             var webFormDataInString = JSON.stringify(webFormData);
             var noty = new Noty({
@@ -198,7 +198,7 @@
                                     request.setRequestHeader("Authorization", "Bearer " + bearerToken);
                                 },
                                 url: url,
-                                 dataType: 'json',
+                                dataType: 'json',
                                 contentType: 'application/json;',
                                 data: "'" + webFormDataInString + "'"
                             })//end of jQuery.ajax() call
