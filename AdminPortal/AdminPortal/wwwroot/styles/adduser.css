@@ -333,25 +333,24 @@ input {
         margin-left: 56px;
     }
 
-.row4-rights {
+.row4-roles {
     display: flex;
     flex: 1;
     align-items: center;
     justify-content: center;
 }
 
-    .row4-rights label,
+    .row4-roles label,
     select {
         display: inline-block;
         vertical-align: middle;
     }
 
-    .row4-rights select {
+    .row4-roles select {
         width: 45%;
         height: 35px;
-        margin-left: 41px;
+        margin-left: 94px;
     }
-
 .row5-status {
     display: flex;
     flex: 1;
@@ -388,6 +387,26 @@ input {
         height: 35px;
         margin-left: 94px;
     }
+
+.row8-rights {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+}
+
+    .row8-rights label,
+    select {
+        display: inline-block;
+        vertical-align: middle;
+    }
+
+    .row8-rights select {
+        width: 45%;
+        height: 35px;
+        margin-left: 41px;
+    }
+
 
 .row6-buttons {
     display: flex;

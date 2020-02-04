@@ -25,6 +25,9 @@
         });
 
         
+        // default game id for dropdown
+        var gameId = 1;
+
                //when user select a different game for dropdown
         $("#games").change(function () {
             gameId = $(this).find(':selected').val();
@@ -181,8 +184,6 @@
             }
         });
 
-        // default game id for dropdown
-        var gameId = 1;
 
 
         function edit(questionId) {
