@@ -52,12 +52,12 @@
         //Convert the webFromData into a JSON string
         var webFormDataInString = JSON.stringify(webFormData);
 
-        var url = "https://localhost:44300/api/v1/signin"
+        var signinURL = "https://localhost:44300/api/v1/signin"
         var urlGetEmployeeDetails = "https://localhost:44300/api/v1/users/"
 
         $loginHandler = $.ajax({
             type: 'POST',
-            url: url,
+            url: signinURL,
             dataType: 'json',
             contentType: 'application/json;',
             data: "'" + webFormDataInString + "'"
