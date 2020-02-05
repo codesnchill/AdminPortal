@@ -1,5 +1,4 @@
-﻿
-@{
+﻿@{
     Layout = null;
 }
 
@@ -29,15 +28,21 @@
         <input type="password" name="password" class="input" required="required" id="password">
 
         <button class="login-button" onclick="login()">Submit</button>
+        <button class="login-button" onclick="hello()">GEt TOKEN</button>
+
     </div>
 </body>
 
 <link href="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.css" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.js" type="text/javascript"></script>
 <script type="text/javascript" src="~/Script/baseURL.js"></script>
-@*<script type="text/javascript" src="~/Script/tokenHelper.js"></script>*@
+<script type="text/javascript" src="~/Script/tokenHelper.js"></script>
 
 <script>
+    function hello() {
+        getTokenSession();
+    }
+
     //Using a function technique to define a JavaScript class, WebFormData
     function WebFormData(inCollectedUsername, inCollectedPassword) {
         this.Username = inCollectedUsername;
@@ -67,18 +72,19 @@
         $loginHandler.done(function (data, textStatus, jqXHR) {
 
             var tokenSessionObject = {
-                token: data.token,
-                refresh_token: data.refreshToken,
-                token_expiration: data.token_expiration //Timezone is in UTC
+                Token1: data.token.toString(),
+                Refresh_token: data.refreshToken.toString(),
+                Token_expiration: data.token_expiration.toString() //Timezone is in UTC
             };
 
-            sessionStorage.setItem("tokenSessionObject", JSON.stringify(tokenSessionObject));
+            //sessionStorage.setItem("tokenSessionObject", JSON.stringify(tokenSessionObject));
+            setTokenSession(tokenSessionObject);
 
             //get admin's details
             $adminDetailsHandler = $.ajax({
-                type: 'GET',    
-                beforeSend: function(request) {
-                  request.setRequestHeader("Authorization", "Bearer " + data.token);
+                type: 'GET',
+                beforeSend: function (request) {
+                    request.setRequestHeader("Authorization", "Bearer " + data.token);
                 },
                 url: urlGetEmployeeDetails + collectedUsername,
                 dataType: 'json',
@@ -91,14 +97,15 @@
                 data = data[0];
 
                 var employeeDetailsObject = {
-                    employeeName : data.employeeName,
-                    employeeImageURl: data.imageUrl,
-                    employeeId : data.employeeId
+                    EmployeeName: data.employeeName.toString(),
+                    EmployeeImageURl: data.imageUrl.toString(),
+                    EmployeeId: data.employeeId.toString()
                 };
 
-                sessionStorage.setItem("employeeDetailsObject", JSON.stringify(employeeDetailsObject));
+                //sessionStorage.setItem("employeeDetailsObject", JSON.stringify(employeeDetailsObject));
+                setEmployeeSession(employeeDetailsObject);
                 //redirect to homepage
-                location.href = "/Home/Index";
+                //location.href = "/Home/Index";
             });
 
         });//end of $loginHandler.done()
@@ -106,24 +113,21 @@
             var message = data.responseJSON.message;
 
             if (message.toString().toLowerCase() === "incorrect username or password") {
-			new Noty({
-				text: data.responseJSON.message, type: 'error',
-				layout: 'center',
-                template: '<div class="noty_message"><span class="noty_text"></span>'
-			}).show();
+                new Noty({
+                    text: data.responseJSON.message, type: 'error',
+                    layout: 'center',
+                    template: '<div class="noty_message"><span class="noty_text"></span>'
+                }).show();
             }
             if (message.toString().toLowerCase() === "unauthorised access") {
-			new Noty({
-				text: data.responseJSON.message, type: 'error',
-				layout: 'center',
-                template: '<div class="noty_message"><span class="noty_text"></span>'
-			}).show();
+                new Noty({
+                    text: data.responseJSON.message, type: 'error',
+                    layout: 'center',
+                    template: '<div class="noty_message"><span class="noty_text"></span>'
+                }).show();
             }
         });//end of $loginHandler.fail()*/
 
     }
 
 </script>
-
-
-

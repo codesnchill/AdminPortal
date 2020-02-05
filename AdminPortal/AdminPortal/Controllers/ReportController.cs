@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Rotativa.AspNetCore;
 using Syncfusion.HtmlConverter;
 using Syncfusion.Pdf;
+using Microsoft.AspNetCore.Http;
 
 namespace AdminPortal.Controllers
 {
