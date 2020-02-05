@@ -60,7 +60,7 @@ namespace AdminPortal.Controllers
 
         IEnumerable<Question> questions2 = null;
         const string QuestionListSessionName2 = "_GuessTheEmployeeQuestionList";
-        const string tokenSession2 = "tokenSessionObject2";
+        const string tokenSession2 = "tokenSessionObject";
 
         [HttpGet]
         public JsonResult LoadCompanyQuiz()
@@ -109,7 +109,7 @@ namespace AdminPortal.Controllers
 
         IEnumerable<Question> questions1 = null;
         const string EmployeeQuizSessionList = "_GuessTheEmployeeQuestionList";
-        const string tokenSession3 = "tokenSessionObject3";
+        const string tokenSession3 = "tokenSessionObject";
         [HttpGet]
         public JsonResult LoadGuessTheEmployeeQuiz()
         {
@@ -170,7 +170,7 @@ namespace AdminPortal.Controllers
 
         IEnumerable<Question> deletedQuestions = null;
         const string DeletedQuestionListSessionName = "_DeletedGameQuestionList";
-        const string tokenSession4 = "tokenSessionObject4";
+        const string tokenSession4 = "tokenSessionObject";
         public IActionResult ManageDeletedGames()
         {
             List<Question> questionList = new List<Question>();
@@ -216,7 +216,7 @@ namespace AdminPortal.Controllers
 
           IEnumerable<Question> deletedQuestions1 = null;
         const string DeletedCompanyQuizListSessionName = "_DeletedGameQuestionList";
-        const string tokenSession5 = "tokenSessionObject5";
+        const string tokenSession5 = "tokenSessionObject";
         [HttpGet]
         public JsonResult LoadDeletedCompanyQuiz()
         {
@@ -262,7 +262,7 @@ namespace AdminPortal.Controllers
 
         IEnumerable<Question> deletedQuestions2 = null;
         const string DeletedEmployeeListSessionName = "_GuessTheEmployeeQuestionList";
-        const string tokenSession6 = "tokenSessionObject6";
+        const string tokenSession6 = "tokenSessionObject";
 
         [HttpGet]
         public JsonResult LoadDeletedGuessTheEmployeeQuiz()

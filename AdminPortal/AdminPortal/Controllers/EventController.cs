@@ -9,6 +9,7 @@ using System.Windows;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Http;
 
+
 namespace AdminPortal.Controllers
 {
     public class EventController : Controller
@@ -16,14 +17,17 @@ namespace AdminPortal.Controllers
 
         IEnumerable<Event> events = null;
         const string EventListSessionName = "_EventList";
+        const string tokenSession = "tokenSessionObject";
         public IActionResult ManageEvents()
         {
            
             List<Event> eventList = new List<Event>();
-
+            var tokenObj = JsonConvert.DeserializeObject<dynamic>(HttpContext.Session.GetString(tokenSession));
+            var token = tokenObj.Token1;
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri("https://localhost:44300/api/v1/");
+                client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
                 //HTTP GET
                 var responseTask = client.GetAsync("events?deleted=false");
                 responseTask.Wait();
@@ -74,15 +78,18 @@ namespace AdminPortal.Controllers
 
         IEnumerable<Event> deletedEvents = null;
         const string DeletedEventListSessionName = "_DeletedEventList";
+        const string tokenSession2 = "tokenSessionObject";
         public IActionResult ManageDeletedEvents ()
         {
             List<Event> eventList = new List<Event>();
-
+            var tokenObj = JsonConvert.DeserializeObject<dynamic>(HttpContext.Session.GetString(tokenSession2));
+            var token = tokenObj.Token1;
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri("https://localhost:44300/api/v1/");
                 //HTTP GET
                 var responseTask = client.GetAsync("events?deleted=true");
+                client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
                 responseTask.Wait();
 
                 var result = responseTask.Result;
