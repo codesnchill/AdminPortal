@@ -39,7 +39,7 @@
 .line {
     height: 6px;
     width: 30px;
-    background-color: #fff;
+    background-color: #086795;
     border-radius: 2.5px;
 }
 
@@ -236,5 +236,9 @@ p.title-control {
 
     .hamburger {
         display: flex;
+    }
+
+    .line {
+        background-color: #fff;
     }
 }

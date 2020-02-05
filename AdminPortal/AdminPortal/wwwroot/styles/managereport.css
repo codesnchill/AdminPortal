@@ -38,7 +38,7 @@
 .line {
     height: 6px;
     width: 30px;
-    background-color: #fff;
+    background-color: #086795;
     border-radius: 2.5px;
 }
 
@@ -387,3 +387,19 @@ input {
         width: 15vw;
         margin-left: 60px;
     }
+
+
+@media only screen and (max-width: 800px) {
+    .bottom-section .left-section {
+        display: none;
+        z-index: 5;
+    }
+
+    .hamburger {
+        display: flex;
+    }
+
+    .line {
+        background-color: #fff;
+    }
+}
