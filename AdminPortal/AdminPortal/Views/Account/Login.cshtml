@@ -28,10 +28,6 @@
         <input type="password" name="password" class="input" required="required" id="password">
 
         <button class="login-button" onclick="login()">Submit</button>
-        <button class="login-button" onclick="getToken()">GET TOKEN</button>
-        <button class="login-button" onclick="refreshToken()">REFRESH TOKEN</button>
-        <button class="login-button" onclick="getEmployee()">GET EMPLOYEE</button>
-        <button class="login-button" onclick="clickme()">CLEAR</button>
     </div>
 </body>
 
@@ -41,24 +37,6 @@
 <script type="text/javascript" src="~/Script/tokenHelper.js"></script>
 
 <script>
-    function getToken() {
-        getTokenSession();
-    }
-
-    function refreshToken() {
-        tokenIsValid();
-    }
-
-    function getEmployee() {
-        console.log("CLICKED");
-        getEmployeeSession();
-    }
-
-    function clickme() {
-        console.log("CLICKED");
-        clearSession();
-    }
-
     //Using a function technique to define a JavaScript class, WebFormData
     function WebFormData(inCollectedUsername, inCollectedPassword) {
         this.Username = inCollectedUsername;
