@@ -5,6 +5,9 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using AdminPortal.Models;
+using System.Windows;
+using Newtonsoft.Json;
+using Microsoft.AspNetCore.Http;
 
 namespace AdminPortal.Controllers
 {
@@ -12,12 +15,16 @@ namespace AdminPortal.Controllers
     {
         IEnumerable<Question> questions = null;
         const string QuestionListSessionName = "_CompanyQuizQuestionList";
+        const string tokenSession = "tokenSessionObject";
         public IActionResult ManageGames()
         {
             List<Question> questionList = new List<Question>();
+            var tokenObj = JsonConvert.DeserializeObject<dynamic>(HttpContext.Session.GetString(tokenSession));
+            var token = tokenObj.Token1;
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri("https://localhost:44300/api/v1/");
+                client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
                 //HTTP GET
                 var responseTask = client.GetAsync("games/1?deleted=false");
                 responseTask.Wait();
@@ -53,15 +60,18 @@ namespace AdminPortal.Controllers
 
         IEnumerable<Question> questions2 = null;
         const string QuestionListSessionName2 = "_GuessTheEmployeeQuestionList";
-
+        const string tokenSession2 = "tokenSessionObject2";
 
         [HttpGet]
         public JsonResult LoadCompanyQuiz()
         {
             List<Question> questionList = new List<Question>();
+            var tokenObj = JsonConvert.DeserializeObject<dynamic>(HttpContext.Session.GetString(tokenSession2));
+            var token = tokenObj.Token1;
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri("https://localhost:44300/api/v1/");
+                client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
                 //HTTP GET
                 var responseTask = client.GetAsync("games/2?deleted=false");
                 responseTask.Wait();
@@ -99,14 +109,17 @@ namespace AdminPortal.Controllers
 
         IEnumerable<Question> questions1 = null;
         const string EmployeeQuizSessionList = "_GuessTheEmployeeQuestionList";
-
+        const string tokenSession3 = "tokenSessionObject3";
         [HttpGet]
         public JsonResult LoadGuessTheEmployeeQuiz()
         {
             List<Question> questionList = new List<Question>();
+            var tokenObj = JsonConvert.DeserializeObject<dynamic>(HttpContext.Session.GetString(tokenSession3));
+            var token = tokenObj.Token1;
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri("https://localhost:44300/api/v1/");
+                client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
                 //HTTP GET
                 var responseTask = client.GetAsync("games/1?deleted=false");
                 responseTask.Wait();
@@ -157,12 +170,16 @@ namespace AdminPortal.Controllers
 
         IEnumerable<Question> deletedQuestions = null;
         const string DeletedQuestionListSessionName = "_DeletedGameQuestionList";
+        const string tokenSession4 = "tokenSessionObject4";
         public IActionResult ManageDeletedGames()
         {
             List<Question> questionList = new List<Question>();
+            var tokenObj = JsonConvert.DeserializeObject<dynamic>(HttpContext.Session.GetString(tokenSession4));
+            var token = tokenObj.Token1;
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri("https://localhost:44300/api/v1/");
+                client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
                 //HTTP GET
                 var responseTask = client.GetAsync("games/1?deleted=true");
                 responseTask.Wait();
@@ -199,14 +216,17 @@ namespace AdminPortal.Controllers
 
           IEnumerable<Question> deletedQuestions1 = null;
         const string DeletedCompanyQuizListSessionName = "_DeletedGameQuestionList";
-
+        const string tokenSession5 = "tokenSessionObject5";
         [HttpGet]
         public JsonResult LoadDeletedCompanyQuiz()
         {
             List<Question> questionList = new List<Question>();
+            var tokenObj = JsonConvert.DeserializeObject<dynamic>(HttpContext.Session.GetString(tokenSession5));
+            var token = tokenObj.Token1;
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri("https://localhost:44300/api/v1/");
+                client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
                 //HTTP GET
                 var responseTask = client.GetAsync("games/2?deleted=true");
                 responseTask.Wait();
@@ -242,15 +262,18 @@ namespace AdminPortal.Controllers
 
         IEnumerable<Question> deletedQuestions2 = null;
         const string DeletedEmployeeListSessionName = "_GuessTheEmployeeQuestionList";
-
+        const string tokenSession6 = "tokenSessionObject6";
 
         [HttpGet]
         public JsonResult LoadDeletedGuessTheEmployeeQuiz()
         {
             List<Question> questionList = new List<Question>();
+            var tokenObj = JsonConvert.DeserializeObject<dynamic>(HttpContext.Session.GetString(tokenSession6));
+            var token = tokenObj.Token1;
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri("https://localhost:44300/api/v1/");
+                client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
                 //HTTP GET
                 var responseTask = client.GetAsync("games/1?deleted=true");
                 responseTask.Wait();
