@@ -18,9 +18,8 @@
 
            var baseURL = getBaseURL();
 
-        function getUserDetails() {
-            if (tokenIsValid()) {
-                bearerToken = JSON.parse(sessionStorage.getItem('tokenSessionObject')).token;
+        function getUserDetails(sessionObject) {
+                bearerToken = sessionObject.Token1;
                 var url = baseURL + "/api/v1/users/" + g_userId
                 $loadUserDataHandler = jQuery.ajax({
                     type: 'GET',
@@ -49,10 +48,9 @@
 
 
                 }) //end of done
-            }
         }
 
-        getUserDetails();
+        $.when(tokenIsValid, getTokenSession(getUserDetails));
 
 
         //Using a function technique to define a JavaScript class, WebFormData
