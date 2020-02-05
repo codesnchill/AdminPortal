@@ -17,13 +17,16 @@ namespace AdminPortal.Controllers
     {
         IEnumerable<Milestone> reward = null;
         const string RewardListSessionName = "_RewardList";
+        const string tokenSession = "tokenSessionObject";
         public IActionResult ManageMilestones()
         {
             List<Milestone> rewardList = new List<Milestone>();
-
+            var tokenObj = JsonConvert.DeserializeObject<dynamic>(HttpContext.Session.GetString(tokenSession));
+            var token = tokenObj.Token1;
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri("https://localhost:44300/api/v1/");
+                client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
                 //HTTP GET
                 var responseTask = client.GetAsync("milestone?deleted=false");
                 responseTask.Wait();
@@ -75,13 +78,16 @@ namespace AdminPortal.Controllers
         IEnumerable<Milestone> deletedReward = null;
 
         const string DeletedRewardListSessionName = "_DeletedRewardList";
+        const string tokenSession2 = "tokenSessionObject";
         public IActionResult ManageDeletedMilestones()
         {
             List<Milestone> rewardList = new List<Milestone>();
-
+            var tokenObj = JsonConvert.DeserializeObject<dynamic>(HttpContext.Session.GetString(tokenSession2));
+            var token = tokenObj.Token1;
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri("https://localhost:44300/api/v1/");
+                client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
                 //HTTP GET
                 var responseTask = client.GetAsync("milestone?deleted=true");
                 responseTask.Wait();
