@@ -15,8 +15,11 @@ function tokenIsValid() {
         var sessionObject = JSON.parse(data);
         var expirationDate = sessionObject.Token_expiration;
         var refresh_token = sessionObject.Refresh_token;
-        console.log(expirationDate)
-        refreshTokenSession(refresh_token)
+
+        if (expirationDate < Date.now() / 1000) {
+            refreshTokenSession(refresh_token)
+            console.log("TOKEN HAS EXPIRED...REFRESHING TOKEN");
+        }
         // token is valid once token is refreshed (if expired)
         return true;
     });
