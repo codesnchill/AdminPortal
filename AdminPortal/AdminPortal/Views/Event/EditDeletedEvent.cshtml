@@ -16,15 +16,13 @@
         $(document).ready(function () {
 
             $(".mySelect2").select2();
-            getEventDetails()
 
         });
 
         var baseURL = getBaseURL();
 
-        function loadDepartments() {
-            if (tokenIsValid()) {
-                bearerToken = JSON.parse(sessionStorage.getItem('tokenSessionObject')).token;
+        function loadDepartments(sessionObject) {
+                bearerToken = sessionObject.Token1;
                 var url = baseURL + "/api/v1/departments"
                 var $loadhandler = jQuery.ajax({
                     type: 'GET',
@@ -47,9 +45,8 @@
                             .text(obj.departmentName));
                     });
                 });
-            }
         }
-        loadDepartments();
+         $.when(tokenIsValid, getTokenSession(loadDepartments));
 
 
         // Start of getting eventId from addressbar
@@ -61,11 +58,9 @@
         }
 
 
-        function getEventDetails() {
-
+        function getEventDetails(sessionObject) {
+            bearerToken = sessionObject.Token1;
             var url = baseURL + "/api/v1/events/" + g_eventId
-            if (tokenIsValid()) {
-                bearerToken = JSON.parse(sessionStorage.getItem('tokenSessionObject')).token;
                 $loadUserDataHandler = jQuery.ajax({
                     type: 'GET',
                       beforeSend: function (request) {
@@ -117,10 +112,8 @@
                     //}).prop('selected', true);
 
                 }) //end of done
-            }
-
         }
-
+         $.when(tokenIsValid, getTokenSession(getEventDetails));
 
 
 

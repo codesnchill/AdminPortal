@@ -16,10 +16,8 @@
 
         var baseURL = getBaseURL();
 
-        function loadDepartments() {
-            if (tokenIsValid()) {
-                bearerToken = JSON.parse(sessionStorage.getItem('tokenSessionObject')).token;
-
+        function loadDepartments(sessionObject) {
+            bearerToken = sessionObject.Token1;
                 var url = baseURL + "/api/v1/departments"
                 var $loadhandler = jQuery.ajax({
                     type: 'GET',
@@ -42,9 +40,8 @@
                             .text(obj.departmentName));
                     });
                 });
-            }
         }
-        loadDepartments();
+       $.when(tokenIsValid, getTokenSession(loadDepartments));
 
 
         //Using a function technique to define a JavaScript class, WebFormData
