@@ -29,7 +29,7 @@ namespace AdminPortal.Controllers
         public async Task<IActionResult> AuditReport(string ReportType, string StartDate, string EndDate)
         {
             List<AuditReport> auditreportList = new List<AuditReport>();
-            var tokenObj = JsonConvert.DeserializeObject<dynamic>(HttpContext.Session.GetString(tokenSession));
+            var tokenObj = JsonConvert.DeserializeObject<Token>(HttpContext.Session.GetString(tokenSession));
             var token = tokenObj.Token1;
             var type = ReportType;
             var start = StartDate;
@@ -79,7 +79,7 @@ namespace AdminPortal.Controllers
         public async Task<IActionResult> MilestoneReport(string ReportType, string StartDate, string EndDate)
         {
             List<Milestone> reportList = new List<Milestone>();
-            var tokenObj = JsonConvert.DeserializeObject<dynamic>(HttpContext.Session.GetString(tokenSession));
+            var tokenObj = JsonConvert.DeserializeObject<Token>(HttpContext.Session.GetString(tokenSession));
             var token = tokenObj.Token1;
             //var type = employeeQuery.ReportType;
             //var start = employeeQuery.StartDate;
@@ -131,7 +131,7 @@ namespace AdminPortal.Controllers
         public async Task<IActionResult> RankingReport(string ReportType, string StartDate, string EndDate)
         {
             List<RankingReport> rankingreportList = new List<RankingReport>();
-            var tokenObj = JsonConvert.DeserializeObject<dynamic>(HttpContext.Session.GetString(tokenSession));
+            var tokenObj = JsonConvert.DeserializeObject<Token>(HttpContext.Session.GetString(tokenSession));
             var token = tokenObj.Token1;
             //var type = employeeQuery.ReportType;
             //var start = employeeQuery.StartDate;

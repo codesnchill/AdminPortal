@@ -206,10 +206,9 @@
 
              var baseURL = getBaseURL();
 
-        function loadGames() {
+        function loadGames(sessionObject) {
+            bearerToken = sessionObject.Token1;
             var url = baseURL + "/api/v1/games"
-            if (tokenIsValid()) {
-                bearerToken = JSON.parse(sessionStorage.getItem('tokenSessionObject')).token;
                 var $loadhandler = jQuery.ajax({
                     type: 'GET',
                       beforeSend: function (request) {
@@ -231,9 +230,8 @@
                             .text(obj.gameName));
                     });
                 });
-            }
         }
-        loadGames();
+        $.when(tokenIsValid, getTokenSession(loadGames));
 
     </script>
 

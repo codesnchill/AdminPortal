@@ -214,11 +214,10 @@
 
         var baseURL = getBaseURL();
         console.log("baseURL :" + baseURL);
-        function loadGames() {
+        function loadGames(sessionObject) {
+            bearerToken = sessionObject.Token1;
             var url = getBaseURL + "/api/v1/games"
-            if (tokenIsValid()) {
-                bearerToken = JSON.parse(sessionStorage.getItem('tokenSessionObject')).token;
-                var $loadhandler = jQuery.ajax({
+            var $loadhandler = jQuery.ajax({
                     type: 'GET',
                      beforeSend: function (request) {
                         request.setRequestHeader("Authorization", "Bearer " + bearerToken);
@@ -239,9 +238,8 @@
                             .text(obj.gameName));
                     });
                 });
-            }
         }
-        loadGames();
+          $.when(tokenIsValid, getTokenSession(loadGames));
 
     </script>
 

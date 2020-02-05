@@ -22,7 +22,7 @@ namespace AdminPortal.Controllers
         {
            
             List<Event> eventList = new List<Event>();
-            var tokenObj = JsonConvert.DeserializeObject<dynamic>(HttpContext.Session.GetString(tokenSession));
+            var tokenObj = JsonConvert.DeserializeObject<Token>(HttpContext.Session.GetString(tokenSession));
             var token = tokenObj.Token1;
             AccountController account = new AccountController();
             bool tokenIsValid = await account.tokenIsValid(tokenObj, HttpContext);
@@ -86,7 +86,7 @@ namespace AdminPortal.Controllers
         public async Task<IActionResult> ManageDeletedEvents ()
         {
             List<Event> eventList = new List<Event>();
-            var tokenObj = JsonConvert.DeserializeObject<dynamic>(HttpContext.Session.GetString(tokenSession));
+            var tokenObj = JsonConvert.DeserializeObject<Token>(HttpContext.Session.GetString(tokenSession));
             var token = tokenObj.Token1;
             AccountController account = new AccountController();
             bool tokenIsValid = await account.tokenIsValid(tokenObj, HttpContext);

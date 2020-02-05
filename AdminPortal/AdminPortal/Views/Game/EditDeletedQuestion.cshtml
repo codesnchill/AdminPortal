@@ -32,9 +32,8 @@
         var questionId = getQuestionIdFromAddressBar();
 
 
-        function getGameDetails() {
-            if (tokenIsValid()) {
-                bearerToken = JSON.parse(sessionStorage.getItem('tokenSessionObject')).token;
+        function getGameDetails(sessionObject) {
+                bearerToken = sessionObject.Token1;
                 var url = baseURL + "/api/v1/games/" + gameId + "/questions/" + questionId;
                 $loadUserDataHandler = jQuery.ajax({
                     type: 'GET',
@@ -94,10 +93,8 @@
                     console.log("Answer: " + answer);
 
                 }) //end of done
-            }
-
         }
-        getGameDetails();
+         $.when(tokenIsValid, getTokenSession(getGameDetails));
 
 
         //Using a function technique to define a JavaScript class, WebFormData
