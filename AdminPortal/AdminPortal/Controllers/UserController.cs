@@ -35,7 +35,7 @@ namespace AdminPortal.Controllers
 
         const string EmployeeListSessionName = "_EmployeeList";
         const string tokenSession = "tokenSessionObject";
-
+        const string tokenSession2 = "tokenSessionObject";
         public async Task<IActionResult> ManageUser()
         {
             List<Employee> myEmployeeList = new List<Employee>();
@@ -114,10 +114,13 @@ namespace AdminPortal.Controllers
         public IActionResult ManageDeletedUser()
         {
             List<Employee> myEmployeeList = new List<Employee>();
+            Token tokenObj = JsonConvert.DeserializeObject<Token>(HttpContext.Session.GetString(tokenSession2));
+            var token = tokenObj.Token1;
 
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri("https://localhost:44300/api/v1/");
+                client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
                 //HTTP GET
                 var responseTask = client.GetAsync("users?isDisabled=true");
                 responseTask.Wait();
