@@ -10,7 +10,7 @@ using Rotativa.AspNetCore;
 using Syncfusion.HtmlConverter;
 using Syncfusion.Pdf;
 using Microsoft.AspNetCore.Http;
-
+using Newtonsoft.Json;
 namespace AdminPortal.Controllers
 {
 
@@ -18,8 +18,10 @@ namespace AdminPortal.Controllers
     {
         IEnumerable<Milestone> report = null;
         IEnumerable<RankingReport> rankingreport = null;
-
         IEnumerable<AuditReport> auditreport = null;
+        const string tokenSession = "tokenSessionObject";
+        const string tokenSession2 = "tokenSessionObject";
+        const string tokenSession3 = "tokenSessionObject";
         public IActionResult GenerateReport()
         {
             return View();
@@ -29,6 +31,8 @@ namespace AdminPortal.Controllers
         public IActionResult AuditReport(string ReportType, string StartDate, string EndDate)
         {
             List<AuditReport> auditreportList = new List<AuditReport>();
+            var tokenObj = JsonConvert.DeserializeObject<dynamic>(HttpContext.Session.GetString(tokenSession));
+            var token = tokenObj.Token1;
             var type = ReportType;
             var start = StartDate;
             var end = EndDate;
@@ -36,6 +40,7 @@ namespace AdminPortal.Controllers
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri("https://localhost:44300/api/v1/");
+                client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
                 //HTTP GET
                 var responseTask = client.GetAsync("report?ReportType=" + type + "&StartDate=" + start + "&EndDate=" + end);
                 responseTask.Wait();
@@ -72,6 +77,8 @@ namespace AdminPortal.Controllers
         public IActionResult MilestoneReport(string ReportType, string StartDate, string EndDate)
         {
             List<Milestone> reportList = new List<Milestone>();
+            var tokenObj = JsonConvert.DeserializeObject<dynamic>(HttpContext.Session.GetString(tokenSession2));
+            var token = tokenObj.Token1;
             //var type = employeeQuery.ReportType;
             //var start = employeeQuery.StartDate;
             //var end = employeeQuery.EndDate;
@@ -81,6 +88,7 @@ namespace AdminPortal.Controllers
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri("https://localhost:44300/api/v1/");
+                client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
                 //HTTP GET
                 var responseTask = client.GetAsync("report?ReportType=" + type + "&StartDate=" + start + "&EndDate=" + end);
                 responseTask.Wait();
@@ -119,6 +127,8 @@ namespace AdminPortal.Controllers
         public IActionResult RankingReport(string ReportType, string StartDate, string EndDate)
         {
             List<RankingReport> rankingreportList = new List<RankingReport>();
+            var tokenObj = JsonConvert.DeserializeObject<dynamic>(HttpContext.Session.GetString(tokenSession3));
+            var token = tokenObj.Token1;
             //var type = employeeQuery.ReportType;
             //var start = employeeQuery.StartDate;
             //var end = employeeQuery.EndDate;
@@ -128,6 +138,7 @@ namespace AdminPortal.Controllers
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri("https://localhost:44300/api/v1/");
+                client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
                 //HTTP GET
                 var responseTask = client.GetAsync("report?ReportType=" + type + "&StartDate=" + start + "&EndDate=" + end);
                 responseTask.Wait();
