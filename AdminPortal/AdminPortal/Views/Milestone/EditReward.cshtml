@@ -20,10 +20,9 @@
 
         var baseURL = getBaseURL();
 
-        function getRewardDetails() {
+        function getRewardDetails(sessionObject) {
+              bearerToken = sessionObject.Token1;
             var url = baseURL + "/api/v1/milestone/details/" + g_rewardId
-            if (tokenIsValid()) {
-                bearerToken = JSON.parse(sessionStorage.getItem('tokenSessionObject')).token;
                 $loadUserDataHandler = jQuery.ajax({
                     type: 'GET',
                     beforeSend: function (request) {
@@ -46,9 +45,8 @@
                     $('#points').val(points);
 
                 }) //end of done
-            }
         }
-        getRewardDetails();
+        $.when(tokenIsValid, getTokenSession(getRewardDetails));
 
 
         //Using a function technique to define a JavaScript class, WebFormData
@@ -153,6 +151,10 @@
         function viewDeleted() {
             location.href = "/Milestone/ManageDeletedMilestones";
         }
+
+        function view() {
+            location.href = "/Milestone/ManageMilestones";
+        }
     </script>
 }
 
@@ -166,7 +168,7 @@
         <p class="title-control">Manage Milestones</p>
     </div>
     <div class="view-buttons">
-        <button class="view-details" type="button">
+        <button onclick="view()" class="view-details" type="button">
             View Reward Details
         </button>
         <button onclick="viewDeleted()" class="view-deleted" type="button">

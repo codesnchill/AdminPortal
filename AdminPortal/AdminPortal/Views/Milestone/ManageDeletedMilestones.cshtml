@@ -39,6 +39,10 @@
         function view() {
                location.href = "/Milestone/ManageMilestones";
         }
+
+         function viewDeleted() {
+            location.href = "/Milestone/ManageDeletedMilestones";
+        }
     </script>
 }
 
@@ -54,7 +58,7 @@
         <button onclick="view()" class="view-details" type="button">
             View Reward Details
         </button>
-        <button class="view-deleted" type="button">
+        <button onclick="viewDeleted()" class="view-deleted" type="button">
             View Deleted Reward
         </button>
 

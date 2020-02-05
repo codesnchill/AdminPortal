@@ -55,6 +55,14 @@
         function clickback() {
             location.href = "/Milestone/ManageMilestones";
         }
+
+           function view() {
+               location.href = "/Milestone/ManageMilestones";
+        }
+
+         function viewDeleted() {
+            location.href = "/Milestone/ManageDeletedMilestones";
+        }
     </script>
 }
 
@@ -66,28 +74,35 @@
     <div class="title">
         <p class="title-control">Manage Milestones</p>
     </div>
-
-    <hr class="divider">
-
-    <div class="edit-container">
-        <div class="title-bar orange-background">
-            <p class="panel-header">Add Reward</p>
-
+    <div class="view-buttons">
+        <button onclick="view()" class="view-details" type="button">
+            View Reward Details
+        </button>
+        <button class="view-deleted" type="button">
+            View Deleted Reward
+        </button>
         </div>
-        <div class="row1-reward">
-            <label class="normal-weight" for="reward">Name of Reward:</label>
-            <input type="text" name="reward" id="reward">
-        </div>
-        <div class="row2-points">
-            <label class="normal-weight" for="points">Points Needed:</label>
-            <input type='text' name='points' id="points" />
+        <hr class="divider">
+
+        <div class="edit-container">
+            <div class="title-bar orange-background">
+                <p class="panel-header">Add Reward</p>
+
+            </div>
+            <div class="row1-reward">
+                <label class="normal-weight" for="reward">Name of Reward:</label>
+                <input type="text" name="reward" id="reward">
+            </div>
+            <div class="row2-points">
+                <label class="normal-weight" for="points">Points Needed:</label>
+                <input type='text' name='points' id="points" />
+            </div>
+
+            <div class="row3-buttons">
+                <button class="save" onclick="clickSave()">Save</button>
+                <button onclick="clickback()" class="cancel">Cancel</button>
+            </div>
         </div>
 
-        <div class="row3-buttons">
-            <button class="save" onclick="clickSave()">Save</button>
-            <button onclick="clickback()" class="cancel">Cancel</button>
-        </div>
+
     </div>
-
-
-</div>
