@@ -20,15 +20,13 @@ namespace AdminPortal.Controllers
         IEnumerable<RankingReport> rankingreport = null;
         IEnumerable<AuditReport> auditreport = null;
         const string tokenSession = "tokenSessionObject";
-        const string tokenSession2 = "tokenSessionObject";
-        const string tokenSession3 = "tokenSessionObject";
         public IActionResult GenerateReport()
         {
             return View();
         }
 
         [HttpGet]
-        public IActionResult AuditReport(string ReportType, string StartDate, string EndDate)
+        public async Task<IActionResult> AuditReport(string ReportType, string StartDate, string EndDate)
         {
             List<AuditReport> auditreportList = new List<AuditReport>();
             var tokenObj = JsonConvert.DeserializeObject<dynamic>(HttpContext.Session.GetString(tokenSession));
@@ -36,48 +34,52 @@ namespace AdminPortal.Controllers
             var type = ReportType;
             var start = StartDate;
             var end = EndDate;
-
-            using (var client = new HttpClient())
+            AccountController account = new AccountController();
+            bool tokenIsValid = await account.tokenIsValid(tokenObj, HttpContext);
+            if (tokenIsValid)
             {
-                client.BaseAddress = new Uri("https://localhost:44300/api/v1/");
-                client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
-                //HTTP GET
-                var responseTask = client.GetAsync("report?ReportType=" + type + "&StartDate=" + start + "&EndDate=" + end);
-                responseTask.Wait();
-
-                var result = responseTask.Result;
-                if (result.IsSuccessStatusCode)
+                using (var client = new HttpClient())
                 {
-                    var readTask = result.Content.ReadAsAsync<IList<AuditReport>>();
-                    readTask.Wait();
+                    client.BaseAddress = new Uri("https://localhost:44300/api/v1/");
+                    client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
+                    //HTTP GET
+                    var responseTask = client.GetAsync("report?ReportType=" + type + "&StartDate=" + start + "&EndDate=" + end);
+                    responseTask.Wait();
 
-                    auditreport = readTask.Result;
-                    
-                    auditreportList = auditreport.ToList();
-                    foreach (var i in auditreport)
+                    var result = responseTask.Result;
+                    if (result.IsSuccessStatusCode)
                     {
-                        i.startDate = start;
-                        i.endDate = end;
+                        var readTask = result.Content.ReadAsAsync<IList<AuditReport>>();
+                        readTask.Wait();
+
+                        auditreport = readTask.Result;
+
+                        auditreportList = auditreport.ToList();
+                        foreach (var i in auditreport)
+                        {
+                            i.startDate = start;
+                            i.endDate = end;
+                        }
+                    }
+                    else //web api sent error response 
+                    {
+                        //log response status here..
+
+                        auditreport = Enumerable.Empty<AuditReport>();
+
+                        ModelState.AddModelError(string.Empty, "Server error. Please contact administrator.");
                     }
                 }
-                else //web api sent error response 
-                {
-                    //log response status here..
-
-                    auditreport = Enumerable.Empty<AuditReport>();
-
-                    ModelState.AddModelError(string.Empty, "Server error. Please contact administrator.");
-                }
-                return new ViewAsPdf(auditreportList);
-
             }
-        }
+                return new ViewAsPdf(auditreportList);
+            }
+        
 
         [HttpGet]
-        public IActionResult MilestoneReport(string ReportType, string StartDate, string EndDate)
+        public async Task<IActionResult> MilestoneReport(string ReportType, string StartDate, string EndDate)
         {
             List<Milestone> reportList = new List<Milestone>();
-            var tokenObj = JsonConvert.DeserializeObject<dynamic>(HttpContext.Session.GetString(tokenSession2));
+            var tokenObj = JsonConvert.DeserializeObject<dynamic>(HttpContext.Session.GetString(tokenSession));
             var token = tokenObj.Token1;
             //var type = employeeQuery.ReportType;
             //var start = employeeQuery.StartDate;
@@ -85,49 +87,51 @@ namespace AdminPortal.Controllers
             var type = ReportType;
             var start = StartDate;
             var end = EndDate;
-            using (var client = new HttpClient())
+            AccountController account = new AccountController();
+            bool tokenIsValid = await account.tokenIsValid(tokenObj, HttpContext);
+            if (tokenIsValid)
             {
-                client.BaseAddress = new Uri("https://localhost:44300/api/v1/");
-                client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
-                //HTTP GET
-                var responseTask = client.GetAsync("report?ReportType=" + type + "&StartDate=" + start + "&EndDate=" + end);
-                responseTask.Wait();
-
-                var result = responseTask.Result;
-                if (result.IsSuccessStatusCode)
+                using (var client = new HttpClient())
                 {
-                    var readTask = result.Content.ReadAsAsync<IList<Milestone>>();
-                    readTask.Wait();
+                    client.BaseAddress = new Uri("https://localhost:44300/api/v1/");
+                    client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
+                    //HTTP GET
+                    var responseTask = client.GetAsync("report?ReportType=" + type + "&StartDate=" + start + "&EndDate=" + end);
+                    responseTask.Wait();
 
-                    report = readTask.Result;
-                    reportList = report.ToList();
-                    foreach (var i in reportList)
+                    var result = responseTask.Result;
+                    if (result.IsSuccessStatusCode)
                     {
-                        i.startDate = start;
-                        i.endDate = end;
+                        var readTask = result.Content.ReadAsAsync<IList<Milestone>>();
+                        readTask.Wait();
+
+                        report = readTask.Result;
+                        reportList = report.ToList();
+                        foreach (var i in reportList)
+                        {
+                            i.startDate = start;
+                            i.endDate = end;
+                        }
+                    }
+                    else //web api sent error response 
+                    {
+                        //log response status here..
+
+                        report = Enumerable.Empty<Milestone>();
+
+                        ModelState.AddModelError(string.Empty, "Server error. Please contact administrator.");
                     }
                 }
-                else //web api sent error response 
-                {
-                    //log response status here..
-
-                    report = Enumerable.Empty<Milestone>();
-
-                    ModelState.AddModelError(string.Empty, "Server error. Please contact administrator.");
-                }
-
-                return new ViewAsPdf(reportList);
-
             }
-            //    return View();
-            //}      
+                return new ViewAsPdf(reportList);
+            }
 
-        }
+        
         [HttpGet]
-        public IActionResult RankingReport(string ReportType, string StartDate, string EndDate)
+        public async Task<IActionResult> RankingReport(string ReportType, string StartDate, string EndDate)
         {
             List<RankingReport> rankingreportList = new List<RankingReport>();
-            var tokenObj = JsonConvert.DeserializeObject<dynamic>(HttpContext.Session.GetString(tokenSession3));
+            var tokenObj = JsonConvert.DeserializeObject<dynamic>(HttpContext.Session.GetString(tokenSession));
             var token = tokenObj.Token1;
             //var type = employeeQuery.ReportType;
             //var start = employeeQuery.StartDate;
@@ -135,42 +139,44 @@ namespace AdminPortal.Controllers
             var type = ReportType;
             var start = StartDate;
             var end = EndDate;
-            using (var client = new HttpClient())
+            AccountController account = new AccountController();
+            bool tokenIsValid = await account.tokenIsValid(tokenObj, HttpContext);
+            if (tokenIsValid)
             {
-                client.BaseAddress = new Uri("https://localhost:44300/api/v1/");
-                client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
-                //HTTP GET
-                var responseTask = client.GetAsync("report?ReportType=" + type + "&StartDate=" + start + "&EndDate=" + end);
-                responseTask.Wait();
-
-                var result = responseTask.Result;
-                if (result.IsSuccessStatusCode)
+                using (var client = new HttpClient())
                 {
-                    var readTask = result.Content.ReadAsAsync<IList<RankingReport>>();
-                    readTask.Wait();
+                    client.BaseAddress = new Uri("https://localhost:44300/api/v1/");
+                    client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
+                    //HTTP GET
+                    var responseTask = client.GetAsync("report?ReportType=" + type + "&StartDate=" + start + "&EndDate=" + end);
+                    responseTask.Wait();
 
-                    rankingreport = readTask.Result;
-                    rankingreportList = rankingreport.ToList();
-                    foreach (var i in rankingreport)
+                    var result = responseTask.Result;
+                    if (result.IsSuccessStatusCode)
                     {
-                        i.startDate = start;
-                        i.endDate = end;
+                        var readTask = result.Content.ReadAsAsync<IList<RankingReport>>();
+                        readTask.Wait();
+
+                        rankingreport = readTask.Result;
+                        rankingreportList = rankingreport.ToList();
+                        foreach (var i in rankingreport)
+                        {
+                            i.startDate = start;
+                            i.endDate = end;
+                        }
+                    }
+                    else //web api sent error response 
+                    {
+                        //log response status here..
+
+                        rankingreport = Enumerable.Empty<RankingReport>();
+
+                        ModelState.AddModelError(string.Empty, "Server error. Please contact administrator.");
                     }
                 }
-                else //web api sent error response 
-                {
-                    //log response status here..
-
-                    rankingreport = Enumerable.Empty<RankingReport>();
-
-                    ModelState.AddModelError(string.Empty, "Server error. Please contact administrator.");
-                }
-                return new ViewAsPdf(rankingreportList);
-
             }
-            //    return View();
-            //}      
-
+                return new ViewAsPdf(rankingreportList);
+            }
         }
     }
-}
+

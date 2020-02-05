@@ -35,7 +35,6 @@ namespace AdminPortal.Controllers
 
         const string EmployeeListSessionName = "_EmployeeList";
         const string tokenSession = "tokenSessionObject";
-        const string tokenSession2 = "tokenSessionObject";
         public async Task<IActionResult> ManageUser()
         {
             List<Employee> myEmployeeList = new List<Employee>();
@@ -111,45 +110,51 @@ namespace AdminPortal.Controllers
         IEnumerable<Employee> deletedEmployee = null;
 
         const string DeletedEmployeeListSessionName = "_DEmployeeList";
-        public IActionResult ManageDeletedUser()
+        public async Task<IActionResult> ManageDeletedUser()
         {
             List<Employee> myEmployeeList = new List<Employee>();
-            Token tokenObj = JsonConvert.DeserializeObject<Token>(HttpContext.Session.GetString(tokenSession2));
+            Token tokenObj = JsonConvert.DeserializeObject<Token>(HttpContext.Session.GetString(tokenSession));
             var token = tokenObj.Token1;
 
-            using (var client = new HttpClient())
+            AccountController account = new AccountController();
+            bool tokenIsValid = await account.tokenIsValid(tokenObj, HttpContext);
+
+            if (tokenIsValid)
             {
-                client.BaseAddress = new Uri("https://localhost:44300/api/v1/");
-                client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
-                //HTTP GET
-                var responseTask = client.GetAsync("users?isDisabled=true");
-                responseTask.Wait();
 
-                var result = responseTask.Result;
-                if (result.IsSuccessStatusCode)
+                using (var client = new HttpClient())
                 {
-                    var readTask = result.Content.ReadAsAsync<IList<Employee>>();
-                    readTask.Wait();
+                    client.BaseAddress = new Uri("https://localhost:44300/api/v1/");
+                    client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
+                    //HTTP GET
+                    var responseTask = client.GetAsync("users?isDisabled=true");
+                    responseTask.Wait();
 
-                    deletedEmployee = readTask.Result;
-                    myEmployeeList = deletedEmployee.ToList();
+                    var result = responseTask.Result;
+                    if (result.IsSuccessStatusCode)
+                    {
+                        var readTask = result.Content.ReadAsAsync<IList<Employee>>();
+                        readTask.Wait();
 
-                    // store employee in session
-                    HttpContext.Session.SetComplexData(DeletedEmployeeListSessionName, myEmployeeList);
-                    //HttpContext.Session["employeeList"] = employeeList;
+                        deletedEmployee = readTask.Result;
+                        myEmployeeList = deletedEmployee.ToList();
+
+                        // store employee in session
+                        HttpContext.Session.SetComplexData(DeletedEmployeeListSessionName, myEmployeeList);
+                        //HttpContext.Session["employeeList"] = employeeList;
+                    }
+                    else //web api sent error response 
+                    {
+                        //log response status here..
+
+                        deletedEmployee = Enumerable.Empty<Employee>();
+
+                        ModelState.AddModelError(string.Empty, "Server error. Please contact administrator.");
+                    }
+
+
                 }
-                else //web api sent error response 
-                {
-                    //log response status here..
-
-                    deletedEmployee = Enumerable.Empty<Employee>();
-
-                    ModelState.AddModelError(string.Empty, "Server error. Please contact administrator.");
-                }
-
-
             }
-
             //make sure it returns the whole list retrieve from database (not the paginated list)
             return View(myEmployeeList);
         }

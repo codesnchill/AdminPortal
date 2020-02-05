@@ -18,44 +18,50 @@ namespace AdminPortal.Controllers
 
         const string EmployeeListSessionName = "_EmployeeList";
         const string tokenSession = "tokenSessionObject";
-        public IActionResult ManagePoints()
+        public async Task<IActionResult> ManagePoints()
         {
             List<Employee> myEmployeeList = new List<Employee>();
             var tokenObj = JsonConvert.DeserializeObject<dynamic>(HttpContext.Session.GetString(tokenSession));
             var token = tokenObj.Token1;
-            using (var client = new HttpClient())
+            AccountController account = new AccountController();
+            bool tokenIsValid = await account.tokenIsValid(tokenObj, HttpContext);
+
+            if (tokenIsValid)
             {
-                client.BaseAddress = new Uri("https://localhost:44300/api/v1/");
-                client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
-                //HTTP GET
-                var responseTask = client.GetAsync("users?isDisabled=false");
-                responseTask.Wait();
 
-                var result = responseTask.Result;
-                if (result.IsSuccessStatusCode)
+                using (var client = new HttpClient())
                 {
-                    var readTask = result.Content.ReadAsAsync<IList<Employee>>();
-                    readTask.Wait();
+                    client.BaseAddress = new Uri("https://localhost:44300/api/v1/");
+                    client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
+                    //HTTP GET
+                    var responseTask = client.GetAsync("users?isDisabled=false");
+                    responseTask.Wait();
 
-                    employee = readTask.Result;
-                    myEmployeeList = employee.ToList();
+                    var result = responseTask.Result;
+                    if (result.IsSuccessStatusCode)
+                    {
+                        var readTask = result.Content.ReadAsAsync<IList<Employee>>();
+                        readTask.Wait();
 
-                    // store employee in session
-                    HttpContext.Session.SetComplexData(EmployeeListSessionName, myEmployeeList);
-                    //HttpContext.Session["employeeList"] = employeeList;
+                        employee = readTask.Result;
+                        myEmployeeList = employee.ToList();
+
+                        // store employee in session
+                        HttpContext.Session.SetComplexData(EmployeeListSessionName, myEmployeeList);
+                        //HttpContext.Session["employeeList"] = employeeList;
+                    }
+                    else //web api sent error response 
+                    {
+                        //log response status here..
+
+                        employee = Enumerable.Empty<Employee>();
+
+                        ModelState.AddModelError(string.Empty, "Server error. Please contact administrator.");
+                    }
+
+
                 }
-                else //web api sent error response 
-                {
-                    //log response status here..
-
-                    employee = Enumerable.Empty<Employee>();
-
-                    ModelState.AddModelError(string.Empty, "Server error. Please contact administrator.");
-                }
-
-
             }
-
             //make sure it returns the whole list retrieve from database (not the paginated list)
             return View(myEmployeeList);
         }

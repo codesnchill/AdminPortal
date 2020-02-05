@@ -18,45 +18,50 @@ namespace AdminPortal.Controllers
         IEnumerable<Event> events = null;
         const string EventListSessionName = "_EventList";
         const string tokenSession = "tokenSessionObject";
-        public IActionResult ManageEvents()
+        public async Task<IActionResult> ManageEvents()
         {
            
             List<Event> eventList = new List<Event>();
             var tokenObj = JsonConvert.DeserializeObject<dynamic>(HttpContext.Session.GetString(tokenSession));
             var token = tokenObj.Token1;
-            using (var client = new HttpClient())
+            AccountController account = new AccountController();
+            bool tokenIsValid = await account.tokenIsValid(tokenObj, HttpContext);
+
+            if (tokenIsValid)
             {
-                client.BaseAddress = new Uri("https://localhost:44300/api/v1/");
-                client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
-                //HTTP GET
-                var responseTask = client.GetAsync("events?deleted=false");
-                responseTask.Wait();
-
-                var result = responseTask.Result;
-                if (result.IsSuccessStatusCode)
+                using (var client = new HttpClient())
                 {
-                    var readTask = result.Content.ReadAsAsync<IList<Event>>();
-                    readTask.Wait();
+                    client.BaseAddress = new Uri("https://localhost:44300/api/v1/");
+                    client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
+                    //HTTP GET
+                    var responseTask = client.GetAsync("events?deleted=false");
+                    responseTask.Wait();
 
-                    events = readTask.Result;
-                    eventList = events.ToList();
+                    var result = responseTask.Result;
+                    if (result.IsSuccessStatusCode)
+                    {
+                        var readTask = result.Content.ReadAsAsync<IList<Event>>();
+                        readTask.Wait();
 
-                    // store employee in session
-                    HttpContext.Session.SetComplexData(EventListSessionName, eventList);
-                    //HttpContext.Session["employeeList"] = employeeList;
+                        events = readTask.Result;
+                        eventList = events.ToList();
+
+                        // store employee in session
+                        HttpContext.Session.SetComplexData(EventListSessionName, eventList);
+                        //HttpContext.Session["employeeList"] = employeeList;
+                    }
+                    else //web api sent error response 
+                    {
+                        //log response status here..
+
+                        events = Enumerable.Empty<Event>();
+
+                        ModelState.AddModelError(string.Empty, "Server error. Please contact administrator.");
+                    }
+
+
                 }
-                else //web api sent error response 
-                {
-                    //log response status here..
-
-                    events = Enumerable.Empty<Event>();
-
-                    ModelState.AddModelError(string.Empty, "Server error. Please contact administrator.");
-                }
-
-
             }
-
             //make sure it returns the whole list retrieve from database (not the paginated list)
             return View(eventList);
         }
@@ -78,45 +83,50 @@ namespace AdminPortal.Controllers
 
         IEnumerable<Event> deletedEvents = null;
         const string DeletedEventListSessionName = "_DeletedEventList";
-        const string tokenSession2 = "tokenSessionObject";
-        public IActionResult ManageDeletedEvents ()
+        public async Task<IActionResult> ManageDeletedEvents ()
         {
             List<Event> eventList = new List<Event>();
-            var tokenObj = JsonConvert.DeserializeObject<dynamic>(HttpContext.Session.GetString(tokenSession2));
+            var tokenObj = JsonConvert.DeserializeObject<dynamic>(HttpContext.Session.GetString(tokenSession));
             var token = tokenObj.Token1;
-            using (var client = new HttpClient())
+            AccountController account = new AccountController();
+            bool tokenIsValid = await account.tokenIsValid(tokenObj, HttpContext);
+
+            if (tokenIsValid)
             {
-                client.BaseAddress = new Uri("https://localhost:44300/api/v1/");
-                //HTTP GET
-                var responseTask = client.GetAsync("events?deleted=true");
-                client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
-                responseTask.Wait();
 
-                var result = responseTask.Result;
-                if (result.IsSuccessStatusCode)
+                using (var client = new HttpClient())
                 {
-                    var readTask = result.Content.ReadAsAsync<IList<Event>>();
-                    readTask.Wait();
+                    client.BaseAddress = new Uri("https://localhost:44300/api/v1/");
+                    //HTTP GET
+                    var responseTask = client.GetAsync("events?deleted=true");
+                    client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
+                    responseTask.Wait();
 
-                    deletedEvents = readTask.Result;
-                    eventList = deletedEvents.ToList();
+                    var result = responseTask.Result;
+                    if (result.IsSuccessStatusCode)
+                    {
+                        var readTask = result.Content.ReadAsAsync<IList<Event>>();
+                        readTask.Wait();
 
-                    // store employee in session
-                    HttpContext.Session.SetComplexData(DeletedEventListSessionName, eventList);
-                    //HttpContext.Session["employeeList"] = employeeList;
+                        deletedEvents = readTask.Result;
+                        eventList = deletedEvents.ToList();
+
+                        // store employee in session
+                        HttpContext.Session.SetComplexData(DeletedEventListSessionName, eventList);
+                        //HttpContext.Session["employeeList"] = employeeList;
+                    }
+                    else //web api sent error response 
+                    {
+                        //log response status here..
+
+                        deletedEvents = Enumerable.Empty<Event>();
+
+                        ModelState.AddModelError(string.Empty, "Server error. Please contact administrator.");
+                    }
+
+
                 }
-                else //web api sent error response 
-                {
-                    //log response status here..
-
-                    deletedEvents = Enumerable.Empty<Event>();
-
-                    ModelState.AddModelError(string.Empty, "Server error. Please contact administrator.");
-                }
-
-
             }
-
             //make sure it returns the whole list retrieve from database (not the paginated list)
             return View(eventList);
         }
