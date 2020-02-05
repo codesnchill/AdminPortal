@@ -2,30 +2,47 @@
     this.refresh_token = inCollectedRefreshToken;
 }
 // check if token in session has not expired yet
-function tokenIsValid() {
+//function tokenIsValid() {
+//    // get session
+//    $sessionHandler = $.ajax({
+//        type: 'GET',
+//        url: '/Account/getTokenSession',
+//        dataType: 'json',
+//        contentType: 'application/json;',
+//    })//end of jQuery.ajax() call
+//    $sessionHandler.done(function (data, textStatus, jqXHR) {
+//        //expiration is in UTC
+//        var sessionObject = JSON.parse(data);
+//        var expirationDate = sessionObject.Token_expiration;
+//        var refresh_token = sessionObject.Refresh_token;
+//        console.log(refresh_token)
+//        console.log("Date.parse(expirationDate).now() / 1000 = " + Date.parse(expirationDate.toString()).now() / 1000);
+//        console.log("Date.now() / 1000 = " + Date.now() / 1000);
+//        if (Date.parse(expirationDate).now() / 1000 < Date.now() / 1000) {
+//            refreshTokenSession(refresh_token);
+//            console.log("NOW REFRESHING");
+//        }
+//        // token is valid once token is refreshed (if expired)
+//        return true;
+//    });
+//    $sessionHandler.fail(function (data, textStatus, jqXHR) {
+//        //if if fail, empty out the session
+//    });
+//}
+
+function tokenIsValid(cb) {
     // get session
+    //var valid;
     $sessionHandler = $.ajax({
         type: 'GET',
-        url: '/Account/getTokenSession',
+        url: '/Account/tokenIsValid',
         dataType: 'json',
         contentType: 'application/json;',
+        //success: function (result) {
+        //    cb()
+        //}
     })//end of jQuery.ajax() call
-    $sessionHandler.done(function (data, textStatus, jqXHR) {
-        //expiration is in UTC
-        var sessionObject = JSON.parse(data);
-        var expirationDate = sessionObject.Token_expiration;
-        var refresh_token = sessionObject.Refresh_token;
-
-        if (expirationDate < Date.now() / 1000) {
-            refreshTokenSession(refresh_token)
-            console.log("TOKEN HAS EXPIRED...REFRESHING TOKEN");
-        }
-        // token is valid once token is refreshed (if expired)
-        return true;
-    });
-    $sessionHandler.fail(function (data, textStatus, jqXHR) {
-        //if if fail, empty out the session
-    });
+    //return valid;
 }
 
 function refreshTokenSession(inRefresh_token) {
@@ -56,7 +73,6 @@ function refreshTokenSession(inRefresh_token) {
 
         return true;
     });
-
 }
 
 function setTokenSession(stringifiedTokenObj) {
@@ -89,31 +105,31 @@ function setEmployeeSession(stringifiedEmployeeObj) {
     });
 }
 
-function getTokenSession() {
+function getTokenSession(cb) {
     $sessionHandler = $.ajax({
         type: 'GET',
         url: '/Account/getTokenSession',
         dataType: 'json',
         contentType: 'application/json;',
-    })//end of jQuery.ajax() call
-    $sessionHandler.done(function (data, textStatus, jqXHR) {
-        //expiration is in UTC
-        var sessionObject = JSON.parse(data);
-        console.log(sessionObject);
+        success: function (data) {
+            var sessionObject = JSON.parse(data);
+            if (data == null) {
+                return false;
+            }
+            var expirationDate = sessionObject.Token_expiration;
+            var refresh_token = sessionObject.Refresh_token;
+            var token = sessionObject.Token1;
+            console.log(expirationDate);
+            console.log(refresh_token);
+            console.log(token);
 
-        if (data == null) {
-            console.log("empty session data");
-            return false;
+            cb(sessionObject)
+            // token is valid once token is refreshed (if expired)
         }
-        var expirationDate = sessionObject.Token_expiration;
-        var refresh_token = sessionObject.Refresh_token;
-        var token = sessionObject.Token1;
-        console.log(expirationDate);
-        console.log(refresh_token);
-        console.log(token);
+    })//end of jQuery.ajax() call
 
-        // token is valid once token is refreshed (if expired)
-        return sessionObject;
+    $sessionHandler.fail(function (data, textStatus, jqXHR) {
+        console.log("FAILED TO GET TOKEN SESSION");
     });
 }
 

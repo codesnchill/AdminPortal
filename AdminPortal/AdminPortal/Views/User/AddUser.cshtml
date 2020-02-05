@@ -23,65 +23,62 @@
 
         var baseURL = getBaseURL();
 
-        function loadDepartments() {
-            if (tokenIsValid()) {
-                bearerToken = JSON.parse(sessionStorage.getItem('tokenSessionObject')).token;
-
-                var url = baseURL + "/api/v1/departments"
-                var $loadhandler = jQuery.ajax({
-                    type: 'GET',
-                    beforeSend: function (request) {
-                        request.setRequestHeader("Authorization", "Bearer " + bearerToken);
-                    },
-                    url: url,
-                    contentType: "application/json",
-                    dataType: 'json',
-                    crossDomain: true,
-                });
-                $loadhandler.done(function (data, textStatus, jqXHR) {
-                    console.log(data);
-                    $.each(data, function (key, obj) {
-                        //console.log(key)
-                        console.log(obj)
-                        console.log(obj.departmentName)
-                        $("#department").append($("<option></option>")
-                            .attr("value", obj.departmentId)
-                            .text(obj.departmentName));
-                    });
-                });
-            }
-        }
-        loadDepartments();
-
-
-        function loadRoles() {
-            if (tokenIsValid()) {
-                bearerToken = JSON.parse(sessionStorage.getItem('tokenSessionObject')).token;
-                var url = baseURL + "/api/v1/roles"
-                var $loadhandler = jQuery.ajax({
-                    type: 'GET',
-                    beforeSend: function (request) {
+        function loadDepartments(sessionObject) {
+            console.log(sessionObject);
+            bearerToken = sessionObject.Token1;
+            var url = baseURL + "/api/v1/departments"
+            var $loadhandler = jQuery.ajax({
+                type: 'GET',
+                beforeSend: function (request) {
                     request.setRequestHeader("Authorization", "Bearer " + bearerToken);
-                    },
-                    url: url,
-                    contentType: "application/json",
-                    dataType: 'json',
-                    crossDomain: true,
+                },
+                url: url,
+                contentType: "application/json",
+                dataType: 'json',
+                crossDomain: true,
+            });
+            $loadhandler.done(function (data, textStatus, jqXHR) {
+                console.log(data);
+                $.each(data, function (key, obj) {
+                    //console.log(key)
+                    console.log(obj)
+                    console.log(obj.departmentName)
+                    $("#department").append($("<option></option>")
+                        .attr("value", obj.departmentId)
+                        .text(obj.departmentName));
                 });
-                $loadhandler.done(function (data, textStatus, jqXHR) {
-                    console.log(data);
-                    $.each(data, function (key, obj) {
-                        //console.log(key)
-                        console.log(obj)
-                        console.log(obj.roleName)
-                        $("#rights").append($("<option></option>")
-                            .attr("value", obj.roleId)
-                            .text(obj.roleName));
-                    });
-                });
+            });
             }
+
+        $.when(tokenIsValid, getTokenSession(loadDepartments));
+
+        function loadRoles(sessionObject) {
+            bearerToken = sessionObject.Token1;
+            var url = baseURL + "/api/v1/roles"
+            var $loadhandler = jQuery.ajax({
+                type: 'GET',
+                beforeSend: function (request) {
+                    request.setRequestHeader("Authorization", "Bearer " + bearerToken);
+                },
+                url: url,
+                contentType: "application/json",
+                dataType: 'json',
+                crossDomain: true,
+            });
+            $loadhandler.done(function (data, textStatus, jqXHR) {
+                console.log(data);
+                $.each(data, function (key, obj) {
+                    //console.log(key)
+                    console.log(obj)
+                    console.log(obj.roleName)
+                    $("#rights").append($("<option></option>")
+                        .attr("value", obj.roleId)
+                        .text(obj.roleName));
+                });
+            });
+            //}
         }
-        loadRoles();
+        $.when(tokenIsValid, getTokenSession(loadRoles));
 
         //Using a function technique to define a JavaScript class, WebFormData
         function WebFormData(inCollectedEmployeeId, inCollectedEmployeeName, inCollectedDepartmentId, inCollectedRole, inCollectedStatus, inCollectedAdmin, inCollectedCUDBy) {

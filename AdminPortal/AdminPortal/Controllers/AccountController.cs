@@ -119,6 +119,39 @@ namespace AdminPortal.Controllers
             return true;
         }
 
+        [HttpGet]
+        public async Task<bool> tokenIsValid()
+        {
+            Token token = JsonConvert.DeserializeObject<Token>(HttpContext.Session.GetString(tokenSession));
+            DateTime now = DateTime.Now;
+            //get expiration
+            DateTime Token_expiration = DateTime.Parse(token.Token_expiration);
+            Token newTokenObj = new Token();
+            //compare and refresh if expired
+            if (Token_expiration.ToUniversalTime() < now.ToUniversalTime())
+            {
+                //refresh
+                string content = await refreshToken(token.Refresh_token);
+
+                if (String.IsNullOrWhiteSpace(content))
+                {
+                    return false;
+                }
+
+                var contentObj = JsonConvert.DeserializeObject<dynamic>(content);
+
+                //set in session
+                newTokenObj.Token1 = contentObj.token;
+                newTokenObj.Token_expiration = contentObj.token_expiration;
+                newTokenObj.Refresh_token = token.Refresh_token;
+
+                HttpContext.Session.SetComplexData(tokenSession, newTokenObj);
+
+                return true;
+            }
+            return true;
+        }
+
         public async Task<dynamic> refreshToken(string refreshToken)
         {
             HttpClient client = new HttpClient();
