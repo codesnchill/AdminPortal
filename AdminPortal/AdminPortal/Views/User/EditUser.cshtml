@@ -185,7 +185,8 @@
                     data: "'" + webFormDataInString + "'"
                 })//end of jQuery.ajax() call
                 $updateCourseHandler.done(function (data, textStatus, jqXHR) {
-                    $("#messageAlert").show();
+                   alert("User Info Updated Successfully");
+                    location.href = "/User/EditUser/" + g_userId;
                 });//end of $updateCourseHandler.done()
 
                 $updateCourseHandler.error(function (data, textStatus, jqXHR) {
@@ -274,9 +275,6 @@
         <div class="title-bar orange-background">
             <p class="panel-header">Edit User</p>
 
-        </div>
-        <div id="messageAlert" style="display:none" class="alert alert-success" role="alert">
-            Updated Successfully
         </div>
         <div class="row1-employeeID">
             <label class="normal-weight" for="employeeID">Employee ID:</label>

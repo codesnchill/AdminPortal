@@ -74,7 +74,8 @@
                     data: "'" + webFormDataInString + "'"
                 })//end of jQuery.ajax() call
                 $updateCourseHandler.done(function (data, textStatus, jqXHR) {
-                    $("#messageAlert").show();
+                    alert("Question added Successfully");
+                    location.href = "/Game/AddQuestion/" + gameId;
                 });//end of $updateCourseHandler.done()
 
                 $updateCourseHandler.error(function (data, textStatus, jqXHR) {
@@ -111,9 +112,6 @@
         <div class="title-bar orange-background">
             <p class="panel-header">Add Question</p>
 
-        </div>
-        <div id="messageAlert" style="display:none" class="alert alert-success" role="alert">
-            Created Successfully
         </div>
         <div class="row1-question">
             <label class="normal-weight" for="question">Question:</label>

@@ -172,7 +172,7 @@
             })//end of jQuery.ajax() call
             $updateCourseHandler.done(function (data, textStatus, jqXHR) {
                 alert("Event Updated Successfully");
-                location.href = "/Event/EditEvent";
+                location.href = "/Event/EditEvent/" + g_eventId;
 
             });//end of $updateCourseHandler.done()
 
