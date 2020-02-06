@@ -7,8 +7,9 @@
 @section Scripts {
     <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap.min.js"></script>
+    <script type="text/javascript" src="~/Script/baseURL.js"></script>
     <script>
-            // datatable
+        // datatable
         $(document).ready(function () {
             var oTable =
                 $('#datatable').DataTable({
@@ -23,20 +24,20 @@
             });
         });
 
-            //when user select a different game for dropdown
+        //when user select a different game for dropdown
         $("#games").change(function () {
             gameId = $(this).find(':selected').val();
             console.log("game id: " + gameId);
             //var datatable = $("#datatable").DataTable();
             if (gameId == 1) {
-                   $('#datatable').DataTable().destroy();
-              $('#datatable tbody').remove();
+                $('#datatable').DataTable().destroy();
+                $('#datatable tbody').remove();
                 $.when(tokenIsValid, getTokenSession(loadGuessTheEmployee));
             }
             if (gameId == 2) {
                 $('#datatable').DataTable().destroy();
-                 $('#datatable tbody').remove();
-                 $.when(tokenIsValid, getTokenSession(loadCompanyQuiz));
+                $('#datatable tbody').remove();
+                $.when(tokenIsValid, getTokenSession(loadCompanyQuiz));
             }
         });
 
@@ -58,182 +59,182 @@
 
         function loadGuessTheEmployee(sessionObject) {
             bearerToken = sessionObject.Token1;
-             var url = "/Game/LoadDeletedGuessTheEmployeeQuiz";
-                    var $loadhandler1 = jQuery.ajax({
-                        url: url,
-                        method: 'GET',
-                         beforeSend: function (request) {
-                        request.setRequestHeader("Authorization", "Bearer " + bearerToken);
-                    },
-                        dataType: 'json',
-                        cache: false,
-                    });
-                    $loadhandler1.done(function (data, textStatus, jqXHR) {
-                        console.log("RETURNED DATA" + data);
-                        // once I get my data, I need to paginate
-                        // vars for table
-                        $tableBodyElement = $('#datatable');
-                        var game = data;
-                        var question = '';
-                        var choices = '';
-                        var choice1 = '';
-                        var choice2 = '';
-                        var choice3 = '';
-                        var choice4 = '';
-                        var answer = '';
-                        var questionId = '';
-                        console.log("LENGTH = " + game.length)
-                        // repopulate datatable
-                        for (i = 0; i < game.length; i++) {
-                            console.log("loop counter = " + i)
-                            myList = game[i];
-                            choices = myList.choices;
-                            question = myList.question1;
-                            choice1 = choices[0].choice;
-                            choice2 = choices[1].choice;
-                            choice3 = choices[2].choice;
-                            choice4 = choices[3].choice;
-                            answer = myList.answer;
-                            questionId = myList.questionId;
+            var url = "/Game/LoadDeletedGuessTheEmployeeQuiz";
+            var $loadhandler1 = jQuery.ajax({
+                url: url,
+                method: 'GET',
+                beforeSend: function (request) {
+                    request.setRequestHeader("Authorization", "Bearer " + bearerToken);
+                },
+                dataType: 'json',
+                cache: false,
+            });
+            $loadhandler1.done(function (data, textStatus, jqXHR) {
+                console.log("RETURNED DATA" + data);
+                // once I get my data, I need to paginate
+                // vars for table
+                $tableBodyElement = $('#datatable');
+                var game = data;
+                var question = '';
+                var choices = '';
+                var choice1 = '';
+                var choice2 = '';
+                var choice3 = '';
+                var choice4 = '';
+                var answer = '';
+                var questionId = '';
+                console.log("LENGTH = " + game.length)
+                // repopulate datatable
+                for (i = 0; i < game.length; i++) {
+                    console.log("loop counter = " + i)
+                    myList = game[i];
+                    choices = myList.choices;
+                    question = myList.question1;
+                    choice1 = choices[0].choice;
+                    choice2 = choices[1].choice;
+                    choice3 = choices[2].choice;
+                    choice4 = choices[3].choice;
+                    answer = myList.answer;
+                    questionId = myList.questionId;
 
-                            console.log(question);
-                            console.log(choice1);
-                            console.log(choice2);
-                            console.log(choice3);
-                            console.log(choice4);
-                            console.log(answer);
-                            console.log(questionId);
+                    console.log(question);
+                    console.log(choice1);
+                    console.log(choice2);
+                    console.log(choice3);
+                    console.log(choice4);
+                    console.log(answer);
+                    console.log(questionId);
 
-                            $rowElement = $('<tr></tr>');
-                            $cellElement = $('<td></td>', { text: question });
-                            $rowElement.append($cellElement);
-                            $cellElement = $('<td></td>', { text: choice1 });
-                            $rowElement.append($cellElement);
-                            $cellElement = $('<td></td>', { text: choice2 });
-                            $rowElement.append($cellElement);
-                            $cellElement = $('<td></td>', { text: choice3 });
-                            $rowElement.append($cellElement);
-                            $cellElement = $('<td></td>', { text: choice4 });
-                            $rowElement.append($cellElement);
-                            $cellElement = $('<td></td>', { text: answer });
-                            $rowElement.append($cellElement);
-                            $hyperLinkElement = $('<button>Edit</button>');
-                            $hyperLinkElement.onclick = function () { edit(questionId) }
-                            $hyperLinkElement.addClass('btn btn-primary');
-                            $cellElement = $('<td></td>');
-                            $cellElement.append($hyperLinkElement);
-                            $rowElement.append($cellElement);
-                            $tableBodyElement.append($rowElement);
-                        }
-                        $('#datatable').DataTable({
-                            "pageLength": 4,
-                            "lengthChange": false,
-                            "sDom": 'ltipr'
-                        });
-                    });
+                    $rowElement = $('<tr></tr>');
+                    $cellElement = $('<td></td>', { text: question });
+                    $rowElement.append($cellElement);
+                    $cellElement = $('<td></td>', { text: choice1 });
+                    $rowElement.append($cellElement);
+                    $cellElement = $('<td></td>', { text: choice2 });
+                    $rowElement.append($cellElement);
+                    $cellElement = $('<td></td>', { text: choice3 });
+                    $rowElement.append($cellElement);
+                    $cellElement = $('<td></td>', { text: choice4 });
+                    $rowElement.append($cellElement);
+                    $cellElement = $('<td></td>', { text: answer });
+                    $rowElement.append($cellElement);
+                    $hyperLinkElement = $('<button>Edit</button>');
+                    $hyperLinkElement.onclick = function () { edit(questionId) }
+                    $hyperLinkElement.addClass('btn btn-primary');
+                    $cellElement = $('<td></td>');
+                    $cellElement.append($hyperLinkElement);
+                    $rowElement.append($cellElement);
+                    $tableBodyElement.append($rowElement);
+                }
+                $('#datatable').DataTable({
+                    "pageLength": 4,
+                    "lengthChange": false,
+                    "sDom": 'ltipr'
+                });
+            });
         }
 
         function loadCompanyQuiz(sessionObject) {
             bearerToken = sessionObject.Token1;
-             var url = "/Game/LoadDeletedCompanyQuiz"
-                    var $loadhandler = jQuery.ajax({
-                        url: url,
-                        method: 'GET',
-                         beforeSend: function (request) {
-                        request.setRequestHeader("Authorization", "Bearer " + bearerToken);
-                    },
-                        dataType: 'json',
-                        cache: false,
-                    });
-                    $loadhandler.done(function (data, textStatus, jqXHR) {
-                        console.log("RETURNED DATA" + data);
-                        // once I get my data, I need to paginate
-                        // vars for table
-                        $tableBodyElement = $('#datatable');
-                        var game = data;
-                        var question = '';
-                        var choices = '';
-                        var choice1 = '';
-                        var choice2 = '';
-                        var choice3 = '';
-                        var choice4 = '';
-                        var answer = '';
-                        var questionId = '';
-                        console.log("LENGTH = " + game.length)
-                        // repopulate datatable
-                        for (i = 0; i < game.length; i++) {
-                            console.log("loop counter = " + i)
-                            myList = game[i];
-                            choices = myList.choices;
-                            question = myList.question1;
-                            choice1 = choices[0].choice;
-                            choice2 = choices[1].choice;
-                            choice3 = choices[2].choice;
-                            choice4 = choices[3].choice;
-                            answer = myList.answer;
-                            questionId = myList.questionId;
+            var url = "/Game/LoadDeletedCompanyQuiz"
+            var $loadhandler = jQuery.ajax({
+                url: url,
+                method: 'GET',
+                beforeSend: function (request) {
+                    request.setRequestHeader("Authorization", "Bearer " + bearerToken);
+                },
+                dataType: 'json',
+                cache: false,
+            });
+            $loadhandler.done(function (data, textStatus, jqXHR) {
+                console.log("RETURNED DATA" + data);
+                // once I get my data, I need to paginate
+                // vars for table
+                $tableBodyElement = $('#datatable');
+                var game = data;
+                var question = '';
+                var choices = '';
+                var choice1 = '';
+                var choice2 = '';
+                var choice3 = '';
+                var choice4 = '';
+                var answer = '';
+                var questionId = '';
+                console.log("LENGTH = " + game.length)
+                // repopulate datatable
+                for (i = 0; i < game.length; i++) {
+                    console.log("loop counter = " + i)
+                    myList = game[i];
+                    choices = myList.choices;
+                    question = myList.question1;
+                    choice1 = choices[0].choice;
+                    choice2 = choices[1].choice;
+                    choice3 = choices[2].choice;
+                    choice4 = choices[3].choice;
+                    answer = myList.answer;
+                    questionId = myList.questionId;
 
-                            console.log(question);
-                            console.log(choice1);
-                            console.log(choice2);
-                            console.log(choice3);
-                            console.log(choice4);
-                            console.log(answer);
-                            console.log(questionId);
+                    console.log(question);
+                    console.log(choice1);
+                    console.log(choice2);
+                    console.log(choice3);
+                    console.log(choice4);
+                    console.log(answer);
+                    console.log(questionId);
 
-                            $rowElement = $('<tr></tr>');
-                            $cellElement = $('<td></td>', { text: question });
-                            $rowElement.append($cellElement);
-                            $cellElement = $('<td></td>', { text: choice1 });
-                            $rowElement.append($cellElement);
-                            $cellElement = $('<td></td>', { text: choice2 });
-                            $rowElement.append($cellElement);
-                            $cellElement = $('<td></td>', { text: choice3 });
-                            $rowElement.append($cellElement);
-                            $cellElement = $('<td></td>', { text: choice4 });
-                            $rowElement.append($cellElement);
-                            $cellElement = $('<td></td>', { text: answer });
-                            $rowElement.append($cellElement);
-                            $hyperLinkElement = $('<button>Edit</button>');
-                            $hyperLinkElement.onclick = function () { edit(questionId) }
-                            $hyperLinkElement.addClass('btn btn-primary');
-                            $cellElement = $('<td></td>');
-                            $cellElement.append($hyperLinkElement);
-                            $rowElement.append($cellElement);
-                            $tableBodyElement.append($rowElement);
-                        }
-                        $('#datatable').DataTable({
-                            "pageLength": 4,
-                            "lengthChange": false,
-                            "sDom": 'ltipr'
-                        });
-                    });
+                    $rowElement = $('<tr></tr>');
+                    $cellElement = $('<td></td>', { text: question });
+                    $rowElement.append($cellElement);
+                    $cellElement = $('<td></td>', { text: choice1 });
+                    $rowElement.append($cellElement);
+                    $cellElement = $('<td></td>', { text: choice2 });
+                    $rowElement.append($cellElement);
+                    $cellElement = $('<td></td>', { text: choice3 });
+                    $rowElement.append($cellElement);
+                    $cellElement = $('<td></td>', { text: choice4 });
+                    $rowElement.append($cellElement);
+                    $cellElement = $('<td></td>', { text: answer });
+                    $rowElement.append($cellElement);
+                    $hyperLinkElement = $('<button>Edit</button>');
+                    $hyperLinkElement.onclick = function () { edit(questionId) }
+                    $hyperLinkElement.addClass('btn btn-primary');
+                    $cellElement = $('<td></td>');
+                    $cellElement.append($hyperLinkElement);
+                    $rowElement.append($cellElement);
+                    $tableBodyElement.append($rowElement);
+                }
+                $('#datatable').DataTable({
+                    "pageLength": 4,
+                    "lengthChange": false,
+                    "sDom": 'ltipr'
+                });
+            });
         }
 
         function loadGames(sessionObject) {
             bearerToken = sessionObject.Token1;
             var url = baseURL + "/api/v1/games"
-                var $loadhandler = jQuery.ajax({
-                    type: 'GET',
-                      beforeSend: function (request) {
-                        request.setRequestHeader("Authorization", "Bearer " + bearerToken);
-                    },
-                    url: url,
-                    contentType: "application/json",
-                    dataType: 'json',
-                    crossDomain: true,
+            var $loadhandler = jQuery.ajax({
+                type: 'GET',
+                beforeSend: function (request) {
+                    request.setRequestHeader("Authorization", "Bearer " + bearerToken);
+                },
+                url: url,
+                contentType: "application/json",
+                dataType: 'json',
+                crossDomain: true,
+            });
+            $loadhandler.done(function (data, textStatus, jqXHR) {
+                console.log(data);
+                $.each(data, function (key, obj) {
+                    //console.log(key)
+                    console.log(obj)
+                    console.log(obj.gameName)
+                    $("#games").append($("<option></option>")
+                        .attr("value", obj.gameId)
+                        .text(obj.gameName));
                 });
-                $loadhandler.done(function (data, textStatus, jqXHR) {
-                    console.log(data);
-                    $.each(data, function (key, obj) {
-                        //console.log(key)
-                        console.log(obj)
-                        console.log(obj.gameName)
-                        $("#games").append($("<option></option>")
-                            .attr("value", obj.gameId)
-                            .text(obj.gameName));
-                    });
-                });
+            });
         }
         $.when(tokenIsValid, getTokenSession(loadGames));
 
@@ -292,17 +293,17 @@
                         @Html.DisplayFor(modelItem => item.Question1)
                     </td>
                     <td>
-                            @Html.DisplayFor(modelItem => item.Choices.ElementAt(0).Choice)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Choices.ElementAt(1).Choice)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Choices.ElementAt(2).Choice)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Choices.ElementAt(3).Choice)
-                        </td>
+                        @Html.DisplayFor(modelItem => item.Choices.ElementAt(0).Choice)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Choices.ElementAt(1).Choice)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Choices.ElementAt(2).Choice)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Choices.ElementAt(3).Choice)
+                    </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.Answer)
                     </td>

@@ -105,12 +105,12 @@
               this.CUDBy = inCUDBy;
         }
 
-        function clickSave() {
+        function clickSave(sessionObject) {
 
             var collectedQuestion = $('#question').val();
-            var collectedPoint = 2;
             var collectedChoices = [];
-             var collectedCUDBy = JSON.parse(sessionStorage.getItem('employeeDetailsObject')).employeeId;
+             bearerToken = sessionObject.Token1; // this
+            var collectedCUDBy = $('#employeeId').text();
             //get the text input of the choice using the val of answer (choiceId)
             var selectedChoiceId = $('#answer').val();
             var collectedAnswer = $('#' + selectedChoiceId).val();
@@ -147,8 +147,7 @@
             console.log(webFormDataInString);
 
             var url = baseURL + "/api/v1/games/" + gameId + "/questions/" + questionId
-            if (tokenIsValid()) {
-                bearerToken = JSON.parse(sessionStorage.getItem('tokenSessionObject')).token;
+
                 $updateCourseHandler = jQuery.ajax({
                     type: 'PUT',
                     beforeSend: function (request) {
@@ -166,7 +165,11 @@
                 $updateCourseHandler.error(function (data, textStatus, jqXHR) {
                     console.log(data.responseJSON.message);
                 });//end of $updateCourseHandler.error()*/
-            }
+            
+        }
+
+        function save() {
+                $.when(tokenIsValid, getTokenSession(clickSave));
         }
 
 
@@ -180,12 +183,13 @@
               this.CUDBy = inCUDBy;
         }
 
-        function retrieveQuestion() {
+        function retrieveQuestion(sessionObject) {
             var collectedQuestion = $('#question').val();
             var collectedPoint = 2;
             var collectedReEnable = true;
             var collectedChoices = [];
-             var collectedCUDBy = JSON.parse(sessionStorage.getItem('employeeDetailsObject')).employeeId;
+             bearerToken = sessionObject.Token1; // this
+            var collectedCUDBy = $('#employeeId').text();
             //get the text input of the choice using the val of answer (choiceId)
             var selectedChoiceId = $('#answer').val();
             var collectedAnswer = $('#' + selectedChoiceId).val();
@@ -222,8 +226,6 @@
             console.log(webFormDataInString);
 
             var url = baseURL + "/api/v1/games/" + gameId + "/questions/" + questionId
-            if (tokenIsValid()) {
-                bearerToken = JSON.parse(sessionStorage.getItem('tokenSessionObject')).token;
                 $updateCourseHandler = jQuery.ajax({
                     type: 'PUT',
                     beforeSend: function (request) {
@@ -241,7 +243,10 @@
                 $updateCourseHandler.error(function (data, textStatus, jqXHR) {
                     console.log(data.responseJSON.message);
                 });//end of $updateCourseHandler.error()*/
-            }
+        }
+
+        function retrieve() {
+              $.when(tokenIsValid, getTokenSession(retrieveQuestion));
         }
 
 
@@ -316,8 +321,8 @@
         </div>
 
         <div class="row7-buttons">
-            <button onclick="retrieveQuestion()" class="delete">Retrieve</button>
-            <button onclick="clickSave()" class="save">Save</button>
+            <button onclick="retrieve()" class="delete">Retrieve</button>
+            <button onclick="save()" class="save">Save</button>
             <button onclick="redirectPage()" class="cancel">Cancel</button>
         </div>
     </div>

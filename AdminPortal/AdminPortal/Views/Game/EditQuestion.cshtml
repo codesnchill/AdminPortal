@@ -105,11 +105,16 @@
             this.CUDBy = inCUDBy;
         }
 
-        function clickSave() {
+        function save() {
+              $.when(tokenIsValid, getTokenSession(clickSave));
+        }
+
+        function clickSave(sessionObject) {
 
             var collectedQuestion = $('#question').val();
             var collectedChoices = [];
-            var collectedCUDBy = JSON.parse(sessionStorage.getItem('employeeDetailsObject')).employeeId;
+            bearerToken = sessionObject.Token1; // this
+            var collectedCUDBy = $('#employeeId').text();
             //get the text input of the choice using the val of answer (choiceId)
             var selectedChoiceId = $('#answer').val();
             var collectedAnswer = $('#' + selectedChoiceId).val();
@@ -146,8 +151,6 @@
             console.log(webFormDataInString);
 
             var url = baseURL + "/api/v1/games/" + gameId + "/questions/" + questionId
-            if (tokenIsValid()) {
-                bearerToken = JSON.parse(sessionStorage.getItem('tokenSessionObject')).token;
                 $updateCourseHandler = jQuery.ajax({
                     type: 'PUT',
                     beforeSend: function (request) {
@@ -165,7 +168,6 @@
                 $updateCourseHandler.error(function (data, textStatus, jqXHR) {
 
                 });//end of $updateCourseHandler.error()*/
-            }
         }
 
         function WebFormDataForDelete(inCUDBy) {
@@ -298,7 +300,7 @@
 
         <div class="row7-buttons">
             <button onclick="onClickDelete()" class="delete">Delete</button>
-            <button onclick="clickSave()" class="save">Save</button>
+            <button onclick="save()" class="save">Save</button>
             <button onclick="clickBack()" class="cancel">Cancel</button>
         </div>
     </div>

@@ -127,8 +127,8 @@
                             $cellElement = $('<td></td>', { text: answer });
                             $rowElement.append($cellElement);
                             $hyperLinkElement = $('<button>Edit</button>');
-                            $hyperLinkElement.onclick = function () { edit(questionId) }
-                            $hyperLinkElement.addClass('btn btn-primary');
+                            $hyperLinkElement = $('<a>Edit</a>').attr('href', '/Game/EditQuestion/?gameid=' + gameId + '&questionid=' + questionId);
+							$hyperLinkElement.addClass('btn btn-primary');
                             $cellElement = $('<td></td>');
                             $cellElement.append($hyperLinkElement);
                             $rowElement.append($cellElement);
@@ -204,9 +204,8 @@
                             $rowElement.append($cellElement);
                             $cellElement = $('<td></td>', { text: answer });
                             $rowElement.append($cellElement);
-                            $hyperLinkElement = $('<button>Edit</button>');
-                            $hyperLinkElement.onclick = function () { edit(questionId) }
-                            $hyperLinkElement.addClass('btn btn-primary');
+                            $hyperLinkElement = $('<a>Edit</a>').attr('href', '/Game/EditQuestion/?gameid=' + gameId + '&questionid=' + questionId);
+							$hyperLinkElement.addClass('btn btn-primary');
                             $cellElement = $('<td></td>');
                             $cellElement.append($hyperLinkElement);
                             $rowElement.append($cellElement);
@@ -220,7 +219,9 @@
                     });
         }
 
-
+        function editQuestion(questionId) {
+              location.href = "/Game/EditQuestion/?gameid=" + gameId + "&questionid=" + questionId;
+        }
 
         function loadGames(sessionObject) {
             bearerToken = sessionObject.Token1;
@@ -324,7 +325,7 @@
                     </td>
 
                     <td>
-                        <button onclick="edit(@item.QuestionId)">Edit</button>
+                        <button class="btn btn-primary" onclick="edit(@item.QuestionId)">Edit</button>
                     </td>
                 </tr>
             }

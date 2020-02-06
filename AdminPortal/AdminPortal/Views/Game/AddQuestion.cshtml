@@ -25,10 +25,9 @@
         var choiceId4;
 
         //Using a function technique to define a JavaScript class, WebFormData
-        function WebFormData(inCollectedQuestion1, inCollectedPoints, inCollectedUrl, inCollectedAnswer, inCollectedChoice1,
+        function WebFormData(inCollectedQuestion1, inCollectedUrl, inCollectedAnswer, inCollectedChoice1,
             inCollectedChoice2, inCollectedChoice3, inCollectedChoice4, inCUDBy) {
             this.Question = inCollectedQuestion1;
-            this.Points = inCollectedPoints;
             this.ImageUrl = inCollectedUrl;
             this.Answer = inCollectedAnswer;
             this.Choice1 = inCollectedChoice1;
@@ -38,10 +37,11 @@
             this.CUDBy = inCUDBy;
         }
 
-        function clickSave() {
-
+        function clickSave(sessionObject) {
+            bearerToken = sessionObject.Token1; // this
+            var collectedCUDBy = $('#employeeId').text();
+            console.log("CUDBY: " + collectedCUDBy);
             var collectedQuestion = $('#question').val();
-            var collectedPoint = 2;
             var collectedImageUrl = "";
             //get the text input of the choice using the val of answer (choiceId)
             var selectedChoiceId = $('#answer').val();
@@ -51,21 +51,18 @@
             var collectedChoice2 = $('#choice2').val();
             var collectedChoice3 = $('#choice3').val();
             var collectedChoice4 = $('#choice4').val();
-            var collectedCUDBy = JSON.parse(sessionStorage.getItem('employeeDetailsObject')).employeeId;
+
 
 
             //Create a WebFormData object, webFormData. Have its field values
             //populated with the collected course data
-            var webFormData = new WebFormData(collectedQuestion,
-                collectedPoint, collectedImageUrl, collectedAnswer, collectedChoice1, collectedChoice2, collectedChoice3, collectedChoice4, collectedCUDBy);
+            var webFormData = new WebFormData(collectedQuestion, collectedImageUrl, collectedAnswer, collectedChoice1, collectedChoice2, collectedChoice3, collectedChoice4, collectedCUDBy);
             //Convert the webFromData into a JSON string
             var webFormDataInString = JSON.stringify(webFormData);
 
             console.log(webFormDataInString);
 
             var url = baseURL + "/api/v1/games/" + gameId
-            if (tokenIsValid()) {
-                bearerToken = JSON.parse(sessionStorage.getItem('tokenSessionObject')).token;
                 $updateCourseHandler = jQuery.ajax({
                     type: 'POST',
                     beforeSend: function (request) {
@@ -83,7 +80,10 @@
                 $updateCourseHandler.error(function (data, textStatus, jqXHR) {
                     console.log(data.responseJSON.message);
                 });//end of $updateCourseHandler.error()*/
-            }
+        }
+
+        function save() {
+                $.when(tokenIsValid, getTokenSession(clickSave));
         }
 
         function redirectPage() {
@@ -147,7 +147,7 @@
         </div>
 
         <div class="row7-buttons">
-            <button class="save" onclick="clickSave()">Save</button>
+            <button class="save" onclick="save()">Save</button>
             <button onclick="clickback()" class="cancel">Cancel</button>
         </div>
     </div>
