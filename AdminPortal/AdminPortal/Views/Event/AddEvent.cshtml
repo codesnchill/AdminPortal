@@ -56,7 +56,7 @@
             this.CUDBy = inCUDBy;
         }
 
-        function save() {
+        function save(sessionObject) {
             var collectedStartDate = $('#startDate').val();
             var collectedEndDate = $('#endDate').val();
             var collectedStartTime = $('#startTime').val();
@@ -64,8 +64,8 @@
             var collectedEventName = $('#name').val();
             var collectedEventDescription = $('#description').val();
             var collectedDepartment = $('#department').val();
-            var collectedCUDBy = JSON.parse(sessionStorage.getItem('employeeDetailsObject')).employeeId;
-
+            bearerToken = sessionObject.Token1; // this
+            var collectedCUDBy = $('#employeeId').text();
             var collectedStartDateTime = new Date(collectedStartDate + ' ' + collectedStartTime);
             var collectedStartDateTime2 = collectedStartDateTime.toISOString().replace('Z', '').replace('.000', '');
 
@@ -81,11 +81,6 @@
             console.log("Event Details: " + webFormDataInString);
 
             var url = baseURL + "/api/v1/events"
-
-            if (tokenIsValid()) {
-
-                bearerToken = JSON.parse(sessionStorage.getItem('tokenSessionObject')).token;
-
                 $updateCourseHandler = jQuery.ajax({
                     type: 'POST',
                     beforeSend: function (request) {
@@ -105,7 +100,10 @@
                 $updateCourseHandler.error(function (data, textStatus, jqXHR) {
                     console.log(data.responseJSON.message);
                 });//end of $updateCourseHandler.error()*/
-            }
+        }
+
+        function saveEvent() {
+             $.when(tokenIsValid, getTokenSession(save));
         }
 
         function redirectPage() {
@@ -170,7 +168,7 @@
         </div>
         <div class="row8-buttons">
 
-            <button onclick="save()" class="save">Save</button>
+            <button onclick="saveEvent()" class="save">Save</button>
             <button onclick="clickback()" class="cancel">Cancel</button>
         </div>
     </div>

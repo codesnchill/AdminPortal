@@ -129,7 +129,7 @@
             this.CUDBy = inCUDBy;
         }
 
-        function save() {
+        function save(sessionObject) {
             var collectedStartDate = $('#startDate').val();
             var collectedEndDate = $('#endDate').val();
             var collectedStartTime = $('#startTime').val();
@@ -137,7 +137,8 @@
             var collectedEventName = $('#eventName').val();
             var collectedEventDescription = $('#eventDescription').val();
             var collectedDepartment = $('#department').val();
-            var collectedCUDBy = JSON.parse(sessionStorage.getItem('employeeDetailsObject')).employeeId;
+             bearerToken = sessionObject.Token1; // this
+            var collectedCUDBy = $('#employeeId').text();
 
 
 
@@ -159,8 +160,6 @@
             console.log("Event Details: " + webFormDataInString);
 
             var url = baseURL + "/api/v1/events/" + g_eventId;
-            if (tokenIsValid()) {
-                bearerToken = JSON.parse(sessionStorage.getItem('tokenSessionObject')).token;
                 $updateCourseHandler = jQuery.ajax({
                     type: 'PUT',
                      beforeSend: function (request) {
@@ -173,14 +172,17 @@
                 })//end of jQuery.ajax() call
                 $updateCourseHandler.done(function (data, textStatus, jqXHR) {
                     alert("Event Updated Successfully");
-                    location.href = "/Event/EditEvent";
+                   location.href = "/Event/EditDeletedEvent/" + g_eventId;
 
                 });//end of $updateCourseHandler.done()
 
                 $updateCourseHandler.error(function (data, textStatus, jqXHR) {
                     //  console.log(data.responseJSON.message);
                 });//end of $updateCourseHandler.error()*/
-            }
+        }
+
+        function saveEvent() {
+                  $.when(tokenIsValid, getTokenSession(save));
         }
 
 
@@ -209,7 +211,7 @@
             this.CUDBy = inCUDBy;
         }
 
-        function retrieveEvent() {
+        function retrieveEvent(sessionObject) {
 
             var collectedReEnable = true;
             var collectedStartDate = $('#startDate').val();
@@ -219,7 +221,8 @@
             var collectedEventName = $('#eventName').val();
             var collectedEventDescription = $('#eventDescription').val();
             var collectedDepartment = $('#department').val();
-            var collectedCUDBy = JSON.parse(sessionStorage.getItem('employeeDetailsObject')).employeeId;
+            bearerToken = sessionObject.Token1; // this
+            var collectedCUDBy = $('#employeeId').text();
             // Start Date-Time Combined
             var collectedStartDateTime = collectedStartDate + ' ' + collectedStartTime;
             var collectedStartDateTime2 = convertUTCDateToLocalDate(new Date(collectedStartDateTime));
@@ -239,9 +242,6 @@
             //Convert the webFromData into a JSON string
 
             var url = baseURL + "/api/v1/events/" + g_eventId;
-            if (tokenIsValid()) {
-
-                bearerToken = JSON.parse(sessionStorage.getItem('tokenSessionObject')).token;
                 $updateCourseHandler = jQuery.ajax({
                     type: 'PUT',
                       beforeSend: function(request) {
@@ -254,14 +254,17 @@
                 })//end of jQuery.ajax() call
                 $updateCourseHandler.done(function (data, textStatus, jqXHR) {
                     alert("Event Updated Successfully");
-                    location.href = "/Event/EditDeletedEvent";
+                    location.href = "/Event/ManageDeletedEvents";
 
                 });//end of $updateCourseHandler.done()
 
                 $updateCourseHandler.error(function (data, textStatus, jqXHR) {
                     //  console.log(data.responseJSON.message);
                 });//end of $updateCourseHandler.error()*/
-            }
+        }
+
+        function retrieve() {
+                  $.when(tokenIsValid, getTokenSession(retrieveEvent));
         }
 
         function redirectPage() {
@@ -340,8 +343,8 @@
             </select>
         </div>
         <div class="row8-buttons">
-            <button onclick="retrieveEvent()" class="delete">Retrieve</button>
-            <button onclick="save()" class="save">Save</button>
+            <button onclick="retrieve()" class="delete">Retrieve</button>
+            <button onclick="saveEvent()" class="save">Save</button>
             <button onclick="redirectPage()" class="cancel">Cancel</button>
         </div>
     </div>

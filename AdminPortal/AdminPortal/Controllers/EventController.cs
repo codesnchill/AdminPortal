@@ -99,7 +99,7 @@ namespace AdminPortal.Controllers
 
         IEnumerable<Event> deletedEvents = null;
         const string DeletedEventListSessionName = "_DeletedEventList";
-        public async Task<IActionResult> ManageDeletedEvents ()
+        public async Task<IActionResult> ManageDeletedEvents()
         {
             // check if user goes into a page without logging in
             if (HttpContext.Session.GetString(tokenSession) == null)
@@ -117,9 +117,9 @@ namespace AdminPortal.Controllers
                 using (var client = new HttpClient())
                 {
                     client.BaseAddress = new Uri("https://localhost:44300/api/v1/");
+                    client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
                     //HTTP GET
                     var responseTask = client.GetAsync("events?deleted=true");
-                    client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
                     responseTask.Wait();
 
                     var result = responseTask.Result;

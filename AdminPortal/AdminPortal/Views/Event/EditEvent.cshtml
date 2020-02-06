@@ -19,10 +19,10 @@
 
         });
 
-        var baseURL = getBaseURL(sessionObject);
-        bearerToken = sessionObject.Token1;
-        function loadDepartments() {
-
+        var baseURL = getBaseURL();
+       
+        function loadDepartments(sessionObject) {
+             bearerToken = sessionObject.Token1;
             var url = baseURL + "/api/v1/departments"
             var $loadhandler = jQuery.ajax({
                 type: 'GET',
@@ -129,7 +129,7 @@
 
         }
 
-        function save() {
+        function save(sessionObject) {
             var collectedStartDate = $('#startDate').val();
             var collectedEndDate = $('#endDate').val();
             var collectedStartTime = $('#startTime').val();
@@ -137,7 +137,8 @@
             var collectedEventName = $('#eventName').val();
             var collectedEventDescription = $('#eventDescription').val();
             var collectedDepartment = $('#department').val();
-            var collectedCUDBy = JSON.parse(sessionStorage.getItem('employeeDetailsObject')).employeeId;
+            bearerToken = sessionObject.Token1; // this
+            var collectedCUDBy = $('#employeeId').text();
 
 
 
@@ -159,10 +160,6 @@
             console.log("Event Details: " + webFormDataInString);
 
             var url = baseURL + "/api/v1/events/" + g_eventId;
-
-            if (tokenIsValid()) {
-
-                bearerToken = JSON.parse(sessionStorage.getItem('tokenSessionObject')).token;
                  $updateCourseHandler = jQuery.ajax({
                 type: 'PUT',
                  beforeSend: function(request) {
@@ -182,7 +179,10 @@
             $updateCourseHandler.error(function (data, textStatus, jqXHR) {
                 //  console.log(data.responseJSON.message);
             });//end of $updateCourseHandler.error()*/
-            }
+        }
+
+        function saveEvent() {
+              $.when(tokenIsValid, getTokenSession(save));
         }
 
 
@@ -201,8 +201,9 @@
                this.CUDBy = inCUDBy;
         }
 
-        function deleteEvent() {
-            var collectedCUDBy = JSON.parse(sessionStorage.getItem('employeeDetailsObject')).employeeId;
+        function deleteEvent(sessionObject) {
+            bearerToken = sessionObject.Token1; // this
+            var collectedCUDBy = $('#employeeId').text();
             var webFormData = new WebFormDataForDelete(collectedCUDBy);
             var webFormDataInString = JSON.stringify(webFormData);
             var noty = new Noty({
@@ -216,8 +217,6 @@
 
                     Noty.button('Delete', 'btn btn-danger', function () {
                         var url = baseURL + "/api/v1/events/markdelete/" + g_eventId;
-                        if (tokenIsValid()) {
-                            bearerToken = JSON.parse(sessionStorage.getItem('tokenSessionObject')).token;
                             $deleteHandler = jQuery.ajax({
                                 type: 'DELETE',
                                 beforeSend: function (request) {
@@ -242,11 +241,14 @@
                                     template: '<div class="noty_message"><span class="noty_text"></span>'
                                 }).show();//end of noty()
                             });//end of $deleteCourseHandler.fail()
-                        }
                     })
                 ]
             }).show();
         }//end of on click
+
+        function deleteE() {
+              $.when(tokenIsValid, getTokenSession(deleteEvent));
+        }
 
         function redirectPage() {
             location.href = "/Event/ManageEvents";
@@ -324,8 +326,8 @@
             </select>
         </div>
         <div class="row8-buttons">
-            <button onclick="deleteEvent()" class="delete">Delete</button>
-            <button onclick="save()" class="save">Save</button>
+            <button onclick="deleteE()" class="delete">Delete</button>
+            <button onclick="saveEvent()" class="save">Save</button>
             <button onclick="redirectPage()" class="cancel">Cancel</button>
         </div>
     </div>
