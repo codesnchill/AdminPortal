@@ -18,6 +18,10 @@ namespace AdminPortal.Controllers
         const string tokenSession = "tokenSessionObject";
         public async Task<IActionResult> ManageGames()
         {
+            // check if user goes into a page without logging in
+            if (HttpContext.Session.GetString(tokenSession) == null)
+                return RedirectToAction("Login", "Account");
+
             List<Question> questionList = new List<Question>();
             var tokenObj = JsonConvert.DeserializeObject<Token>(HttpContext.Session.GetString(tokenSession));
             var token = tokenObj.Token1;
@@ -168,16 +172,28 @@ namespace AdminPortal.Controllers
 
         public IActionResult EditQuestion()
         {
+            // check if user goes into a page without logging in
+            if (HttpContext.Session.GetString(tokenSession) == null)
+                return RedirectToAction("Login", "Account");
+
             return View();
         }
 
         public IActionResult AddQuestion()
         {
+            // check if user goes into a page without logging in
+            if (HttpContext.Session.GetString(tokenSession) == null)
+                return RedirectToAction("Login", "Account");
+
             return View();
         }
 
         public IActionResult EditDeletedQuestion()
         {
+            // check if user goes into a page without logging in
+            if (HttpContext.Session.GetString(tokenSession) == null)
+
+                return RedirectToAction("Login", "Account");
             return View();
         }
 
@@ -185,6 +201,10 @@ namespace AdminPortal.Controllers
         const string DeletedQuestionListSessionName = "_DeletedGameQuestionList";
         public async Task<IActionResult> ManageDeletedGames()
         {
+            // check if user goes into a page without logging in
+            if (HttpContext.Session.GetString(tokenSession) == null)
+                return RedirectToAction("Login", "Account");
+
             List<Question> questionList = new List<Question>();
             var tokenObj = JsonConvert.DeserializeObject<Token>(HttpContext.Session.GetString(tokenSession));
             var token = tokenObj.Token1;

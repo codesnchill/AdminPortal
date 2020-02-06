@@ -20,6 +20,10 @@ namespace AdminPortal.Controllers
         const string tokenSession = "tokenSessionObject";
         public async Task<IActionResult> ManagePoints()
         {
+            // check if user goes into a page without logging in
+            if (HttpContext.Session.GetString(tokenSession) == null)
+                return RedirectToAction("Login", "Account");
+
             List<Employee> myEmployeeList = new List<Employee>();
             var tokenObj = JsonConvert.DeserializeObject<Token>(HttpContext.Session.GetString(tokenSession));
             var token = tokenObj.Token1;
@@ -68,11 +72,19 @@ namespace AdminPortal.Controllers
 
         public IActionResult AwardPoint()
         {
+            // check if user goes into a page without logging in
+            if (HttpContext.Session.GetString(tokenSession) == null)
+                return RedirectToAction("Login", "Account");
+
             return View();
         }
 
         public IActionResult DeductPoint()
         {
+            // check if user goes into a page without logging in
+            if (HttpContext.Session.GetString(tokenSession) == null)
+                return RedirectToAction("Login", "Account");
+
             return View();
         }
 

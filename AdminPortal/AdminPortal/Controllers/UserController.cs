@@ -37,6 +37,10 @@ namespace AdminPortal.Controllers
         const string tokenSession = "tokenSessionObject";
         public async Task<IActionResult> ManageUser()
         {
+            // check if user goes into a page without logging in
+            if (HttpContext.Session.GetString(tokenSession) == null)
+                return RedirectToAction("Login", "Account");
+
             List<Employee> myEmployeeList = new List<Employee>();
 
             Token tokenObj = JsonConvert.DeserializeObject<Token>(HttpContext.Session.GetString(tokenSession));
@@ -89,11 +93,19 @@ namespace AdminPortal.Controllers
 
         public IActionResult AddUser()
         {
+            // check if user goes into a page without logging in
+            if (HttpContext.Session.GetString(tokenSession) == null)
+                return RedirectToAction("Login", "Account");
+
             return View();
         }
 
         public IActionResult EditUser()
         {
+            // check if user goes into a page without logging in
+            if (HttpContext.Session.GetString(tokenSession) == null)
+                return RedirectToAction("Login", "Account");
+
             return View();
         }
 
@@ -104,6 +116,10 @@ namespace AdminPortal.Controllers
 
         public IActionResult EditDeletedUser()
         {
+            // check if user goes into a page without logging in
+            if (HttpContext.Session.GetString(tokenSession) == null)
+                return RedirectToAction("Login", "Account");
+
             return View();
         }
 
@@ -112,6 +128,10 @@ namespace AdminPortal.Controllers
         const string DeletedEmployeeListSessionName = "_DEmployeeList";
         public async Task<IActionResult> ManageDeletedUser()
         {
+            // check if user goes into a page without logging in
+            if (HttpContext.Session.GetString(tokenSession) == null)
+                return RedirectToAction("Login", "Account");
+
             List<Employee> myEmployeeList = new List<Employee>();
             Token tokenObj = JsonConvert.DeserializeObject<Token>(HttpContext.Session.GetString(tokenSession));
             var token = tokenObj.Token1;
@@ -158,10 +178,5 @@ namespace AdminPortal.Controllers
             //make sure it returns the whole list retrieve from database (not the paginated list)
             return View(myEmployeeList);
         }
-
-
-     
-
-
     }
 }

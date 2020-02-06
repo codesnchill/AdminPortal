@@ -22,12 +22,19 @@ namespace AdminPortal.Controllers
         const string tokenSession = "tokenSessionObject";
         public IActionResult GenerateReport()
         {
+            // check if user goes into a page without logging in
+            if (HttpContext.Session.GetString(tokenSession) == null)
+                return RedirectToAction("Login", "Account");
+
             return View();
         }
 
-        [HttpGet]
         public async Task<IActionResult> AuditReport(string ReportType, string StartDate, string EndDate)
         {
+            // check if user goes into a page without logging in
+            if (HttpContext.Session.GetString(tokenSession) == null)
+                return RedirectToAction("Login", "Account");
+
             List<AuditReport> auditreportList = new List<AuditReport>();
             var tokenObj = JsonConvert.DeserializeObject<Token>(HttpContext.Session.GetString(tokenSession));
             var token = tokenObj.Token1;
@@ -74,10 +81,12 @@ namespace AdminPortal.Controllers
                 return new ViewAsPdf(auditreportList);
             }
         
-
-        [HttpGet]
         public async Task<IActionResult> MilestoneReport(string ReportType, string StartDate, string EndDate)
         {
+            // check if user goes into a page without logging in
+            if (HttpContext.Session.GetString(tokenSession) == null)
+                return RedirectToAction("Login", "Account");
+
             List<Milestone> reportList = new List<Milestone>();
             var tokenObj = JsonConvert.DeserializeObject<Token>(HttpContext.Session.GetString(tokenSession));
             var token = tokenObj.Token1;
@@ -126,10 +135,12 @@ namespace AdminPortal.Controllers
                 return new ViewAsPdf(reportList);
             }
 
-        
-        [HttpGet]
         public async Task<IActionResult> RankingReport(string ReportType, string StartDate, string EndDate)
         {
+            // check if user goes into a page without logging in
+            if (HttpContext.Session.GetString(tokenSession) == null)
+                return RedirectToAction("Login", "Account");
+
             List<RankingReport> rankingreportList = new List<RankingReport>();
             var tokenObj = JsonConvert.DeserializeObject<Token>(HttpContext.Session.GetString(tokenSession));
             var token = tokenObj.Token1;
