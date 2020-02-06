@@ -16,10 +16,11 @@
              this.CUDBy = inCUDBy;
         }
 
-        function clickSave() {
+        function clickSave(sessionObject) {
             var collectedReward = $('#reward').val();
             var collectedPoints = $('#points').val();
-            var collectedCUDBy = JSON.parse(sessionStorage.getItem('employeeDetailsObject')).employeeId;
+             bearerToken = sessionObject.Token1; // this
+            var collectedCUDBy = $('#employeeId').text();
             //Create a WebFormData object, webFormData. Have its field values
             //populated with the collected course data
             var webFormData = new WebFormData(collectedReward, collectedPoints, collectedCUDBy);
@@ -29,8 +30,6 @@
             console.log("JSON RESULTS for add: " + webFormDataInString);
 
             var url = baseURL +  "/api/v1/milestone"
-            if (tokenIsValid()) {
-                bearerToken = JSON.parse(sessionStorage.getItem('tokenSessionObject')).token;
                 $updateCourseHandler = jQuery.ajax({
                     type: 'POST',
                     beforeSend: function (request) {
@@ -49,7 +48,10 @@
                 $updateCourseHandler.error(function (data, textStatus, jqXHR) {
                     console.log(data.responseJSON.message);
                 });//end of $updateCourseHandler.error()*/
-            }
+        }
+
+        function save() {
+               $.when(tokenIsValid, getTokenSession(clickSave));
         }
 
         function clickback() {
@@ -99,7 +101,7 @@
             </div>
 
             <div class="row3-buttons">
-                <button class="save" onclick="clickSave()">Save</button>
+                <button class="save" onclick="save()">Save</button>
                 <button onclick="clickback()" class="cancel">Cancel</button>
             </div>
         </div>

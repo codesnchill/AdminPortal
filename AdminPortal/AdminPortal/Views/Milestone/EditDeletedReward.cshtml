@@ -55,10 +55,11 @@
             this.CUDBy = inCUDBy;
         }
 
-        function clickSave() {
+        function clickSave(sessionObject) {
             var collectedReward = $('#reward').val();
             var collectedPoints = $('#points').val();
-            var collectedCUDBy = JSON.parse(sessionStorage.getItem('employeeDetailsObject')).employeeId;
+             bearerToken = sessionObject.Token1; // this
+            var collectedCUDBy = $('#employeeId').text();
             //Create a WebFormData object, webFormData. Have its field values
             //populated with the collected course data
             var webFormData = new WebFormData(collectedReward, collectedPoints, collectedCUDBy);
@@ -68,8 +69,6 @@
             console.log("JSON RESULTS for add: " + webFormDataInString);
 
             var url = baseURL + "/api/v1/milestone/details/" + g_rewardId;
-            if (tokenIsValid()) {
-                bearerToken = JSON.parse(sessionStorage.getItem('tokenSessionObject')).token;
                 $updateCourseHandler = jQuery.ajax({
                     type: 'PUT',
                      beforeSend: function (request) {
@@ -82,13 +81,12 @@
                 })//end of jQuery.ajax() call
                 $updateCourseHandler.done(function (data, textStatus, jqXHR) {
                     alert("Reward Updated Successfully");
-                    location.href = "/Milestone/EditReward/" + g_rewardId;
+                    location.href = "/Milestone/EditDeletedReward/" + g_rewardId;
                 });//end of $updateCourseHandler.done()
 
                 $updateCourseHandler.error(function (data, textStatus, jqXHR) {
                     console.log(data.responseJSON.message);
                 });//end of $updateCourseHandler.error()*/
-            }
         }
 
 
@@ -100,11 +98,12 @@
             this.CUDBy = inCUDBy;
         }
 
-        function retrieve() {
+        function retrieve(sessionObject) {
             var collectedReward = $('#reward').val();
             var collectedPoints = $('#points').val();
             var collectedReEnable = true;
-            var collectedCUDBy = JSON.parse(sessionStorage.getItem('employeeDetailsObject')).employeeId;
+          bearerToken = sessionObject.Token1; // this
+            var collectedCUDBy = $('#employeeId').text();
             //Create a WebFormData object, webFormData. Have its field values
             //populated with the collected course data
             var webFormData = new WebFormData3(collectedReward, collectedPoints, collectedReEnable, collectedCUDBy);
@@ -114,8 +113,6 @@
             console.log("JSON RESULTS for add: " + webFormDataInString);
 
             var url = baseURL + "/api/v1/milestone/details/" + g_rewardId;
-            if (tokenIsValid()) {
-                bearerToken = JSON.parse(sessionStorage.getItem('tokenSessionObject')).token;
                 $updateCourseHandler = jQuery.ajax({
                     type: 'PUT',
                      beforeSend: function (request) {
@@ -127,20 +124,25 @@
                     data: "'" + webFormDataInString + "'"
                 })//end of jQuery.ajax() call
                 $updateCourseHandler.done(function (data, textStatus, jqXHR) {
-                    alert("Reward Updated Successfully");
+                    alert("Reward Retrieved Successfully");
                     location.href = "/Milestone/ManageDeletedMilestones";
                 });//end of $updateCourseHandler.done()
 
                 $updateCourseHandler.error(function (data, textStatus, jqXHR) {
                     console.log(data.responseJSON.message);
                 });//end of $updateCourseHandler.error()*/
-            }
         }
 
+        function save() {
+               $.when(tokenIsValid, getTokenSession(clickSave));
+        }
 
+        function retrieveReward(){
+            $.when(tokenIsValid, getTokenSession(retrieve));
+        }
 
         function clickback() {
-            location.href = "/Milestone/ManageMilestones";
+            location.href = "/Milestone/ManageDeletedMilestones";
         }
 
         function view() {
@@ -191,8 +193,8 @@
         </div>
 
         <div class="row3-buttons">
-            <button class="delete" onclick="retrieve()">Retrieve</button>
-            <button class="save" onclick="clickSave()">Save</button>
+            <button class="delete" onclick="retrieveReward()">Retrieve</button>
+            <button class="save" onclick="save()">Save</button>
             <button onclick="clickback()" class="cancel">Cancel</button>
         </div>
     </div>

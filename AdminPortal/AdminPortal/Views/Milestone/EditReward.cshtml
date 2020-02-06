@@ -1,5 +1,4 @@
-﻿ses
-@{
+﻿@{
     Layout = "../Shared/_Layout.cshtml";
 }
 
@@ -8,7 +7,6 @@
     <script type="text/javascript" src="~/Script/baseURL.js"></script>
     <link href="~/lib/noty.css" rel="stylesheet">
     <script src="~/lib/noty.min.js"></script>
-    <script type="text/javascript" src="~/Script/tokenHelper.js"></script>
     <script>
 
         var g_rewardId = getIdFromAddressBar();
@@ -56,10 +54,11 @@
             this.CUDBy = inCUDBy;
         }
 
-        function clickSave() {
+        function clickSave(sessionObject) {
             var collectedReward = $('#reward').val();
             var collectedPoints = $('#points').val();
-            var collectedCUDBy = JSON.parse(sessionStorage.getItem('employeeDetailsObject')).employeeId;
+             bearerToken = sessionObject.Token1; // this
+            var collectedCUDBy = $('#employeeId').text();
             //Create a WebFormData object, webFormData. Have its field values
             //populated with the collected course data
             var webFormData = new WebFormData(collectedReward, collectedPoints, collectedCUDBy);
@@ -69,8 +68,6 @@
             console.log("JSON RESULTS for add: " + webFormDataInString);
 
             var url = baseURL + "/api/v1/milestone/details/" + g_rewardId;
-            if (tokenIsValid()) {
-                bearerToken = JSON.parse(sessionStorage.getItem('tokenSessionObject')).token;
                 $updateCourseHandler = jQuery.ajax({
                     type: 'PUT',
                     beforeSend: function (request) {
@@ -89,15 +86,19 @@
                 $updateCourseHandler.error(function (data, textStatus, jqXHR) {
                     console.log(data.responseJSON.message);
                 });//end of $updateCourseHandler.error()*/
-            }
+        }
+
+        function save() {
+              $.when(tokenIsValid, getTokenSession(clickSave));
         }
 
         function WebFormDataForDelete(inCUDBy) {
             this.CUDBy = inCUDBy;
         }
 
-        function deleteReward() {
-            var collectedCUDBy = JSON.parse(sessionStorage.getItem('employeeDetailsObject')).employeeId;
+        function deleteReward(sessionObject) {
+            bearerToken = sessionObject.Token1; // this
+            var collectedCUDBy = $('#employeeId').text();
             var webFormData = new WebFormDataForDelete(collectedCUDBy);
             var webFormDataInString = JSON.stringify(webFormData);
 
@@ -112,8 +113,6 @@
 
                     Noty.button('Delete', 'btn btn-danger', function () {
                         var url = baseURL + "/api/v1/milestone/" + g_rewardId;
-                        if (tokenIsValid()) {
-                            bearerToken = JSON.parse(sessionStorage.getItem('tokenSessionObject')).token;
                             $deleteHandler = jQuery.ajax({
                                 type: 'DELETE',
                                 beforeSend: function (request) {
@@ -138,11 +137,14 @@
                                     template: '<div class="noty_message"><span class="noty_text"></span>'
                                 }).show();//end of noty()
                             });//end of $deleteCourseHandler.fail()
-                        }
                     })
                 ]
             }).show();
         }//end of on click
+
+        function deleteR() {
+               $.when(tokenIsValid, getTokenSession(deleteReward));
+        }
 
         function clickback() {
             location.href = "/Milestone/ManageMilestones";
@@ -160,7 +162,6 @@
 
 @section CSS {
     <link rel="stylesheet" href="~/styles/editreward.css">
-    <link href="~/lib/noty.css" />
 }
 
 <div class="right-section white-background">
@@ -196,8 +197,8 @@
         </div>
 
         <div class="row3-buttons">
-            <button class="delete" onclick="deleteReward()">Delete</button>
-            <button class="save" onclick="clickSave()">Save</button>
+            <button class="delete" onclick="deleteR()">Delete</button>
+            <button class="save" onclick="save()">Save</button>
             <button onclick="clickback()" class="cancel">Cancel</button>
         </div>
     </div>
