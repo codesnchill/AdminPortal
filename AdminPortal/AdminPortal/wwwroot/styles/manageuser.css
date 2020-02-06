@@ -299,7 +299,7 @@ p.title-control {
 .right-section .search-fields {
     width: 95%;
     margin-left: 13px;
-    height: 250px;
+    height: 200px;
     display: flex;
     flex-direction: column;
     border: 1px solid darkgray;
