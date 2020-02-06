@@ -79,7 +79,7 @@
 }
 
 .left-section .features button {
-    font-size: 17px;
+    font-size: 15px;
     font-weight: bold;
     color: #fff;
     background: transparent;
@@ -97,6 +97,10 @@
     padding-top: 1%;
 }
 
+.features img{
+    height:30px;
+}
+
     .left-section .features .manage-users {
         display: flex;
         height: 80px;
@@ -105,9 +109,7 @@
         margin-bottom: 12px;
     }
 
-        .left-section .features .manage-users img {
-            height: 35px;
-        }
+
 
         .left-section .features .manage-users button {
             flex: 1;
@@ -121,10 +123,6 @@
         padding-left: 45px;
     }
 
-        .left-section .features .manage-games img {
-            height: 35px;
-        }
-
         .left-section .features .manage-games button {
             flex: 1;
             padding-bottom: 42px;
@@ -137,9 +135,6 @@
         padding-left: 45px;
     }
 
-        .left-section .features .manage-events img {
-            height: 35px;
-        }
 
         .left-section .features .manage-events button {
             flex: 1;
@@ -153,9 +148,7 @@
         padding-left: 45px;
     }
 
-        .left-section .features .manage-points img {
-            height: 35px;
-        }
+
 
         .left-section .features .manage-points button {
             flex: 1;
@@ -169,10 +162,6 @@
         padding-left: 45px;
     }
 
-        .left-section .features .manage-milestone img {
-            height: 35px;
-        }
-
         .left-section .features .manage-milestone button {
             flex: 1;
             padding-bottom: 40px;
@@ -185,9 +174,6 @@
         padding-left: 45px;
     }
 
-        .left-section .features .manage-report img {
-            height: 35px;
-        }
 
         .left-section .features .manage-report button {
             flex: 1;
