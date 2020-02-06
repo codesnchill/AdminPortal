@@ -60,11 +60,12 @@
              this.CUDBy = inCUDBy;
         }
 
-        function save() {
+        function save(sessionObject) {
 
             var collectedPoints = $('#awardingPoints').val();
             var collectedComments = $('#reason').val();
-            var collectedCUDBy = JSON.parse(sessionStorage.getItem('employeeDetailsObject')).employeeId;
+             bearerToken = sessionObject.Token1; // this
+            var collectedCUDBy = $('#employeeId').text();
             //Create a WebFormData object, webFormData. Have its field values
             //populated with the collected course data
             var webFormData = new WebFormData(collectedPoints,
@@ -75,8 +76,6 @@
             console.log(webFormDataInString);
 
             var url = baseURL + "/api/v1/points/gift/" + g_userId
-            if (tokenIsValid()) {
-                bearerToken = JSON.parse(sessionStorage.getItem('tokenSessionObject')).token;
                 $updateCourseHandler = jQuery.ajax({
                     type: 'POST',
                      beforeSend: function (request) {
@@ -96,7 +95,10 @@
                 $updateCourseHandler.error(function (data, textStatus, jqXHR) {
                     console.log(data.responseJSON.message);
                 });//end of $updateCourseHandler.error()*/
-            }
+        }
+
+        function savePoint() {
+                 $.when(tokenIsValid, getTokenSession(save));
         }
 
         function redirectPage() {
@@ -156,7 +158,7 @@
 
         <div class="row7-buttons">
 
-            <button class="save" onclick="save()">Save</button>
+            <button class="save" onclick="savePoint()">Save</button>
             <button onclick="clickback()" class="cancel">Cancel</button>
         </div>
     </div>
