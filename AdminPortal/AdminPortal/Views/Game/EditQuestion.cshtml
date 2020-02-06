@@ -5,10 +5,10 @@
 @section Scripts {
     <script type="text/javascript" src="~/Script/tokenHelper.js"></script>
     <script type="text/javascript" src="~/Script/baseURL.js"></script>
-    <script src="~/lib/noty.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.js" type="text/javascript"></script>
     <script>
         // Start of getting gameId from addressbar
-
         var choiceId1;
         var choiceId2;
         var choiceId3;
@@ -33,66 +33,66 @@
 
 
         function getGameDetails(sessionObject) {
-                bearerToken = sessionObject.Token1;
-                var url = baseURL + "/api/v1/games/" + gameId + "/questions/" + questionId;
-                $loadUserDataHandler = jQuery.ajax({
-                    type: 'GET',
-                    beforeSend: function (request) {
-                        request.setRequestHeader("Authorization", "Bearer " + bearerToken);
-                    },
-                    url: url,
-                    contentType: "application/json",
-                    dataType: 'json',
-                    crossDomain: true,
-                })
-                $loadUserDataHandler.done(function (data, textStatus, jqXHR) {
-                    console.log(data);
-                    var game = data;
-                    Question1 = game[0].question1;
-                    answer = game[0].answer
-                    Choices = game[0].choices;
+            bearerToken = sessionObject.Token1;
+            var url = baseURL + "/api/v1/games/" + gameId + "/questions/" + questionId;
+            $loadUserDataHandler = jQuery.ajax({
+                type: 'GET',
+                beforeSend: function (request) {
+                    request.setRequestHeader("Authorization", "Bearer " + bearerToken);
+                },
+                url: url,
+                contentType: "application/json",
+                dataType: 'json',
+                crossDomain: true,
+            })
+            $loadUserDataHandler.done(function (data, textStatus, jqXHR) {
+                console.log(data);
+                var game = data;
+                Question1 = game[0].question1;
+                answer = game[0].answer
+                Choices = game[0].choices;
 
-                    console.log("Question: " + Question1);
-                    $('#question').val(Question1);
-                    //change the id of the choices input to the real id (from database) of the choices
-                    $('#choice1').prop('id', Choices[0].choiceId);
-                    $('#choice2').prop('id', Choices[1].choiceId);
-                    $('#choice3').prop('id', Choices[2].choiceId);
-                    $('#choice4').prop('id', Choices[3].choiceId);
+                console.log("Question: " + Question1);
+                $('#question').val(Question1);
+                //change the id of the choices input to the real id (from database) of the choices
+                $('#choice1').prop('id', Choices[0].choiceId);
+                $('#choice2').prop('id', Choices[1].choiceId);
+                $('#choice3').prop('id', Choices[2].choiceId);
+                $('#choice4').prop('id', Choices[3].choiceId);
 
-                    choiceId1 = Choices[0].choiceId;
-                    choiceId2 = Choices[1].choiceId;
-                    choiceId3 = Choices[2].choiceId;
-                    choiceId4 = Choices[3].choiceId;
+                choiceId1 = Choices[0].choiceId;
+                choiceId2 = Choices[1].choiceId;
+                choiceId3 = Choices[2].choiceId;
+                choiceId4 = Choices[3].choiceId;
 
-                    $('#' + choiceId1).val(Choices[0].choice);
-                    $('#' + choiceId2).val(Choices[1].choice);
-                    $('#' + choiceId3).val(Choices[2].choice);
-                    $('#' + choiceId4).val(Choices[3].choice);
+                $('#' + choiceId1).val(Choices[0].choice);
+                $('#' + choiceId2).val(Choices[1].choice);
+                $('#' + choiceId3).val(Choices[2].choice);
+                $('#' + choiceId4).val(Choices[3].choice);
 
-                    var i = 0;
-                    var answerId;
-                    for (i = 0; i < Choices.length; i++) {
+                var i = 0;
+                var answerId;
+                for (i = 0; i < Choices.length; i++) {
 
-                        if (Choices[i].choice == answer) {
-                            answerId = Choices[i].choiceId;
-                        }
-                        $("#answer").append($("<option></option>")
-                            .attr("value", Choices[i].choiceId)
-                            .text("Choice " + (i + 1)));
-
+                    if (Choices[i].choice == answer) {
+                        answerId = Choices[i].choiceId;
                     }
+                    $("#answer").append($("<option></option>")
+                        .attr("value", Choices[i].choiceId)
+                        .text("Choice " + (i + 1)));
 
-                    console.log("answerId " + answerId);
+                }
 
-                    $('#answer option').filter(function () {
-                        return $(this).val() == answerId;
-                    }).prop('selected', true);
+                console.log("answerId " + answerId);
 
-                    console.log("Choices: " + Choices);
-                    console.log("Answer: " + answer);
+                $('#answer option').filter(function () {
+                    return $(this).val() == answerId;
+                }).prop('selected', true);
 
-                }) //end of done
+                console.log("Choices: " + Choices);
+                console.log("Answer: " + answer);
+
+            }) //end of done
         }
         $.when(tokenIsValid, getTokenSession(getGameDetails));
 
@@ -172,8 +172,17 @@
             this.CUDBy = inCUDBy;
         }
 
-        function deleteQuestion() {
-            var collectedCUDBy = JSON.parse(sessionStorage.getItem('employeeDetailsObject')).employeeId;
+        //add this function
+        function onClickDelete() {
+            $.when(tokenIsValid, getTokenSession(deleteQuestion));
+
+        }
+
+        //add sessionObject here, and the bearerToken
+        // remove iftokenisvalid
+        function deleteQuestion(sessionObject) {
+            bearerToken = sessionObject.Token1; // this
+            var collectedCUDBy = $('#employeeId').text(); // add this
             var webFormData = new WebFormDataForDelete(collectedCUDBy);
             var webFormDataInString = JSON.stringify(webFormData);
             var noty = new Noty({
@@ -184,36 +193,32 @@
                     Noty.button('Cancel', 'btn btn-default', function () {
                         noty.close();
                     }),
-
                     Noty.button('Delete', 'btn btn-danger', function () {
                         var url = baseURL + "/api/v1/games/" + gameId + "/question/" + questionId
-                        if (tokenIsValid()) {
-                            bearerToken = JSON.parse(sessionStorage.getItem('tokenSessionObject')).token;
-                            $deleteHandler = jQuery.ajax({
-                                type: 'DELETE',
-                                beforeSend: function (request) {
-                                    request.setRequestHeader("Authorization", "Bearer " + bearerToken);
-                                },
-                                url: url,
-                                dataType: 'json',
-                                contentType: 'application/json;',
-                                data: "'" + webFormDataInString + "'"
-                            })//end of jQuery.ajax() call
+                        $deleteHandler = jQuery.ajax({
+                            type: 'DELETE',
+                            beforeSend: function (request) {
+                                request.setRequestHeader("Authorization", "Bearer " + bearerToken);
+                            },
+                            url: url,
+                            dataType: 'json',
+                            contentType: 'application/json;',
+                            data: "'" + webFormDataInString + "'"
+                        })//end of jQuery.ajax() call
 
-                            $deleteHandler.done(function (data, textStatus, jqXHR) {
-                                $('body').fadeOut(500, redirectPage);
-                                noty.close();
-                            })
+                        $deleteHandler.done(function (data, textStatus, jqXHR) {
+                            $('body').fadeOut(500, redirectPage);
+                            noty.close();
+                        })
 
-                            $deleteHandler.fail(function (data, textStatus, jqXHR) {
-                                console.log(data);
-                                new Noty({
-                                    text: data.responseJSON.message, type: 'error',
-                                    layout: 'center',
-                                    template: '<div class="noty_message"><span class="noty_text"></span>'
-                                }).show();//end of noty()
-                            });//end of $deleteCourseHandler.fail()
-                        }
+                        $deleteHandler.fail(function (data, textStatus, jqXHR) {
+                            console.log(data);
+                            new Noty({
+                                text: data.responseJSON.message, type: 'error',
+                                layout: 'center',
+                                template: '<div class="noty_message"><span class="noty_text"></span>'
+                            }).show();//end of noty()
+                        });//end of $deleteCourseHandler.fail()
                     })
                 ]
             }).show();
@@ -239,8 +244,7 @@
 
 @section CSS {
     <link rel="stylesheet" href="~/styles/editquestion.css">
-    <link rel="stylesheet" href="~/lib/noty.css" />
-}
+@*  *@}
 
 <div class="right-section white-background">
     <div class="title">
@@ -293,7 +297,7 @@
         </div>
 
         <div class="row7-buttons">
-            <button onclick="deleteQuestion()" class="delete">Delete</button>
+            <button onclick="onClickDelete()" class="delete">Delete</button>
             <button onclick="clickSave()" class="save">Save</button>
             <button onclick="clickBack()" class="cancel">Cancel</button>
         </div>

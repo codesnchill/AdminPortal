@@ -20,13 +20,16 @@
             <div class="line"></div>
             <div class="line"></div>
         </div>
-        @*<div class="dropdown">*@
+
+        <div class="dropdown">
             <img src="/images/user.png" alt="user logo">
-            @*<div class="dropdown-content">
-                <a href="#">Logout</a>
-            </div>*@
-        @*</div>*@
-     
+            <div class="dropdown-content">
+                <a href="#" id="logoutButton">Logout</a>
+            </div>
+        </div>
+        <div class="storage">
+            <p id="employeeId"></p>
+        </div>
     </div>
 
     <div class="bottom-section">
@@ -73,8 +76,14 @@
     </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="~/Script/tokenHelper.js"></script>
 
     <script>
+        getEmployeeSession(appendToHtmlStorage);
+
+        function appendToHtmlStorage(employeeSessionObj) {
+            $('#employeeId').text(employeeSessionObj.EmployeeId)
+        }
         $(document).ready(function () {
             $("#manageUser").click(function () {
                 location.href = "/User/ManageUser";
@@ -93,13 +102,13 @@
                 location.href = "/Point/ManagePoints";
             })
 
-             $("#manageMilestone").click(function () {
+            $("#manageMilestone").click(function () {
                 location.href = "/Milestone/ManageMilestones";
-             })
+            })
 
-             $("#manageReport").click(function () {
+            $("#manageReport").click(function () {
                 location.href = "/Report/GenerateReport";
-             })
+            })
 
 
 

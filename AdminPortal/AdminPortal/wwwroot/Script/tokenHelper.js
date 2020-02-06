@@ -133,12 +133,12 @@ function getTokenSession(cb) {
     });
 }
 
-function getEmployeeSession() {
+function getEmployeeSession(cb) {
     $sessionHandler = $.ajax({
         type: 'GET',
         url: '/Account/getEmployeeSession',
         dataType: 'json',
-        contentType: 'application/json;',
+        contentType: 'application/json;'
     })//end of jQuery.ajax() call
     $sessionHandler.done(function (data, textStatus, jqXHR) {
         //expiration is in UTC
@@ -150,7 +150,7 @@ function getEmployeeSession() {
             return false;
         }
         // token is valid once token is refreshed (if expired)
-        return sessionObject;
+        cb(sessionObject);
     });
 }
 

@@ -257,6 +257,10 @@ p.title-control {
     display: block;
 }
 
+.storage{
+    display:none;
+}
+
 @media only screen and (max-width: 800px) {
     .bottom-section .left-section {
         display: none;
