@@ -91,14 +91,15 @@
             this.CUDBy = inCollectedCUDBy;
         }
 
-        function clickSave() {
-            var collectedEmployeeId = $('#employeeId').val();
+        function clickSave(sessionObject) {
+            var collectedEmployeeId = $('#employeeID').val();
             var collectedEmployeeName = $('#employeeName').val();
             var collectedDepartmentId = $('#department').val();
             var collectedRole = $('#rights').val();
             var collectedStatus = $('#status').val();
             var collectedAdmin = $('#admin').val();
-            var collectedCUDBy = JSON.parse(sessionStorage.getItem('employeeDetailsObject')).employeeId;
+            bearerToken = sessionObject.Token1; // this
+            var collectedCUDBy = $('#employeeId').text();
             //Create a WebFormData object, webFormData. Have its field values
             //populated with the collected course data
             var webFormData = new WebFormData(collectedEmployeeId, collectedEmployeeName,
@@ -109,9 +110,7 @@
             console.log("JSON RESULTS for add: " + webFormDataInString);
 
             var url = baseURL + "/api/v1/users"
-            
-            if (tokenIsValid()) {
-                bearerToken = JSON.parse(sessionStorage.getItem('tokenSessionObject')).token;
+
                 $updateCourseHandler = jQuery.ajax({
                     type: 'POST',
                     beforeSend: function (request) {
@@ -130,7 +129,6 @@
                 $updateCourseHandler.error(function (data, textStatus, jqXHR) {
                     console.log(data.responseJSON.message);
                 });//end of $updateCourseHandler.error()*/
-            }
         }
 
 
@@ -142,8 +140,8 @@
         }
 
         function register() {
-            var collectedUsername = $('#employeeId').val();
-            var collectedPassword = $('#employeeId').val();
+            var collectedUsername = $('#employeeID').val();
+            var collectedPassword = $('#employeeID').val();
             var collectedEmail = $('#email').val();
             //Create a WebFormData object, webFormData. Have its field values
             //populated with the collected course data
@@ -173,9 +171,11 @@
         }
 
         function save() {
-            clickSave();
+            $.when(tokenIsValid, getTokenSession(clickSave));
             register();
         }
+
+
 
         function cancel() {
             location.href = "/User/ManageUser";
@@ -210,7 +210,7 @@
         </div>
         <div class="row1-employeeID">
             <label class="normal-weight" for="employeeID">Employee ID:</label>
-            <input type="text" name="employeeID" id="employeeId">
+            <input type="text" name="employeeID" id="employeeID">
         </div>
         <div class="row2-employeeName">
             <label class="normal-weight" for="employeeName">Employee Name:</label>

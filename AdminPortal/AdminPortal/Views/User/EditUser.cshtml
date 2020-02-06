@@ -112,7 +112,7 @@
 
                     console.log("Employee ID: " + employeeId + " Employee Name:" + employeeName);
 
-                    $('#employeeId').val(employeeId);
+                    $('#employeeID').val(employeeId);
                     $('#employeeName').val(employeeName);
 
 
@@ -149,18 +149,18 @@
             this.CUDBy = inCollectedCUDBy;
         }
 
-        function save() {
-
+        function save(sessionObject) {
+            bearerToken = sessionObject.Token1; // this
+            var collectedCUDBy = $('#employeeId').text();
             var collectedEmployeeName = $('#employeeName').val();
             var collectedDepartmentId = $('#department').val();
             var collectedRole = $('#rights').val();
             var collectedStatus = $('#status').val();
             var collectedReason = $('#reason').val();
             var collectedAdmin = $('#admin').val();
-            var collectedCUDBy = JSON.parse(sessionStorage.getItem('employeeDetailsObject')).employeeId;
 
             if (collectedStatus === "true" && !collectedReason) {
-                markDelete();
+                  $.when(tokenIsValid, getTokenSession(markDelete));
             }
 
             //Create a WebFormData object, webFormData. Have its field values
@@ -174,10 +174,6 @@
 
             var url = baseURL + "/api/v1/users/" + g_userId
             //var url = "https://localhost:44300/api/v1/users/" + g_userId
-
-            if (tokenIsValid()) {
-
-                bearerToken = JSON.parse(sessionStorage.getItem('tokenSessionObject')).token;
                 $updateCourseHandler = jQuery.ajax({
                     type: 'PUT',
                     beforeSend: function(request) {
@@ -195,7 +191,10 @@
                 $updateCourseHandler.error(function (data, textStatus, jqXHR) {
                     console.log(data.responseJSON.message);
                 });//end of $updateCourseHandler.error()*/
-            }
+        }
+
+        function saveUser() {
+              $.when(tokenIsValid, getTokenSession(save));
         }
 
         //WebFormData2
@@ -205,10 +204,11 @@
             this.CUDBy = inCollectedCUDBy;
         }
 
-        function markDelete() {
+        function markDelete(sessionObject) {
             var collectedStatus = $('#status').val();
             var collectedReason = $('#reason').val();
-            var collectedCUDBy = JSON.parse(sessionStorage.getItem('employeeDetailsObject')).employeeId;
+              bearerToken = sessionObject.Token1; // this
+            var collectedCUDBy = $('#employeeId').text();
 
             //Create a WebFormData object, webFormData. Have its field values
             //populated with the collected course data
@@ -221,8 +221,6 @@
 
             var url = baseURL + "/api/v1/users/" + g_userId
             //var url = "https://localhost:44300/api/v1/users/" + g_userId
-            if (tokenIsValid()) {
-                bearerToken = JSON.parse(sessionStorage.getItem('tokenSessionObject')).token;
                 $updateCourseHandler = jQuery.ajax({
                     type: 'DELETE',
                     beforeSend: function (request) {
@@ -240,7 +238,6 @@
                 $updateCourseHandler.error(function (data, textStatus, jqXHR) {
                     console.log(data.responseJSON.message);
                 });//end of $updateCourseHandler.error()*/
-            }
         }
 
         function redirectPage() {
@@ -283,7 +280,7 @@
         </div>
         <div class="row1-employeeID">
             <label class="normal-weight" for="employeeID">Employee ID:</label>
-            <input type="text" name="employeeID" id="employeeId" readonly>
+            <input type="text" name="employeeID" id="employeeID" readonly>
         </div>
         <div class="row2-employeeName">
             <label class="normal-weight" for="employeeName">Employee Name:</label>
@@ -319,8 +316,7 @@
         </div>
 
         <div class="row6-buttons">
-            <button class="delete">Delete</button>
-            <button onclick="save()" class="save">Save</button>
+            <button onclick="saveUser()" class="save">Save</button>
             <button onclick="clickback()" class="cancel">Cancel</button>
         </div>
     </div>
