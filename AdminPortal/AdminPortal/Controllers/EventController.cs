@@ -20,7 +20,11 @@ namespace AdminPortal.Controllers
         const string tokenSession = "tokenSessionObject";
         public async Task<IActionResult> ManageEvents()
         {
-           
+
+            // check if user goes into a page without logging in
+            if (HttpContext.Session.GetString(tokenSession) == null)
+                return RedirectToAction("Login", "Account");
+
             List<Event> eventList = new List<Event>();
             var tokenObj = JsonConvert.DeserializeObject<Token>(HttpContext.Session.GetString(tokenSession));
             var token = tokenObj.Token1;
@@ -68,16 +72,28 @@ namespace AdminPortal.Controllers
 
         public IActionResult AddEvent()
         {
+            // check if user goes into a page without logging in
+            if (HttpContext.Session.GetString(tokenSession) == null)
+                return RedirectToAction("Login", "Account");
+
             return View();
         }
 
         public IActionResult EditEvent()
         {
+            // check if user goes into a page without logging in
+            if (HttpContext.Session.GetString(tokenSession) == null)
+                return RedirectToAction("Login", "Account");
+
             return View();
         }
 
         public IActionResult EditDeletedEvent()
         {
+            // check if user goes into a page without logging in
+            if (HttpContext.Session.GetString(tokenSession) == null)
+                return RedirectToAction("Login", "Account");
+
             return View();
         }
 
@@ -85,6 +101,10 @@ namespace AdminPortal.Controllers
         const string DeletedEventListSessionName = "_DeletedEventList";
         public async Task<IActionResult> ManageDeletedEvents ()
         {
+            // check if user goes into a page without logging in
+            if (HttpContext.Session.GetString(tokenSession) == null)
+                return RedirectToAction("Login", "Account");
+
             List<Event> eventList = new List<Event>();
             var tokenObj = JsonConvert.DeserializeObject<Token>(HttpContext.Session.GetString(tokenSession));
             var token = tokenObj.Token1;
