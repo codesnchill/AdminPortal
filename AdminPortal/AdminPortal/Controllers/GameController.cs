@@ -68,44 +68,49 @@ namespace AdminPortal.Controllers
         const string QuestionListSessionName2 = "_GuessTheEmployeeQuestionList";
 
         [HttpGet]
-        public JsonResult LoadCompanyQuiz()
+        public async Task<JsonResult> LoadCompanyQuiz()
         {
             List<Question> questionList = new List<Question>();
             var tokenObj = JsonConvert.DeserializeObject<Token>(HttpContext.Session.GetString(tokenSession));
             var token = tokenObj.Token1;
-            using (var client = new HttpClient())
+
+            AccountController account = new AccountController();
+            bool tokenIsValid = await account.tokenIsValid(tokenObj, HttpContext);
+            if (tokenIsValid)
             {
-                client.BaseAddress = new Uri("https://localhost:44300/api/v1/");
-                client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
-                //HTTP GET
-                var responseTask = client.GetAsync("games/2?deleted=false");
-                responseTask.Wait();
-
-                var result = responseTask.Result;
-                if (result.IsSuccessStatusCode)
+                using (var client = new HttpClient())
                 {
-                    var readTask = result.Content.ReadAsAsync<IList<Question>>();
-                    readTask.Wait();
+                    client.BaseAddress = new Uri("https://localhost:44300/api/v1/");
+                    client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
+                    //HTTP GET
+                    var responseTask = client.GetAsync("games/2?deleted=false");
+                    responseTask.Wait();
 
-                    questions2 = readTask.Result;
-                    questionList = questions2.ToList();
+                    var result = responseTask.Result;
+                    if (result.IsSuccessStatusCode)
+                    {
+                        var readTask = result.Content.ReadAsAsync<IList<Question>>();
+                        readTask.Wait();
 
-                    // store employee in session
-                    HttpContext.Session.SetComplexData(QuestionListSessionName2, questionList);
-                    //HttpContext.Session["employeeList"] = employeeList;
+                        questions2 = readTask.Result;
+                        questionList = questions2.ToList();
+
+                        // store employee in session
+                        HttpContext.Session.SetComplexData(QuestionListSessionName2, questionList);
+                        //HttpContext.Session["employeeList"] = employeeList;
+                    }
+                    else //web api sent error response 
+                    {
+                        //log response status here..
+
+                        questions2 = Enumerable.Empty<Question>();
+
+                        ModelState.AddModelError(string.Empty, "Server error. Please contact administrator.");
+                    }
+
+
                 }
-                else //web api sent error response 
-                {
-                    //log response status here..
-
-                    questions2 = Enumerable.Empty<Question>();
-
-                    ModelState.AddModelError(string.Empty, "Server error. Please contact administrator.");
-                }
-
-
             }
-
             //make sure it returns the whole list retrieve from database (not the paginated list)
             return new JsonResult(questionList);
         }
@@ -115,44 +120,48 @@ namespace AdminPortal.Controllers
         IEnumerable<Question> questions1 = null;
         const string EmployeeQuizSessionList = "_GuessTheEmployeeQuestionList";
         [HttpGet]
-        public JsonResult LoadGuessTheEmployeeQuiz()
+        public async Task<JsonResult> LoadGuessTheEmployeeQuiz()
         {
             List<Question> questionList = new List<Question>();
             var tokenObj = JsonConvert.DeserializeObject<Token>(HttpContext.Session.GetString(tokenSession));
             var token = tokenObj.Token1;
-            using (var client = new HttpClient())
+            AccountController account = new AccountController();
+            bool tokenIsValid = await account.tokenIsValid(tokenObj, HttpContext);
+            if (tokenIsValid)
             {
-                client.BaseAddress = new Uri("https://localhost:44300/api/v1/");
-                client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
-                //HTTP GET
-                var responseTask = client.GetAsync("games/1?deleted=false");
-                responseTask.Wait();
-
-                var result = responseTask.Result;
-                if (result.IsSuccessStatusCode)
+                using (var client = new HttpClient())
                 {
-                    var readTask = result.Content.ReadAsAsync<IList<Question>>();
-                    readTask.Wait();
+                    client.BaseAddress = new Uri("https://localhost:44300/api/v1/");
+                    client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
+                    //HTTP GET
+                    var responseTask = client.GetAsync("games/1?deleted=false");
+                    responseTask.Wait();
 
-                    questions1 = readTask.Result;
-                    questionList = questions1.ToList();
+                    var result = responseTask.Result;
+                    if (result.IsSuccessStatusCode)
+                    {
+                        var readTask = result.Content.ReadAsAsync<IList<Question>>();
+                        readTask.Wait();
 
-                    // store employee in session
-                    HttpContext.Session.SetComplexData(EmployeeQuizSessionList, questionList);
-                    //HttpContext.Session["employeeList"] = employeeList;
+                        questions1 = readTask.Result;
+                        questionList = questions1.ToList();
+
+                        // store employee in session
+                        HttpContext.Session.SetComplexData(EmployeeQuizSessionList, questionList);
+                        //HttpContext.Session["employeeList"] = employeeList;
+                    }
+                    else //web api sent error response 
+                    {
+                        //log response status here..
+
+                        questions1 = Enumerable.Empty<Question>();
+
+                        ModelState.AddModelError(string.Empty, "Server error. Please contact administrator.");
+                    }
+
+
                 }
-                else //web api sent error response 
-                {
-                    //log response status here..
-
-                    questions1 = Enumerable.Empty<Question>();
-
-                    ModelState.AddModelError(string.Empty, "Server error. Please contact administrator.");
-                }
-
-
             }
-
             //make sure it returns the whole list retrieve from database (not the paginated list)
             return new JsonResult(questionList);
         }
@@ -226,44 +235,48 @@ namespace AdminPortal.Controllers
           IEnumerable<Question> deletedQuestions1 = null;
         const string DeletedCompanyQuizListSessionName = "_DeletedGameQuestionList";
         [HttpGet]
-        public JsonResult LoadDeletedCompanyQuiz()
+        public async Task<JsonResult> LoadDeletedCompanyQuiz()
         {
             List<Question> questionList = new List<Question>();
             var tokenObj = JsonConvert.DeserializeObject<Token>(HttpContext.Session.GetString(tokenSession));
             var token = tokenObj.Token1;
-            using (var client = new HttpClient())
+            AccountController account = new AccountController();
+            bool tokenIsValid = await account.tokenIsValid(tokenObj, HttpContext);
+            if (tokenIsValid)
             {
-                client.BaseAddress = new Uri("https://localhost:44300/api/v1/");
-                client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
-                //HTTP GET
-                var responseTask = client.GetAsync("games/2?deleted=true");
-                responseTask.Wait();
-
-                var result = responseTask.Result;
-                if (result.IsSuccessStatusCode)
+                using (var client = new HttpClient())
                 {
-                    var readTask = result.Content.ReadAsAsync<IList<Question>>();
-                    readTask.Wait();
+                    client.BaseAddress = new Uri("https://localhost:44300/api/v1/");
+                    client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
+                    //HTTP GET
+                    var responseTask = client.GetAsync("games/2?deleted=true");
+                    responseTask.Wait();
 
-                    deletedQuestions1 = readTask.Result;
-                    questionList = deletedQuestions1.ToList();
+                    var result = responseTask.Result;
+                    if (result.IsSuccessStatusCode)
+                    {
+                        var readTask = result.Content.ReadAsAsync<IList<Question>>();
+                        readTask.Wait();
 
-                    // store employee in session
-                    HttpContext.Session.SetComplexData(DeletedCompanyQuizListSessionName, questionList);
-                    //HttpContext.Session["employeeList"] = employeeList;
+                        deletedQuestions1 = readTask.Result;
+                        questionList = deletedQuestions1.ToList();
+
+                        // store employee in session
+                        HttpContext.Session.SetComplexData(DeletedCompanyQuizListSessionName, questionList);
+                        //HttpContext.Session["employeeList"] = employeeList;
+                    }
+                    else //web api sent error response 
+                    {
+                        //log response status here..
+
+                        deletedQuestions1 = Enumerable.Empty<Question>();
+
+                        ModelState.AddModelError(string.Empty, "Server error. Please contact administrator.");
+                    }
+
+
                 }
-                else //web api sent error response 
-                {
-                    //log response status here..
-
-                    deletedQuestions1 = Enumerable.Empty<Question>();
-
-                    ModelState.AddModelError(string.Empty, "Server error. Please contact administrator.");
-                }
-
-
             }
-
             //make sure it returns the whole list retrieve from database (not the paginated list)
             return new JsonResult(questionList);
         }
@@ -272,44 +285,48 @@ namespace AdminPortal.Controllers
         const string DeletedEmployeeListSessionName = "_GuessTheEmployeeQuestionList";
 
         [HttpGet]
-        public JsonResult LoadDeletedGuessTheEmployeeQuiz()
+        public async Task<JsonResult> LoadDeletedGuessTheEmployeeQuiz()
         {
             List<Question> questionList = new List<Question>();
             var tokenObj = JsonConvert.DeserializeObject<Token>(HttpContext.Session.GetString(tokenSession));
             var token = tokenObj.Token1;
-            using (var client = new HttpClient())
+            AccountController account = new AccountController();
+            bool tokenIsValid = await account.tokenIsValid(tokenObj, HttpContext);
+            if (tokenIsValid)
             {
-                client.BaseAddress = new Uri("https://localhost:44300/api/v1/");
-                client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
-                //HTTP GET
-                var responseTask = client.GetAsync("games/1?deleted=true");
-                responseTask.Wait();
-
-                var result = responseTask.Result;
-                if (result.IsSuccessStatusCode)
+                using (var client = new HttpClient())
                 {
-                    var readTask = result.Content.ReadAsAsync<IList<Question>>();
-                    readTask.Wait();
+                    client.BaseAddress = new Uri("https://localhost:44300/api/v1/");
+                    client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
+                    //HTTP GET
+                    var responseTask = client.GetAsync("games/1?deleted=true");
+                    responseTask.Wait();
 
-                    deletedQuestions2 = readTask.Result;
-                    questionList = deletedQuestions2.ToList();
+                    var result = responseTask.Result;
+                    if (result.IsSuccessStatusCode)
+                    {
+                        var readTask = result.Content.ReadAsAsync<IList<Question>>();
+                        readTask.Wait();
 
-                    // store employee in session
-                    HttpContext.Session.SetComplexData(DeletedEmployeeListSessionName, questionList);
-                    //HttpContext.Session["employeeList"] = employeeList;
+                        deletedQuestions2 = readTask.Result;
+                        questionList = deletedQuestions2.ToList();
+
+                        // store employee in session
+                        HttpContext.Session.SetComplexData(DeletedEmployeeListSessionName, questionList);
+                        //HttpContext.Session["employeeList"] = employeeList;
+                    }
+                    else //web api sent error response 
+                    {
+                        //log response status here..
+
+                        deletedQuestions2 = Enumerable.Empty<Question>();
+
+                        ModelState.AddModelError(string.Empty, "Server error. Please contact administrator.");
+                    }
+
+
                 }
-                else //web api sent error response 
-                {
-                    //log response status here..
-
-                    deletedQuestions2 = Enumerable.Empty<Question>();
-
-                    ModelState.AddModelError(string.Empty, "Server error. Please contact administrator.");
-                }
-
-
             }
-
             //make sure it returns the whole list retrieve from database (not the paginated list)
             return new JsonResult(questionList);
         }

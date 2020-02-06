@@ -38,9 +38,36 @@
             if (gameId == 1) {
                 $('#datatable').DataTable().destroy();
                 $('#datatable tbody').remove();
-                var url = "/Game/LoadGuessTheEmployeeQuiz";
-                if (tokenIsValid()) {
-                    bearerToken = JSON.parse(sessionStorage.getItem('tokenSessionObject')).token;
+                 $.when(tokenIsValid, getTokenSession(loadGuessTheEmployee));
+            }
+            if (gameId == 2) {
+                $('#datatable').DataTable().destroy();
+                $('#datatable tbody').remove();
+                $.when(tokenIsValid, getTokenSession(loadCompanyQuiz));
+            }
+        });
+
+
+
+        function edit(questionId) {
+            location.href = "/Game/EditQuestion/?gameid=" + gameId + "&questionid=" + questionId;
+        }
+
+        function add() {
+            location.href = "/Game/AddQuestion/" + gameId;
+        }
+
+        function viewDeleted() {
+            location.href = "/Game/ManageDeletedGames";
+        }
+
+
+        var baseURL = getBaseURL();
+        console.log("baseURL :" + baseURL);
+
+        function loadGuessTheEmployee(sessionObject) {
+            bearerToken = sessionObject.Token1;
+            var url = "/Game/LoadGuessTheEmployeeQuiz";
                     var $loadhandler1 = jQuery.ajax({
                         url: url,
                         method: 'GET',
@@ -113,14 +140,12 @@
                             "sDom": 'ltipr'
                         });
                     });
-                }
-            }
-            if (gameId == 2) {
-                $('#datatable').DataTable().destroy();
-                $('#datatable tbody').remove();
-                var url = "/Game/LoadCompanyQuiz"
-                if (tokenIsValid()) {
-                    bearerToken = JSON.parse(sessionStorage.getItem('tokenSessionObject')).token;
+        }
+
+
+        function loadCompanyQuiz(sessionObject) {
+            bearerToken = sessionObject.Token1;
+                 var url = "/Game/LoadCompanyQuiz"
                     var $loadhandler = jQuery.ajax({
                         url: url,
                         method: 'GET',
@@ -193,30 +218,13 @@
                             "sDom": 'ltipr'
                         });
                     });
-                }
-            }
-        });
-
-
-
-        function edit(questionId) {
-            location.href = "/Game/EditQuestion/?gameid=" + gameId + "&questionid=" + questionId;
-        }
-
-        function add() {
-            location.href = "/Game/AddQuestion/" + gameId;
-        }
-
-        function viewDeleted() {
-            location.href = "/Game/ManageDeletedGames";
         }
 
 
-        var baseURL = getBaseURL();
-        console.log("baseURL :" + baseURL);
+
         function loadGames(sessionObject) {
             bearerToken = sessionObject.Token1;
-            var url = getBaseURL + "/api/v1/games"
+            var url = baseURL + "/api/v1/games"
             var $loadhandler = jQuery.ajax({
                     type: 'GET',
                      beforeSend: function (request) {
