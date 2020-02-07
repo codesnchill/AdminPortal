@@ -8,6 +8,7 @@ using AdminPortal.Models;
 using System.Windows;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Http;
+using AdminPortal.Utils;
 
 namespace AdminPortal.Controllers
 {
@@ -18,6 +19,8 @@ namespace AdminPortal.Controllers
 
         const string EmployeeListSessionName = "_EmployeeList";
         const string tokenSession = "tokenSessionObject";
+        string baseUrl = BaseURLHelper.GetBaseURL();
+
         public async Task<IActionResult> ManagePoints()
         {
             // check if user goes into a page without logging in
@@ -35,7 +38,7 @@ namespace AdminPortal.Controllers
 
                 using (var client = new HttpClient())
                 {
-                    client.BaseAddress = new Uri("https://localhost:44300/api/v1/");
+                    client.BaseAddress = new Uri(baseUrl + "/api/v1/");
                     client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
                     //HTTP GET
                     var responseTask = client.GetAsync("users?isDisabled=false");

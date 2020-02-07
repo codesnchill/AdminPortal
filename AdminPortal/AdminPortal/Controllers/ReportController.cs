@@ -11,6 +11,8 @@ using Syncfusion.HtmlConverter;
 using Syncfusion.Pdf;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
+using AdminPortal.Utils;
+
 namespace AdminPortal.Controllers
 {
 
@@ -20,6 +22,8 @@ namespace AdminPortal.Controllers
         IEnumerable<RankingReport> rankingreport = null;
         IEnumerable<AuditReport> auditreport = null;
         const string tokenSession = "tokenSessionObject";
+        string baseUrl = BaseURLHelper.GetBaseURL();
+
         public IActionResult GenerateReport()
         {
             // check if user goes into a page without logging in
@@ -47,7 +51,7 @@ namespace AdminPortal.Controllers
             {
                 using (var client = new HttpClient())
                 {
-                    client.BaseAddress = new Uri("https://localhost:44300/api/v1/");
+                    client.BaseAddress = new Uri(baseUrl + "/api/v1/");
                     client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
                     //HTTP GET
                     var responseTask = client.GetAsync("report?ReportType=" + type + "&StartDate=" + start + "&EndDate=" + end);
@@ -102,7 +106,7 @@ namespace AdminPortal.Controllers
             {
                 using (var client = new HttpClient())
                 {
-                    client.BaseAddress = new Uri("https://localhost:44300/api/v1/");
+                    client.BaseAddress = new Uri(baseUrl + "/api/v1/");
                     client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
                     //HTTP GET
                     var responseTask = client.GetAsync("report?ReportType=" + type + "&StartDate=" + start + "&EndDate=" + end);
@@ -156,7 +160,7 @@ namespace AdminPortal.Controllers
             {
                 using (var client = new HttpClient())
                 {
-                    client.BaseAddress = new Uri("https://localhost:44300/api/v1/");
+                    client.BaseAddress = new Uri(baseUrl + "/api/v1/");
                     client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
                     //HTTP GET
                     var responseTask = client.GetAsync("report?ReportType=" + type + "&StartDate=" + start + "&EndDate=" + end);

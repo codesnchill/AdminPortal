@@ -8,7 +8,7 @@ using AdminPortal.Models;
 using System.Windows;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Http;
-
+using AdminPortal.Utils;
 
 namespace AdminPortal.Controllers
 {
@@ -18,6 +18,7 @@ namespace AdminPortal.Controllers
         IEnumerable<Event> events = null;
         const string EventListSessionName = "_EventList";
         const string tokenSession = "tokenSessionObject";
+        string baseUrl = BaseURLHelper.GetBaseURL();
         public async Task<IActionResult> ManageEvents()
         {
 
@@ -35,7 +36,7 @@ namespace AdminPortal.Controllers
             {
                 using (var client = new HttpClient())
                 {
-                    client.BaseAddress = new Uri("https://localhost:44300/api/v1/");
+                    client.BaseAddress = new Uri(baseUrl + "/api/v1/");
                     client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
                     //HTTP GET
                     var responseTask = client.GetAsync("events?deleted=false");
@@ -116,7 +117,7 @@ namespace AdminPortal.Controllers
 
                 using (var client = new HttpClient())
                 {
-                    client.BaseAddress = new Uri("https://localhost:44300/api/v1/");
+                    client.BaseAddress = new Uri(baseUrl + "/api/v1/");
                     client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
                     //HTTP GET
                     var responseTask = client.GetAsync("events?deleted=true");

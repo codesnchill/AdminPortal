@@ -6,18 +6,15 @@ using Newtonsoft.Json;
 using System.Net.Http;
 using System.Text;
 using System;
+using AdminPortal.Utils;
 
 namespace AdminPortal.Controllers
 {
     public class AccountController : Controller
     {
-        //public AccountController(HttpContext context)
-        //{
-        //    HttpContext  httpContext = context;
-        //}
         const string tokenSession = "tokenSessionObject";
         const string employeeSession = "employeeDetailsObject";
-        const string baseUrl = "https://localhost:44300";
+        string baseUrl = BaseURLHelper.GetBaseURL();
 
         public IActionResult Login()
         {
