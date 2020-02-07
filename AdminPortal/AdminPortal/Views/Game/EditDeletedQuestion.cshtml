@@ -238,7 +238,8 @@
                     data: "'" + webFormDataInString + "'"
                 })//end of jQuery.ajax() call
                 $updateCourseHandler.done(function (data, textStatus, jqXHR) {
-                    $("#messageAlert").show();
+                    alert("Question Retrieved Successfully");
+                    location.href = "/Game/ManageDeletedGames";
                 });//end of $updateCourseHandler.done()
 
                 $updateCourseHandler.error(function (data, textStatus, jqXHR) {
