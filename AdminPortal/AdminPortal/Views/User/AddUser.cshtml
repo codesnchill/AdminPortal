@@ -9,8 +9,6 @@
      
     <script>
 
-        $('#userForm').validate();
-
         function viewUser() {
             location.href = "/User/ManageUser";
         }
@@ -95,10 +93,10 @@
         }
 
         function clickSave(sessionObject) {
-            var checker = false;
-            validationChecker();
+            var checker = validationChecker();
+          
            
-            if (!checker) {
+            if (checker == true) {
             var collectedEmployeeId = $('#employeeID').val();
             var collectedEmployeeName = $('#employeeName').val();
             var collectedDepartmentId = $('#department').val();
@@ -204,6 +202,12 @@
                 $('#specialHiddenField').show()
                   isValid = false;
             }
+            if ($('#department').val() == "") {
+                 $('#hiddenField3').show()
+                 isValid = false;
+            }
+
+
             return isValid;
         }
 
@@ -255,14 +259,16 @@
     font-size: 12px; color: red;">This field contains illegal characters</span>
         <div class="row3-department">
             <label class="normal-weight" for="department">Department:</label>
-            <select class="mySelect2" id="department">
-                <option value=""></option>
+            <select class="form-control" id="department">
+                <option value="" selected disabled hidden>Select...</option>
             </select>
         </div>
+        <span id="hiddenField3" style="display: none; text-align: center;
+    font-size: 12px; color: red;">This field is required</span>
         <div class="row4-roles">
             <label class="normal-weight" for="rights">Roles</label>
             <select class="form-control" id="rights">
-                <option value=""></option>
+                <option value="" selected disabled hidden>Select...</option>
             </select>
         </div>
         <div class="row8-rights">
@@ -282,7 +288,7 @@
         </div>
         <div class="row7-email">
             <label class="normal-weight" for="email">Email:</label>
-            <input type='text' name='email' id="email"/>
+            <input type='text' name='email' id="email" />
         </div>
         <div class="row6-buttons">
 
