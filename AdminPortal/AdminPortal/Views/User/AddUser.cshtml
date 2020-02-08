@@ -94,8 +94,6 @@
 
         function clickSave(sessionObject) {
             var checker = validationChecker();
-          
-           
             if (checker == true) {
             var collectedEmployeeId = $('#employeeID').val();
             var collectedEmployeeName = $('#employeeName').val();
@@ -135,7 +133,8 @@
                 $updateCourseHandler.error(function (data, textStatus, jqXHR) {
                     console.log(data.responseJSON.message);
                 });//end of $updateCourseHandler.error()*/
-                }
+            }
+            return checker;
         }
 
 
@@ -178,8 +177,12 @@
         }
 
         function save() {
+            var check = clickSave();
+            if (check == true) {
             $.when(tokenIsValid, getTokenSession(clickSave));
             register();
+            }
+
         }
 
 
@@ -202,7 +205,7 @@
                 $('#specialHiddenField').show()
                   isValid = false;
             }
-            if ($('#department').val() == "") {
+            if ($('#department').val() === '') {
                  $('#hiddenField3').show()
                  isValid = false;
             }
