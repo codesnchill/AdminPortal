@@ -59,7 +59,9 @@
         });// end of document
 
         function edit(id) {
-            location.href = "/User/EditUser/" + id;
+            id = parseInt(id,10)
+            //location.href = "/User/EditUser/" + id;
+            console.log(id.toString())
         }
 
         function changePassword(id) {
@@ -183,7 +185,7 @@
 
                     </td>
                     <td>
-                        <button class="btn btn-primary" onclick="edit(@item.EmployeeId)">Edit</button>
+                        <button class="btn btn-primary" onclick="edit(@Convert.ToInt32(item.EmployeeId))">Edit</button>
                     </td>
                     <td>
                         <button class="btn btn-primary" onclick="changePassword(@item.EmployeeId)">Change Password</button>

@@ -8,6 +8,7 @@
     <script src="~/Script/select2.min.js"></script>
     <script type="text/javascript" src="~/Script/tokenHelper.js"></script>
     <script type="text/javascript" src="~/Script/baseURL.js"></script>
+    <script type="text/javascript" src="~/Script/formValidator.js"></script>
 
     <script>
         $(document).ready(function () {
@@ -18,30 +19,30 @@
 
         function loadDepartments(sessionObject) {
             bearerToken = sessionObject.Token1;
-                var url = baseURL + "/api/v1/departments"
-                var $loadhandler = jQuery.ajax({
-                    type: 'GET',
-                    beforeSend: function (request) {
-                        request.setRequestHeader("Authorization", "Bearer " + bearerToken);
-                    },
-                    url: url,
-                    contentType: "application/json",
-                    dataType: 'json',
-                    crossDomain: true,
+            var url = baseURL + "/api/v1/departments"
+            var $loadhandler = jQuery.ajax({
+                type: 'GET',
+                beforeSend: function (request) {
+                    request.setRequestHeader("Authorization", "Bearer " + bearerToken);
+                },
+                url: url,
+                contentType: "application/json",
+                dataType: 'json',
+                crossDomain: true,
+            });
+            $loadhandler.done(function (data, textStatus, jqXHR) {
+                console.log(data);
+                $.each(data, function (key, obj) {
+                    //console.log(key)
+                    console.log(obj)
+                    console.log(obj.departmentName)
+                    $("#department").append($("<option></option>")
+                        .attr("value", obj.departmentId)
+                        .text(obj.departmentName));
                 });
-                $loadhandler.done(function (data, textStatus, jqXHR) {
-                    console.log(data);
-                    $.each(data, function (key, obj) {
-                        //console.log(key)
-                        console.log(obj)
-                        console.log(obj.departmentName)
-                        $("#department").append($("<option></option>")
-                            .attr("value", obj.departmentId)
-                            .text(obj.departmentName));
-                    });
-                });
+            });
         }
-       $.when(tokenIsValid, getTokenSession(loadDepartments));
+        $.when(tokenIsValid, getTokenSession(loadDepartments));
 
 
         //Using a function technique to define a JavaScript class, WebFormData
@@ -81,29 +82,95 @@
             console.log("Event Details: " + webFormDataInString);
 
             var url = baseURL + "/api/v1/events"
-                $updateCourseHandler = jQuery.ajax({
-                    type: 'POST',
-                    beforeSend: function (request) {
-                        request.setRequestHeader("Authorization", "Bearer " + bearerToken);
-                    },
-                    url: url,
-                    dataType: 'json',
-                    contentType: 'application/json;',
-                    data: "'" + webFormDataInString + "'"
-                })//end of jQuery.ajax() call
-                $updateCourseHandler.done(function (data, textStatus, jqXHR) {
-                    alert("Event Added Successfully");
-                    location.href = "/Event/AddEvent";
+            $updateCourseHandler = jQuery.ajax({
+                type: 'POST',
+                beforeSend: function (request) {
+                    request.setRequestHeader("Authorization", "Bearer " + bearerToken);
+                },
+                url: url,
+                dataType: 'json',
+                contentType: 'application/json;',
+                data: "'" + webFormDataInString + "'"
+            })//end of jQuery.ajax() call
+            $updateCourseHandler.done(function (data, textStatus, jqXHR) {
+                alert("Event Added Successfully");
+                location.href = "/Event/AddEvent";
 
-                });//end of $updateCourseHandler.done()
+            });//end of $updateCourseHandler.done()
 
-                $updateCourseHandler.error(function (data, textStatus, jqXHR) {
-                    console.log(data.responseJSON.message);
-                });//end of $updateCourseHandler.error()*/
+            $updateCourseHandler.error(function (data, textStatus, jqXHR) {
+                console.log(data.responseJSON.message);
+            });//end of $updateCourseHandler.error()*/
+        }
+
+        // check if all the fields in the form is valid
+        function formIsValid() {
+
+            var valid = true;
+            var errorMsg = "";
+
+            // check if event name is valid
+            var obj = txtInputIsValid($('#name').val());
+            //if valid == false
+            if (!obj.isValid) {
+                valid = obj.isValid;
+                console.log(obj.errorMsg.toString());
+                // show error msg here
+            } else {
+                // make the error msg disappear
+                console.log("no more error msg for datetime")
+            }
+
+
+            //check if startDate, startTime, endDate, endTime are valid
+            var dateTimeObj = dateTimeIsValid($('#startDate').val(),
+                $('#startTime').val(),
+                $('#endDate').val(),
+                $('#endTime').val())
+            if (!dateTimeObj.isValid) {
+                valid = dateTimeObj.isValid;
+                console.log(dateTimeObj.errorMsg.toString())
+                // show error msg here
+            } else {
+                // make the error msg disappear
+                console.log("no more error msg for datetime")
+            }
+
+            // check if event description is valid
+            var descriptionObj = txtInputIsValid($('#description').val());
+            if (!descriptionObj.isValid) {
+                valid = descriptionObj.isValid;
+                console.log(descriptionObj.errorMsg.toString())
+                // show error msg here
+            } else {
+                // make the error msg disappear
+                console.log("no more error msg for description")
+            }
+
+            // check if event department is valid
+            var departmentObj = departmentDropdownIsValid($('#department').val());
+            if (!departmentObj.isValid) {
+                valid = departmentObj.isValid;
+                console.log(departmentObj.errorMsg.toString())
+                // show error msg here
+            } else {
+                // make the error msg disappear
+                console.log("no more error msg for department")
+            }
+
+            console.log(errorMsg);
+
+            return valid;
         }
 
         function saveEvent() {
-             $.when(tokenIsValid, getTokenSession(save));
+            //check if inputs are valid first
+            if (formIsValid()) {
+                console.log("form is valid")
+                $.when(tokenIsValid, getTokenSession(save));
+            } else {
+                console.log("form is not valid");
+            }
         }
 
         function redirectPage() {
