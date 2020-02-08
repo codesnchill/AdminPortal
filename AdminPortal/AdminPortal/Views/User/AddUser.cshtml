@@ -6,7 +6,8 @@
     <script src="~/Script/select2.min.js"></script>
     <script type="text/javascript" src="~/Script/tokenHelper.js"></script>
     <script type="text/javascript" src="~/Script/baseURL.js"></script>
-     
+    <script type="text/javascript" src="~/Script/formValidator.js"></script>
+
     <script>
 
         function viewUser() {
@@ -49,7 +50,7 @@
                         .text(obj.departmentName));
                 });
             });
-            }
+        }
 
         $.when(tokenIsValid, getTokenSession(loadDepartments));
 
@@ -93,8 +94,6 @@
         }
 
         function clickSave(sessionObject) {
-            var checker = validationChecker();
-            if (checker == true) {
             var collectedEmployeeId = $('#employeeID').val();
             var collectedEmployeeName = $('#employeeName').val();
             var collectedDepartmentId = $('#department').val();
@@ -114,27 +113,25 @@
 
             var url = baseURL + "/api/v1/users"
 
-                $updateCourseHandler = jQuery.ajax({
-                    type: 'POST',
-                    beforeSend: function (request) {
-                        request.setRequestHeader("Authorization", "Bearer " + bearerToken);
-                    },
-                    url: url,
-                    dataType: 'json',
-                    contentType: 'application/json;',
-                    data: "'" + webFormDataInString + "'"
-                })//end of jQuery.ajax() call
-                $updateCourseHandler.done(function (data, textStatus, jqXHR) {
-                    alert("User added Successfully");
-                    location.href = "/User/AddUser";
+            $updateCourseHandler = jQuery.ajax({
+                type: 'POST',
+                beforeSend: function (request) {
+                    request.setRequestHeader("Authorization", "Bearer " + bearerToken);
+                },
+                url: url,
+                dataType: 'json',
+                contentType: 'application/json;',
+                data: "'" + webFormDataInString + "'"
+            })//end of jQuery.ajax() call
+            $updateCourseHandler.done(function (data, textStatus, jqXHR) {
+                alert("User added Successfully");
+                location.href = "/User/AddUser";
 
-                });//end of $updateCourseHandler.done()
+            });//end of $updateCourseHandler.done()
 
-                $updateCourseHandler.error(function (data, textStatus, jqXHR) {
-                    console.log(data.responseJSON.message);
-                });//end of $updateCourseHandler.error()*/
-            }
-            return checker;
+            $updateCourseHandler.error(function (data, textStatus, jqXHR) {
+                console.log(data.responseJSON.message);
+            });//end of $updateCourseHandler.error()*/
         }
 
 
@@ -177,46 +174,121 @@
         }
 
         function save() {
-            var check = clickSave();
-            if (check == true) {
-            $.when(tokenIsValid, getTokenSession(clickSave));
-            register();
+            if (formIsValid()) {
+                $.when(tokenIsValid, getTokenSession(clickSave));
+                register();
             }
-
+            else {
+                console.log("form is not valid");
+            }
+              
         }
-
-
 
         function cancel() {
             location.href = "/User/ManageUser";
         }
 
-        function validationChecker() {
-            var isValid = true;
-            if (!$('#employeeID').val()) {
-                $('#hiddenField').show()
-                isValid = false;
-            }
-            if (!$('#employeeName').val()) {
-                $('#hiddenField2').show()
-                isValid = false;
-            }
-            if (/^[a-zA-Z0-9- ]*$/.test($('#employeeName')) == false) {
-                $('#specialHiddenField').show()
-                  isValid = false;
-            }
-            if ($('#department').val() === '') {
-                 $('#hiddenField3').show()
-                 isValid = false;
+           // check if all the fields in the form is valid
+        function formIsValid() {
+
+            var valid = true;
+            var errorMsg = "";
+
+            // check if employee id is valid
+            var obj = txtInputIsValid($('#employeeID').val());
+            //if valid == false
+            if (!obj.isValid) {
+                valid = obj.isValid;
+                console.log(obj.errorMsg.toString());
+                // show error msg here
+            $('#hiddenField').show().text(obj.errorMsg.toString());
+            } else {
+                // make the error msg disappear
+                $('#hiddenField').hide();
+                console.log("no more error msg for datetime")
             }
 
 
-            return isValid;
+            // check if employee name is valid
+            var descriptionObj = txtInputIsValid($('#employeeName').val());
+            if (!descriptionObj.isValid) {
+                valid = descriptionObj.isValid;
+                console.log(descriptionObj.errorMsg.toString())
+                // show error msg here
+             $('#hiddenField2').show().text(descriptionObj.errorMsg.toString());
+            } else {
+                // make the error msg disappear
+                  $('#hiddenField2').hide();
+                console.log("no more error msg for description")
+            }
+
+            // check if user department is valid
+            var departmentObj = departmentDropdownIsValid($('#department').val());
+            if (!departmentObj.isValid) {
+                valid = departmentObj.isValid;
+                console.log(departmentObj.errorMsg.toString())
+                // show error msg here
+                  $('#hiddenField3').show().text(departmentObj.errorMsg.toString());
+            } else {
+                // make the error msg disappear
+                  $('#hiddenField3').hide();
+                console.log("no more error msg for department")
+            }
+
+               // check if user roles is valid
+            var roleObj = departmentDropdownIsValid($('#rights').val());
+            if (!roleObj.isValid) {
+                valid = roleObj.isValid;
+                console.log(roleObj.errorMsg.toString())
+                // show error msg here
+                  $('#hiddenField4').show().text(roleObj.errorMsg.toString());
+            } else {
+                // make the error msg disappear
+                  $('#hiddenField4').hide();
+                console.log("no more error msg for department")
+            }
+
+              var rightsObj = departmentDropdownIsValid($('#admin').val());
+            if (!rightsObj.isValid) {
+                valid = rightsObj.isValid;
+                console.log(rightsObj.errorMsg.toString())
+                // show error msg here
+                  $('#hiddenField5').show().text(rightsObj.errorMsg.toString());
+            } else {
+                // make the error msg disappear
+                  $('#hiddenField5').hide();
+                console.log("no more error msg for department")
+            }
+
+               var statusObj = departmentDropdownIsValid($('#status').val());
+            if (!statusObj.isValid) {
+                valid = statusObj.isValid;
+                console.log(statusObj.errorMsg.toString())
+                // show error msg here
+                  $('#hiddenField6').show().text(statusObj.errorMsg.toString());
+            } else {
+                // make the error msg disappear
+                  $('#hiddenField6').hide();
+                console.log("no more error msg for department")
+            }
+
+
+                var emailObj = txtInputIsValid($('#email').val());
+            if (!emailObj.isValid) {
+                valid = emailObj.isValid;
+                console.log(emailObj.errorMsg.toString())
+                // show error msg here
+             $('#hiddenField7').show().text(emailObj.errorMsg.toString());
+            } else {
+                // make the error msg disappear
+                  $('#hiddenField7').hide();
+                console.log("no more error msg for description")
+            }
+
+            console.log(errorMsg);
+
+            return valid;
         }
-
-
-            
-        
     </script>
 }
 
@@ -251,15 +323,13 @@
             <input type="number" name="employeeID" id="employeeID">
         </div>
         <span id="hiddenField" style="display: none; text-align: center;
-    font-size: 12px; color: red;">This field is required</span>
+    font-size: 12px; color: red;"></span>
         <div class="row2-employeeName">
             <label class="normal-weight" for="employeeName">Employee Name:</label>
             <input type='text' name='employeeName' id="employeeName" />
         </div>
         <span id="hiddenField2" style="display: none; text-align: center;
-    font-size: 12px; color: red;">This field is required</span>
-        <span id="specialHiddenField" style="display: none; text-align: center;
-    font-size: 12px; color: red;">This field contains illegal characters</span>
+    font-size: 12px; color: red;"></span>
         <div class="row3-department">
             <label class="normal-weight" for="department">Department:</label>
             <select class="form-control" id="department">
@@ -267,13 +337,15 @@
             </select>
         </div>
         <span id="hiddenField3" style="display: none; text-align: center;
-    font-size: 12px; color: red;">This field is required</span>
+    font-size: 12px; color: red;"></span>
         <div class="row4-roles">
             <label class="normal-weight" for="rights">Roles</label>
             <select class="form-control" id="rights">
                 <option value="" selected disabled hidden>Select...</option>
             </select>
         </div>
+        <span id="hiddenField4" style="display: none; text-align: center;
+    font-size: 12px; color: red;"></span>
         <div class="row8-rights">
             <label class="normal-weight" for="admin">Access Rights:</label>
             <select class="form-control" id="admin">
@@ -281,6 +353,8 @@
                 <option value="true">Admin</option>
             </select>
         </div>
+        <span id="hiddenField5" style="display: none; text-align: center;
+    font-size: 12px; color: red;"></span>
         <div class="row5-status">
             <label class="normal-weight" for="status">Account Status:</label>
             <select class="form-control" id="status">
@@ -289,10 +363,14 @@
                 <option value="true">Inactive</option>
             </select>
         </div>
+        <span id="hiddenField6" style="display: none; text-align: center;
+    font-size: 12px; color: red;"></span>
         <div class="row7-email">
             <label class="normal-weight" for="email">Email:</label>
             <input type='text' name='email' id="email" />
         </div>
+        <span id="hiddenField7" style="display: none; text-align: center;
+    font-size: 12px; color: red;"></span>
         <div class="row6-buttons">
 
             <button onclick="save()" class="save">Save</button>

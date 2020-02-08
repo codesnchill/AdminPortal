@@ -8,6 +8,7 @@
 @section Scripts {
     <script type="text/javascript" src="~/Script/tokenHelper.js"></script>
     <script type="text/javascript" src="~/Script/baseURL.js"></script>
+    <script type="text/javascript" src="~/Script/formValidator.js"></script>
     <script>
 
 
@@ -20,62 +21,62 @@
         }
 
 
-       var baseURL = getBaseURL();
+        var baseURL = getBaseURL();
 
         function loadDepartments(sessionObject) {
-               bearerToken = sessionObject.Token1;
-                var url = baseURL + "/api/v1/departments"
-                var $loadhandler = jQuery.ajax({
-                    type: 'GET',
-                    beforeSend: function (request) {
-                        request.setRequestHeader("Authorization", "Bearer " + bearerToken);
-                    },
-                    url: url,
-                    contentType: "application/json",
-                    dataType: 'json',
-                    crossDomain: true,
+            bearerToken = sessionObject.Token1;
+            var url = baseURL + "/api/v1/departments"
+            var $loadhandler = jQuery.ajax({
+                type: 'GET',
+                beforeSend: function (request) {
+                    request.setRequestHeader("Authorization", "Bearer " + bearerToken);
+                },
+                url: url,
+                contentType: "application/json",
+                dataType: 'json',
+                crossDomain: true,
+            });
+            $loadhandler.done(function (data, textStatus, jqXHR) {
+                console.log(data);
+                $.each(data, function (key, obj) {
+                    //console.log(key)
+                    console.log(obj)
+                    console.log(obj.departmentName)
+                    $("#department").append($("<option></option>")
+                        .attr("value", obj.departmentId)
+                        .text(obj.departmentName));
                 });
-                $loadhandler.done(function (data, textStatus, jqXHR) {
-                    console.log(data);
-                    $.each(data, function (key, obj) {
-                        //console.log(key)
-                        console.log(obj)
-                        console.log(obj.departmentName)
-                        $("#department").append($("<option></option>")
-                            .attr("value", obj.departmentId)
-                            .text(obj.departmentName));
-                    });
-                });
+            });
         }
         $.when(tokenIsValid, getTokenSession(loadDepartments));
 
 
-         function loadRoles(sessionObject) {
-                bearerToken = sessionObject.Token1;
-                var url = baseURL + "/api/v1/roles"
-                var $loadhandler = jQuery.ajax({
-                    type: 'GET',
-                    beforeSend: function (request) {
+        function loadRoles(sessionObject) {
+            bearerToken = sessionObject.Token1;
+            var url = baseURL + "/api/v1/roles"
+            var $loadhandler = jQuery.ajax({
+                type: 'GET',
+                beforeSend: function (request) {
                     request.setRequestHeader("Authorization", "Bearer " + bearerToken);
-                    },
-                    url: url,
-                    contentType: "application/json",
-                    dataType: 'json',
-                    crossDomain: true,
+                },
+                url: url,
+                contentType: "application/json",
+                dataType: 'json',
+                crossDomain: true,
+            });
+            $loadhandler.done(function (data, textStatus, jqXHR) {
+                console.log(data);
+                $.each(data, function (key, obj) {
+                    //console.log(key)
+                    console.log(obj)
+                    console.log(obj.roleName)
+                    $("#rights").append($("<option></option>")
+                        .attr("value", obj.roleId)
+                        .text(obj.roleName));
                 });
-                $loadhandler.done(function (data, textStatus, jqXHR) {
-                    console.log(data);
-                    $.each(data, function (key, obj) {
-                        //console.log(key)
-                        console.log(obj)
-                        console.log(obj.roleName)
-                        $("#rights").append($("<option></option>")
-                            .attr("value", obj.roleId)
-                            .text(obj.roleName));
-                    });
-                });
+            });
         }
-          $.when(tokenIsValid, getTokenSession(loadRoles));
+        $.when(tokenIsValid, getTokenSession(loadRoles));
 
 
         // Start of getting userId from addressbar
@@ -88,59 +89,59 @@
 
 
 
-        
+
         function getUserDetails(sessionObject) {
-                bearerToken = sessionObject.Token1;
-                var url = baseURL + "/api/v1/users/" + g_userId
-                //var url = "https://localhost:44300/api/v1/users/" + g_userId
-                $loadUserDataHandler = jQuery.ajax({
-                    type: 'GET',
-                    beforeSend: function (request) {
+            bearerToken = sessionObject.Token1;
+            var url = baseURL + "/api/v1/users/" + g_userId
+            //var url = "https://localhost:44300/api/v1/users/" + g_userId
+            $loadUserDataHandler = jQuery.ajax({
+                type: 'GET',
+                beforeSend: function (request) {
                     request.setRequestHeader("Authorization", "Bearer " + bearerToken);
-                    },
-                    url: url,
-                    contentType: "application/json",
-                    dataType: 'json',
-                    crossDomain: true,
-                })
-                $loadUserDataHandler.done(function (data, textStatus, jqXHR) {
-                    console.log(data);
-                    var user = data;
-                    employeeId = user[0].employeeId
-                    employeeName = user[0].employeeName;
-                    departmentName = user[0].departmentName;
-                    departmentId = user[0].departmentID;
-                    roles = user[0].roles.rolesName;
-                    isDisabled = user[0].isDisabled;
+                },
+                url: url,
+                contentType: "application/json",
+                dataType: 'json',
+                crossDomain: true,
+            })
+            $loadUserDataHandler.done(function (data, textStatus, jqXHR) {
+                console.log(data);
+                var user = data;
+                employeeId = user[0].employeeId
+                employeeName = user[0].employeeName;
+                departmentName = user[0].departmentName;
+                departmentId = user[0].departmentID;
+                roles = user[0].roles.rolesName;
+                isDisabled = user[0].isDisabled;
 
-                    console.log("Employee ID: " + employeeId + " Employee Name:" + employeeName);
+                console.log("Employee ID: " + employeeId + " Employee Name:" + employeeName);
 
-                    $('#employeeID').val(employeeId);
-                    $('#employeeName').val(employeeName);
+                $('#employeeID').val(employeeId);
+                $('#employeeName').val(employeeName);
 
 
-                    $('#department option').filter(function () {
-                        return $(this).val() == departmentId;
-                    }).prop('selected', true);
+                $('#department option').filter(function () {
+                    return $(this).val() == departmentId;
+                }).prop('selected', true);
 
-                    $('#rights option').filter(function () {
-                        return $(this).text() == roles;
-                    }).prop('selected', true);
+                $('#rights option').filter(function () {
+                    return $(this).text() == roles;
+                }).prop('selected', true);
 
-                    $('#status option').filter(function () {
+                $('#status option').filter(function () {
 
-                        var value = 'Active';
+                    var value = 'Active';
 
-                        if (isDisabled == true) {
-                            value = 'Inactive';
-                        }
+                    if (isDisabled == true) {
+                        value = 'Inactive';
+                    }
 
-                        return $(this).text() == value;
-                    }).prop('selected', true);
+                    return $(this).text() == value;
+                }).prop('selected', true);
 
-                }) //end of done
+            }) //end of done
         }
-          $.when(tokenIsValid, getTokenSession(getUserDetails));
+        $.when(tokenIsValid, getTokenSession(getUserDetails));
 
         //Using a function technique to define a JavaScript class, WebFormData
         function WebFormData(inCollectedEmployeeName, inCollectedDepartmentId, inCollectedRole, inCollectedStatus, inCollectedAdmin, inCollectCUDBy) {
@@ -158,8 +159,8 @@
             var collectedDepartmentId = $('#department').val();
             var collectedRole = $('#rights').val();
             var collectedStatus = $('#status').val();
-              var collectedAdmin = $('#admin').val();
-               bearerToken = sessionObject.Token1; // this
+            var collectedAdmin = $('#admin').val();
+            bearerToken = sessionObject.Token1; // this
             var collectedCUDBy = $('#employeeId').text();
 
             //Create a WebFormData object, webFormData. Have its field values
@@ -173,27 +174,29 @@
 
             var url = baseURL + "/api/v1/users/" + g_userId
             //var url = "https://localhost:44300/api/v1/users/" + g_userId
-                $updateCourseHandler = jQuery.ajax({
-                    type: 'PUT',
-                    beforeSend: function (request) {
-                        request.setRequestHeader("Authorization", "Bearer " + bearerToken);
-                    },
-                    url: url,
-                    dataType: 'json',
-                    contentType: 'application/json;',
-                    data: "'" + webFormDataInString + "'"
-                })//end of jQuery.ajax() call
-                $updateCourseHandler.done(function (data, textStatus, jqXHR) {
-                     alert("User Info Updated Successfully");
-                    location.href = "/User/EditDeletedUser/" + g_userId;
-                });//end of $updateCourseHandler.done()
+            $updateCourseHandler = jQuery.ajax({
+                type: 'PUT',
+                beforeSend: function (request) {
+                    request.setRequestHeader("Authorization", "Bearer " + bearerToken);
+                },
+                url: url,
+                dataType: 'json',
+                contentType: 'application/json;',
+                data: "'" + webFormDataInString + "'"
+            })//end of jQuery.ajax() call
+            $updateCourseHandler.done(function (data, textStatus, jqXHR) {
+                alert("User Info Updated Successfully");
+                location.href = "/User/EditDeletedUser/" + g_userId;
+            });//end of $updateCourseHandler.done()
 
-                $updateCourseHandler.error(function (data, textStatus, jqXHR) {
-                    console.log(data.responseJSON.message);
-                });//end of $updateCourseHandler.error()*/
+            $updateCourseHandler.error(function (data, textStatus, jqXHR) {
+                console.log(data.responseJSON.message);
+            });//end of $updateCourseHandler.error()*/
         }
         function saveUser() {
-              $.when(tokenIsValid, getTokenSession(save));
+            if (formIsValid()) {
+                  $.when(tokenIsValid, getTokenSession(save));
+            }
         }
 
         function redirectPage() {
@@ -202,6 +205,32 @@
 
         function clickback() {
             redirectPage();
+        }
+
+
+                      // check if all the fields in the form is valid
+        function formIsValid() {
+
+            var valid = true;
+            var errorMsg = "";
+
+            // check if employee id is valid
+            var obj = txtInputIsValid($('#employeeName').val());
+            //if valid == false
+            if (!obj.isValid) {
+                valid = obj.isValid;
+                console.log(obj.errorMsg.toString());
+                // show error msg here
+            $('#hiddenField').show().text(obj.errorMsg.toString());
+            } else {
+                // make the error msg disappear
+                $('#hiddenField').hide();
+                console.log("no more error msg for datetime")
+            }
+
+            console.log(errorMsg);
+
+            return valid;
         }
 
     </script>
@@ -239,6 +268,8 @@
             <label class="normal-weight" for="employeeName">Employee Name:</label>
             <input type='text' name='employeeName' id="employeeName" />
         </div>
+        <span id="hiddenField" style="display: none; text-align: center;
+    font-size: 12px; color: red;"></span>
         <div class="row3-department">
             <label class="normal-weight" for="department">Department:</label>
             <select class="form-control" id="department">

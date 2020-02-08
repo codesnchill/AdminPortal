@@ -34,7 +34,7 @@ function departmentDropdownIsValid(input) {
 
     if (input == null) {
         isValid = false;
-        errorMsg = "Please select the department";
+        errorMsg = "Please select an option";
     }
     return { errorMsg: errorMsg, isValid: isValid };
 }
