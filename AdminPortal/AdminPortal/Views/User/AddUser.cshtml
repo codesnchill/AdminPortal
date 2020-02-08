@@ -6,7 +6,10 @@
     <script src="~/Script/select2.min.js"></script>
     <script type="text/javascript" src="~/Script/tokenHelper.js"></script>
     <script type="text/javascript" src="~/Script/baseURL.js"></script>
+     
     <script>
+
+        $('#userForm').validate();
 
         function viewUser() {
             location.href = "/User/ManageUser";
@@ -17,9 +20,9 @@
         }
 
 
-        $(document).ready(function () {
-            $(".mySelect2").select2();
-        });
+        //$(document).ready(function () {
+        //    $(".mySelect2").select2();
+        //});
 
         var baseURL = getBaseURL();
 
@@ -92,6 +95,10 @@
         }
 
         function clickSave(sessionObject) {
+            var checker = false;
+            validationChecker();
+           
+            if (!checker) {
             var collectedEmployeeId = $('#employeeID').val();
             var collectedEmployeeName = $('#employeeName').val();
             var collectedDepartmentId = $('#department').val();
@@ -130,6 +137,7 @@
                 $updateCourseHandler.error(function (data, textStatus, jqXHR) {
                     console.log(data.responseJSON.message);
                 });//end of $updateCourseHandler.error()*/
+                }
         }
 
 
@@ -181,6 +189,27 @@
         function cancel() {
             location.href = "/User/ManageUser";
         }
+
+        function validationChecker() {
+            var isValid = true;
+            if (!$('#employeeID').val()) {
+                $('#hiddenField').show()
+                isValid = false;
+            }
+            if (!$('#employeeName').val()) {
+                $('#hiddenField2').show()
+                isValid = false;
+            }
+            if (/^[a-zA-Z0-9- ]*$/.test($('#employeeName')) == false) {
+                $('#specialHiddenField').show()
+                  isValid = false;
+            }
+            return isValid;
+        }
+
+
+            
+        
     </script>
 }
 
@@ -209,24 +238,31 @@
             <p class="panel-header">Add User</p>
 
         </div>
+
         <div class="row1-employeeID">
             <label class="normal-weight" for="employeeID">Employee ID:</label>
-            <input type="text" name="employeeID" id="employeeID">
+            <input type="number" name="employeeID" id="employeeID">
         </div>
+        <span id="hiddenField" style="display: none; text-align: center;
+    font-size: 12px; color: red;">This field is required</span>
         <div class="row2-employeeName">
             <label class="normal-weight" for="employeeName">Employee Name:</label>
             <input type='text' name='employeeName' id="employeeName" />
         </div>
+        <span id="hiddenField2" style="display: none; text-align: center;
+    font-size: 12px; color: red;">This field is required</span>
+        <span id="specialHiddenField" style="display: none; text-align: center;
+    font-size: 12px; color: red;">This field contains illegal characters</span>
         <div class="row3-department">
             <label class="normal-weight" for="department">Department:</label>
             <select class="mySelect2" id="department">
-                <option value="" selected disabled hidden>Select...</option>
+                <option value=""></option>
             </select>
         </div>
         <div class="row4-roles">
             <label class="normal-weight" for="rights">Roles</label>
             <select class="form-control" id="rights">
-                <option value="" selected disabled hidden>Select...</option>
+                <option value=""></option>
             </select>
         </div>
         <div class="row8-rights">
@@ -246,7 +282,7 @@
         </div>
         <div class="row7-email">
             <label class="normal-weight" for="email">Email:</label>
-            <input type='text' name='email' id="email" />
+            <input type='text' name='email' id="email"/>
         </div>
         <div class="row6-buttons">
 
