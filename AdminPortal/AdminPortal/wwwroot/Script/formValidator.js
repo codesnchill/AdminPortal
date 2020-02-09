@@ -21,6 +21,27 @@ function dateTimeIsValid(startDate, startTime, endDate, endTime) {
     return { errorMsg: errorMsg, isValid: isValid };
 }
 
+function emailIsValid(email) {
+
+    isValid = true;
+    errorMsg = "";
+
+    if (/^\s+$/.test(email) || email === "") {
+        errorMsg = "Please fill out the required fields"
+        isValid = false;
+        return { errorMsg: errorMsg, isValid: isValid };
+    }
+
+    //if email is not valid
+    if (!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email))) {
+        errorMsg = "Please enter a valid email address";
+        isValid = false;
+        return { errorMsg: errorMsg, isValid: isValid };
+    }
+
+    return { errorMsg: errorMsg, isValid: isValid };
+}
+
 function dateTimeIsNotEmpty(input) {
 
     isValid = true;
