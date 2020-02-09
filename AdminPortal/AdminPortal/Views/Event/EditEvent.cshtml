@@ -20,18 +20,6 @@
 
         });
 
-        let show = true;
-        function showBG() {
-            show = !show;
-            if (show) {
-                document.getElementsByClassName("black-overlay")[0].style.display = "block";
-                document.getElementsByClassName("left-section")[0].style.display = "block";
-            } else {
-                document.getElementsByClassName("black-overlay")[0].style.display = "none";
-                document.getElementsByClassName("left-section")[0].style.display = "none";
-            }
-        }
-
         var baseURL = getBaseURL();
 
         function loadDepartments(sessionObject) {
@@ -218,7 +206,6 @@
         }
 
         function deleteEvent(sessionObject) {
-            showBG();
             bearerToken = sessionObject.Token1; // this
             var collectedCUDBy = $('#employeeId').text();
             var webFormData = new WebFormDataForDelete(collectedCUDBy);
