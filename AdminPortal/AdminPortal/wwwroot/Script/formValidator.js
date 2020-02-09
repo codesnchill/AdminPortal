@@ -5,14 +5,6 @@ function dateTimeIsValid(startDate, startTime, endDate, endTime) {
     isValid = true;
     errorMsg = "";
 
-    if (startDate === "" || startTime === "" || endDate === "" || endTime === "") {
-        errorMsg += "Please fill out the required fields"
-        isValid = false;
-
-        //return the moment any of these inputs are empty
-        return { errorMsg: errorMsg, isValid: isValid };
-    }
-
     startDateTime = startDate + " " + startTime;
 
     endDateTime = endDate + " " + endTime;
@@ -24,6 +16,19 @@ function dateTimeIsValid(startDate, startTime, endDate, endTime) {
 
     //check if startdatetime is later than enddatetime
 
+    return { errorMsg: errorMsg, isValid: isValid };
+}
+
+function dateTimeIsNotEmpty(input) {
+
+    isValid = true;
+    errorMsg = "";
+
+    if (input === "") {
+
+        errorMsg += "Please fill out the required fields"
+        isValid = false;
+    }
     return { errorMsg: errorMsg, isValid: isValid };
 }
 
