@@ -280,6 +280,18 @@ input {
     margin-left: 26px;
 }
 
+.row1-question label,
+select {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.row1-question select {
+    height: 35px;
+    margin-left: 20px;
+}
+
+
 .row2-choice1 {
     display: flex;
     flex: 1;

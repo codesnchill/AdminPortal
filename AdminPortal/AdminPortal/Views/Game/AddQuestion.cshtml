@@ -17,6 +17,53 @@
             return id;
         }
 
+
+        $(document).ready(function() {
+            checkId();
+           
+        });
+
+        //loadEmployeeList
+        function loadEmployeeList(sessionObject) {
+             console.log(sessionObject);
+            bearerToken = sessionObject.Token1;
+            var url = baseURL + "/api/v1/users?deleted=false"
+            var $loadhandler = jQuery.ajax({
+                type: 'GET',
+                beforeSend: function (request) {
+                    request.setRequestHeader("Authorization", "Bearer " + bearerToken);
+                },
+                url: url,
+                contentType: "application/json",
+                dataType: 'json',
+                crossDomain: true,
+            });
+            $loadhandler.done(function (data, textStatus, jqXHR) {
+                console.log(data);
+                $.each(data, function (key, obj) {
+                    //console.log(key)
+                    console.log(obj)
+                    console.log(obj.departmentName)
+                    $("#list").append($("<option></option>")
+                        .attr("value", obj.employeeId)
+                        .text(obj.employeeName));
+                });
+            });
+        }
+
+
+        // check whether to show Employee List Dropdown or Question Textbox
+        function checkId() {
+            if (gameId == 1) {
+                 $.when(tokenIsValid, getTokenSession(loadEmployeeList));
+                $('#empList').show();
+            }
+            else {
+               $('#questionText').show();
+            }
+
+        }
+
         var baseURL = getBaseURL();
 
 
@@ -27,7 +74,7 @@
 
         //Using a function technique to define a JavaScript class, WebFormData
         function WebFormData(inCollectedQuestion1, inCollectedUrl, inCollectedAnswer, inCollectedChoice1,
-            inCollectedChoice2, inCollectedChoice3, inCollectedChoice4, inCUDBy) {
+            inCollectedChoice2, inCollectedChoice3, inCollectedChoice4, inCollectedEmployeeId, inCUDBy) {
             this.Question = inCollectedQuestion1;
             this.ImageUrl = inCollectedUrl;
             this.Answer = inCollectedAnswer;
@@ -35,6 +82,8 @@
             this.Choice2 = inCollectedChoice2;
             this.Choice3 = inCollectedChoice3;
             this.Choice4 = inCollectedChoice4;
+            // added this emp id for u
+           // this.EmployeeId = inCollectedEmployeeId;
             this.CUDBy = inCUDBy;
         }
 
@@ -42,7 +91,17 @@
             bearerToken = sessionObject.Token1; // this
             var collectedCUDBy = $('#employeeId').text();
             console.log("CUDBY: " + collectedCUDBy);
-            var collectedQuestion = $('#question').val();
+            var collectedQuestion = "";
+            // checking which game, so the system knows which value to take for Question1
+            if (gameId == 1) {
+                var selectedName = $('#list').val();
+                // getting text input of from employee list
+                collectedQuestion = $('#' + selectedName).val();
+            } else {
+                 collectedQuestion = $('#question').val();
+            }
+
+           
             var collectedImageUrl = "";
             //get the text input of the choice using the val of answer (choiceId)
             var selectedChoiceId = $('#answer').val();
@@ -104,21 +163,37 @@
             var valid = true;
             var errorMsg = "";
 
-            // check if employee id is valid
-            var questionObj = txtInputIsValid($('#question').val());
-            //if valid == false
-            if (!questionObj.isValid) {
-                valid = questionObj.isValid;
-                console.log(questionObj.errorMsg.toString());
-                // show error msg here
-            $('#hiddenField').show().text(questionObj.errorMsg.toString());
-            } else {
-                // make the error msg disappear
-                $('#hiddenField').hide();
-                console.log("no more error msg for datetime")
+            if (gameId == 2) {
+                // check if employee id is valid
+                var questionObj = txtInputIsValid($('#question').val());
+                //if valid == false
+                if (!questionObj.isValid) {
+                    valid = questionObj.isValid;
+                    console.log(questionObj.errorMsg.toString());
+                    // show error msg here
+                    $('#hiddenField').show().text(questionObj.errorMsg.toString());
+                } else {
+                    // make the error msg disappear
+                    $('#hiddenField').hide();
+                    console.log("no more error msg for datetime")
+                }
+
             }
 
-
+            //check if employeeList is valid
+            if (gameId == 1) {
+                   var empListObj = departmentDropdownIsValid($('#list').val());
+            if (!empListObj.isValid) {
+                valid = empListObj.isValid;
+                console.log(empListObj.errorMsg.toString())
+                // show error msg here
+                  $('#hiddenField').show().text(empListObj.errorMsg.toString());
+            } else {
+                // make the error msg disappear
+                  $('#hiddenField').hide();
+                console.log("no more error msg for department")
+            }
+            }
             // check if employee name is valid
             var choice1Obj = txtInputIsValid($('#choice1').val());
             if (!choice1Obj.isValid) {
@@ -190,7 +265,13 @@
             <p class="panel-header">Add Question</p>
 
         </div>
-        <div class="row1-question">
+        <div id="empList" class="row1-question" style="display: none;">
+            <label class="normal-weight" for="list">Employee:</label>
+            <select class="form-control" id="list">
+                <option value="" selected disabled hidden>Select an employee...</option>
+            </select>
+        </div>
+        <div id="questionText" class="row1-question" style="display: none;">
             <label class="normal-weight" for="question">Question:</label>
             <input type="text" name="question" id="question">
         </div>
