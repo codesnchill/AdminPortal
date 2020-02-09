@@ -9,9 +9,11 @@ function dateTimeIsValid(startDate, startTime, endDate, endTime) {
 
     endDateTime = endDate + " " + endTime;
 
-    if (moment(startDateTime).isAfter(endDateTime)) {
-        errorMsg += "start datetime should be earlier than end datetime";
-        isValid = false;
+    if (startDate !== "" || startTime !== "" || endDate !== "" || endTime !== "") {
+        if (moment(startDateTime).isAfter(endDateTime)) {
+            errorMsg += "start datetime should be earlier than end datetime";
+            isValid = false;
+        }
     }
 
     //check if startdatetime is later than enddatetime
