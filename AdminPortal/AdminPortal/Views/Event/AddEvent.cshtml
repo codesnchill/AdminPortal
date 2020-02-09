@@ -110,7 +110,7 @@
             var errorMsg = "";
 
             //check if startDate, startTime, endDate, endTime are valid
-            var dateTimeObj = dateTimeIsValid($('#startDate').val())
+            var dateTimeObj = dateTimeIsNotEmpty($('#startDate').val())
             if (!dateTimeObj.isValid) {
                 valid = dateTimeObj.isValid;
                 console.log(dateTimeObj.errorMsg.toString())
@@ -123,7 +123,7 @@
             }
 
               //check if startDate, startTime, endDate, endTime are valid
-            var dateTimeObj2 = dateTimeIsValid($('#endDate').val())
+            var dateTimeObj2 = dateTimeIsNotEmpty($('#endDate').val())
             if (!dateTimeObj2.isValid) {
                 valid = dateTimeObj2.isValid;
                 console.log(dateTimeObj2.errorMsg.toString())
@@ -136,7 +136,7 @@
             }
 
                  //check if startDate, startTime, endDate, endTime are valid
-            var dateTimeObj3 = dateTimeIsValid($('#startTime').val())
+            var dateTimeObj3 = dateTimeIsNotEmpty($('#startTime').val())
             if (!dateTimeObj3.isValid) {
                 valid = dateTimeObj3.isValid;
                 console.log(dateTimeObj3.errorMsg.toString())
@@ -150,7 +150,7 @@
 
             
                  //check if startDate, startTime, endDate, endTime are valid
-            var dateTimeObj4 = dateTimeIsValid($('#endTime').val())
+            var dateTimeObj4 = dateTimeIsNotEmpty($('#endTime').val())
             if (!dateTimeObj4.isValid) {
                 valid = dateTimeObj4.isValid;
                 console.log(dateTimeObj4.errorMsg.toString())
