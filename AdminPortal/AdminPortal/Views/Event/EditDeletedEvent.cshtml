@@ -45,6 +45,8 @@
                         .attr("value", obj.departmentId)
                         .text(obj.departmentName));
                 });
+                // get event details only when department dropdown list has fully loaded so select2 can preselect the dropdown items
+                $.when(tokenIsValid, getTokenSession(getEventDetails));
             });
         }
         $.when(tokenIsValid, getTokenSession(loadDepartments));
@@ -114,7 +116,6 @@
 
             }) //end of done
         }
-        $.when(tokenIsValid, getTokenSession(getEventDetails));
 
 
 
@@ -186,7 +187,7 @@
             if (formIsValid()) {
                 $.when(tokenIsValid, getTokenSession(save));
             }
-           
+
         }
 
 
@@ -269,7 +270,7 @@
 
         function retrieve() {
             if (formIsValid()) {
-            $.when(tokenIsValid, getTokenSession(retrieveEvent));
+                $.when(tokenIsValid, getTokenSession(retrieveEvent));
 
             }
         }
@@ -286,7 +287,7 @@
             location.href = "/Event/ManageDeletedEvents";
         }
 
-           // check if all the fields in the form is valid
+        // check if all the fields in the form is valid
         function formIsValid() {
 
             var valid = true;
@@ -298,54 +299,54 @@
                 valid = dateTimeObj.isValid;
                 console.log(dateTimeObj.errorMsg.toString())
                 // show error msg here
-                   $('#hiddenField').show().text(dateTimeObj.errorMsg.toString());
+                $('#hiddenField').show().text(dateTimeObj.errorMsg.toString());
             } else {
                 // make the error msg disappear
-                  $('#hiddenField').hide();
+                $('#hiddenField').hide();
                 console.log("no more error msg for datetime")
             }
 
-              //check if startDate, startTime, endDate, endTime are valid
+            //check if startDate, startTime, endDate, endTime are valid
             var dateTimeObj2 = dateTimeIsNotEmpty($('#endDate').val())
             if (!dateTimeObj2.isValid) {
                 valid = dateTimeObj2.isValid;
                 console.log(dateTimeObj2.errorMsg.toString())
                 // show error msg here
-                  $('#hiddenField2').show().text(dateTimeObj2.errorMsg.toString());
+                $('#hiddenField2').show().text(dateTimeObj2.errorMsg.toString());
             } else {
                 // make the error msg disappear
-                  $('#hiddenField2').hide();
+                $('#hiddenField2').hide();
                 console.log("no more error msg for datetime")
             }
 
-                 //check if startDate, startTime, endDate, endTime are valid
+            //check if startDate, startTime, endDate, endTime are valid
             var dateTimeObj3 = dateTimeIsNotEmpty($('#startTime').val())
             if (!dateTimeObj3.isValid) {
                 valid = dateTimeObj3.isValid;
                 console.log(dateTimeObj3.errorMsg.toString())
                 // show error msg here
-                   $('#hiddenField3').show().text(dateTimeObj3.errorMsg.toString());
+                $('#hiddenField3').show().text(dateTimeObj3.errorMsg.toString());
             } else {
                 // make the error msg disappear
-                  $('#hiddenField3').hide();
+                $('#hiddenField3').hide();
                 console.log("no more error msg for datetime")
             }
 
-            
-                 //check if startDate, startTime, endDate, endTime are valid
+
+            //check if startDate, startTime, endDate, endTime are valid
             var dateTimeObj4 = dateTimeIsNotEmpty($('#endTime').val())
             if (!dateTimeObj4.isValid) {
                 valid = dateTimeObj4.isValid;
                 console.log(dateTimeObj4.errorMsg.toString())
                 // show error msg here
-                   $('#hiddenField4').show().text(dateTimeObj4.errorMsg.toString());
+                $('#hiddenField4').show().text(dateTimeObj4.errorMsg.toString());
             } else {
                 // make the error msg disappear
-                 $('#hiddenField4').hide();
+                $('#hiddenField4').hide();
                 console.log("no more error msg for datetime")
             }
 
-                      //check if startDate, startTime, endDate, endTime are valid
+            //check if startDate, startTime, endDate, endTime are valid
             var checkAllTimeObj = dateTimeIsValid($('#startDate').val(),
                 $('#startTime').val(),
                 $('#endDate').val(),
@@ -354,14 +355,14 @@
                 valid = checkAllTimeObj.isValid;
                 console.log(checkAllTimeObj.errorMsg.toString())
                 // show error msg here
-                   $('#hiddenField8').show().text(checkAllTimeObj.errorMsg.toString());
+                $('#hiddenField8').show().text(checkAllTimeObj.errorMsg.toString());
             } else {
                 // make the error msg disappear
-                 $('#hiddenField8').hide();
+                $('#hiddenField8').hide();
                 console.log("no more error msg for datetime")
             }
 
-            
+
             // check if event name is valid
             var obj = txtInputIsValid($('#name').val());
             //if valid == false
@@ -369,10 +370,10 @@
                 valid = obj.isValid;
                 console.log(obj.errorMsg.toString());
                 // show error msg here
-               $('#hiddenField5').show().text(obj.errorMsg.toString());
+                $('#hiddenField5').show().text(obj.errorMsg.toString());
             } else {
                 // make the error msg disappear
-               $('#hiddenField5').hide();
+                $('#hiddenField5').hide();
                 console.log("no more error msg for datetime")
             }
 
@@ -383,10 +384,10 @@
                 valid = descriptionObj.isValid;
                 console.log(descriptionObj.errorMsg.toString())
                 // show error msg here
-                  $('#hiddenField6').show().text(descriptionObj.errorMsg.toString());
+                $('#hiddenField6').show().text(descriptionObj.errorMsg.toString());
             } else {
                 // make the error msg disappear
-                  $('#hiddenField6').hide();
+                $('#hiddenField6').hide();
                 console.log("no more error msg for description")
             }
 
@@ -396,10 +397,10 @@
                 valid = departmentObj.isValid;
                 console.log(departmentObj.errorMsg.toString())
                 // show error msg here
-                   $('#hiddenField7').show().text(departmentObj.errorMsg.toString());
+                $('#hiddenField7').show().text(departmentObj.errorMsg.toString());
             } else {
                 // make the error msg disappear
-                  $('#hiddenField7').hide();
+                $('#hiddenField7').hide();
                 console.log("no more error msg for department")
             }
 

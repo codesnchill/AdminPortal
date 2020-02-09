@@ -21,6 +21,24 @@ function dateTimeIsValid(startDate, startTime, endDate, endTime) {
     return { errorMsg: errorMsg, isValid: isValid };
 }
 
+function dateIsValid(startDate, endDate) {
+
+    isValid = true;
+    errorMsg = "";
+
+
+    if (startDate !== ""  && endDate !== "" ) {
+        if (moment(startDate).isAfter(endDate)) {
+            errorMsg += "start datetime should be earlier than end datetime";
+            isValid = false;
+        }
+    }
+
+    //check if startdatetime is later than enddatetime
+
+    return { errorMsg: errorMsg, isValid: isValid };
+}
+
 function emailIsValid(email) {
 
     isValid = true;
