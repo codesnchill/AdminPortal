@@ -7,6 +7,7 @@
 @section Scripts {
     <script type="text/javascript" src="~/Script/tokenHelper.js"></script>
     <script type="text/javascript" src="~/Script/baseURL.js"></script>
+    <script type="text/javascript" src="~/Script/formValidator.js"></script>
     <script>
         // Start of getting userId from addressbar
         var g_userId = getIdFromAddressBar();
@@ -97,7 +98,9 @@
         }
 
         function savePoint() {
+            if (formIsValid()) {
               $.when(tokenIsValid, getTokenSession(save));
+            }
         }
 
         function redirectPage() {
@@ -106,6 +109,47 @@
 
         function clickback() {
             redirectPage();
+        }
+
+                 // check if all the fields in the form is valid
+        function formIsValid() {
+
+            var valid = true;
+            var errorMsg = "";
+
+            
+            // check if event name is valid
+            var obj = txtInputIsValid($('#deductingPoints').val());
+            //if valid == false
+            if (!obj.isValid) {
+                valid = obj.isValid;
+                console.log(obj.errorMsg.toString());
+                // show error msg here
+               $('#hiddenField').show().text(obj.errorMsg.toString());
+            } else {
+                // make the error msg disappear
+               $('#hiddenField').hide();
+                console.log("no more error msg for datetime")
+            }
+
+
+            // check if event description is valid
+            var descriptionObj = txtInputIsValid($('#reason').val());
+            if (!descriptionObj.isValid) {
+                valid = descriptionObj.isValid;
+                console.log(descriptionObj.errorMsg.toString())
+                // show error msg here
+                  $('#hiddenField2').show().text(descriptionObj.errorMsg.toString());
+            } else {
+                // make the error msg disappear
+                  $('#hiddenField2').hide();
+                console.log("no more error msg for description")
+            }
+
+
+            console.log(errorMsg);
+
+            return valid;
         }
     </script>
 }
@@ -148,11 +192,14 @@
             <label class="normal-weight" for="deductingPoints">Points to deduct:</label>
             <input type='text' class="form-control" name='deductingPoints' id="deductingPoints" />
         </div>
+        <span id="hiddenField" style="display: none; text-align: center;
+    font-size: 12px; color: red;"></span>
         <div class="row6-Reason">
             <label class="normal-weight" for="Reason">Reason for deduction:</label>
             <input type='text' class="form-control" name='Reason' id="reason" />
         </div>
-
+        <span id="hiddenField2" style="display: none; text-align: center;
+    font-size: 12px; color: red;"></span>
 
 
         <div class="row7-buttons">

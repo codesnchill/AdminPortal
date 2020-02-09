@@ -7,6 +7,7 @@
 @section Scripts {
     <script type="text/javascript" src="~/Script/tokenHelper.js"></script>
     <script type="text/javascript" src="~/Script/baseURL.js"></script>
+    <script type="text/javascript" src="~/Script/formValidator.js"></script>
     <script>
         // Start of getting userId from addressbar
         var g_userId = getIdFromAddressBar();
@@ -16,55 +17,55 @@
             return id;
         }
 
-          var baseURL = getBaseURL();
+        var baseURL = getBaseURL();
 
         function getUserDetails(sessionObject) {
-                bearerToken = sessionObject.Token1;
-                var url = baseURL + "/api/v1/users/" + g_userId
-                $loadUserDataHandler = jQuery.ajax({
-                    type: 'GET',
-                     beforeSend: function (request) {
-                        request.setRequestHeader("Authorization", "Bearer " + bearerToken);
-                    },
-                    url: url,
-                    contentType: "application/json",
-                    dataType: 'json',
-                    crossDomain: true,
-                })
-                $loadUserDataHandler.done(function (data, textStatus, jqXHR) {
-                    console.log(data);
-                    var user = data;
-                    employeeId = user[0].employeeId
-                    employeeName = user[0].employeeName;
-                    departmentName = user[0].departmentName;
-                    totalPoints = user[0].totalPoints;
+            bearerToken = sessionObject.Token1;
+            var url = baseURL + "/api/v1/users/" + g_userId
+            $loadUserDataHandler = jQuery.ajax({
+                type: 'GET',
+                beforeSend: function (request) {
+                    request.setRequestHeader("Authorization", "Bearer " + bearerToken);
+                },
+                url: url,
+                contentType: "application/json",
+                dataType: 'json',
+                crossDomain: true,
+            })
+            $loadUserDataHandler.done(function (data, textStatus, jqXHR) {
+                console.log(data);
+                var user = data;
+                employeeId = user[0].employeeId
+                employeeName = user[0].employeeName;
+                departmentName = user[0].departmentName;
+                totalPoints = user[0].totalPoints;
 
 
 
-                    $('#employeeID').val(employeeId);
-                    $('#employeeName').val(employeeName);
-                    $('#department').val(departmentName);
-                    $('#points').val(totalPoints);
+                $('#employeeID').val(employeeId);
+                $('#employeeName').val(employeeName);
+                $('#department').val(departmentName);
+                $('#points').val(totalPoints);
 
 
-                }) //end of done
+            }) //end of done
         }
 
-         $.when(tokenIsValid, getTokenSession(getUserDetails));
+        $.when(tokenIsValid, getTokenSession(getUserDetails));
 
 
         //Using a function technique to define a JavaScript class, WebFormData
         function WebFormData(inCollectedPoints, inCollectedComments, inCUDBy) {
             this.Point = inCollectedPoints;
             this.Comments = inCollectedComments;
-             this.CUDBy = inCUDBy;
+            this.CUDBy = inCUDBy;
         }
 
         function save(sessionObject) {
 
             var collectedPoints = $('#awardingPoints').val();
             var collectedComments = $('#reason').val();
-             bearerToken = sessionObject.Token1; // this
+            bearerToken = sessionObject.Token1; // this
             var collectedCUDBy = $('#employeeId').text();
             //Create a WebFormData object, webFormData. Have its field values
             //populated with the collected course data
@@ -76,29 +77,31 @@
             console.log(webFormDataInString);
 
             var url = baseURL + "/api/v1/points/gift/" + g_userId
-                $updateCourseHandler = jQuery.ajax({
-                    type: 'POST',
-                     beforeSend: function (request) {
-                        request.setRequestHeader("Authorization", "Bearer " + bearerToken);
-                    },
-                    url: url,
-                    dataType: 'json',
-                    contentType: 'application/json;',
-                    data: "'" + webFormDataInString + "'"
-                })//end of jQuery.ajax() call
-                $updateCourseHandler.done(function (data, textStatus, jqXHR) {
-                    alert("Points Awarded Successfully");
-                    location.href = "/Point/AwardPoint/" + g_userId;
+            $updateCourseHandler = jQuery.ajax({
+                type: 'POST',
+                beforeSend: function (request) {
+                    request.setRequestHeader("Authorization", "Bearer " + bearerToken);
+                },
+                url: url,
+                dataType: 'json',
+                contentType: 'application/json;',
+                data: "'" + webFormDataInString + "'"
+            })//end of jQuery.ajax() call
+            $updateCourseHandler.done(function (data, textStatus, jqXHR) {
+                alert("Points Awarded Successfully");
+                location.href = "/Point/AwardPoint/" + g_userId;
 
-                });//end of $updateCourseHandler.done()
+            });//end of $updateCourseHandler.done()
 
-                $updateCourseHandler.error(function (data, textStatus, jqXHR) {
-                    console.log(data.responseJSON.message);
-                });//end of $updateCourseHandler.error()*/
+            $updateCourseHandler.error(function (data, textStatus, jqXHR) {
+                console.log(data.responseJSON.message);
+            });//end of $updateCourseHandler.error()*/
         }
 
         function savePoint() {
-                 $.when(tokenIsValid, getTokenSession(save));
+            if (formIsValid()) {
+                   $.when(tokenIsValid, getTokenSession(save));
+            }
         }
 
         function redirectPage() {
@@ -107,6 +110,47 @@
 
         function clickback() {
             redirectPage();
+        }
+
+             // check if all the fields in the form is valid
+        function formIsValid() {
+
+            var valid = true;
+            var errorMsg = "";
+
+            
+            // check if event name is valid
+            var obj = txtInputIsValid($('#awardingPoints').val());
+            //if valid == false
+            if (!obj.isValid) {
+                valid = obj.isValid;
+                console.log(obj.errorMsg.toString());
+                // show error msg here
+               $('#hiddenField').show().text(obj.errorMsg.toString());
+            } else {
+                // make the error msg disappear
+               $('#hiddenField').hide();
+                console.log("no more error msg for datetime")
+            }
+
+
+            // check if event description is valid
+            var descriptionObj = txtInputIsValid($('#reason').val());
+            if (!descriptionObj.isValid) {
+                valid = descriptionObj.isValid;
+                console.log(descriptionObj.errorMsg.toString())
+                // show error msg here
+                  $('#hiddenField2').show().text(descriptionObj.errorMsg.toString());
+            } else {
+                // make the error msg disappear
+                  $('#hiddenField2').hide();
+                console.log("no more error msg for description")
+            }
+
+
+            console.log(errorMsg);
+
+            return valid;
         }
     </script>
 }
@@ -147,13 +191,16 @@
         </div>
         <div class="row5-PointsToAward">
             <label class="normal-weight" for="awardingPoints">Points to award:</label>
-            <input type='text' class="form-control" name='awardingPoints' id="awardingPoints" />
+            <input type='number' class="form-control" name='awardingPoints' id="awardingPoints" />
         </div>
+        <span id="hiddenField" style="display: none; text-align: center;
+    font-size: 12px; color: red;"></span>
         <div class="row6-Reason">
             <label class="normal-weight" for="Reason">Reason for award:</label>
             <input type='text' class="form-control" name='Reason' id="reason" />
         </div>
-
+          <span id="hiddenField2" style="display: none; text-align: center;
+    font-size: 12px; color: red;"></span>
 
 
         <div class="row7-buttons">
