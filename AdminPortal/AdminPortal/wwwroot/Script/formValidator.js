@@ -70,3 +70,19 @@ function txtInputIsValid(input) {
 
     return { errorMsg: errorMsg, isValid: isValid };
 }
+function passwordValidation(input) {
+    isValid = true;
+    errorMsg = "";
+
+    //regex for / \ ' "
+    var format = /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
+
+    //Check input Contain(/ \ ' ")
+    
+    if (!format.test(input)) {
+        errorMsg += "Password must Contain at least 1 Uppercase,1 lowercase,1 number and 1 special character and Password length must contain minimum 8 characters.";
+        isValid = false;
+    }
+    return { errorMsg: errorMsg, isValid: isValid };
+
+}
