@@ -195,7 +195,7 @@
             var errorMsg = "";
 
             // check if employee id is valid
-            var obj = txtInputIsValid($('#employeeID').val());
+            var obj = employeeIdIsValid($('#employeeID').val());
             //if valid == false
             if (!obj.isValid) {
                 valid = obj.isValid;
@@ -273,7 +273,7 @@
             }
 
 
-                var emailObj = emailIsValid($('#email').val());
+            var emailObj = emailIsValid($('#email').val());
             if (!emailObj.isValid) {
                 valid = emailObj.isValid;
                 console.log(emailObj.errorMsg.toString())
