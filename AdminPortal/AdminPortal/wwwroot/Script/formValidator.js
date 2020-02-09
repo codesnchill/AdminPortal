@@ -46,7 +46,7 @@ function txtInputIsValid(input) {
     isValid = true;
 
     //regex for illegal characters
-    var format = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;
+    var format = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/]+/;
     errorMsg = "";
 
     // if input contains only whitespace OR input is empty (string only)

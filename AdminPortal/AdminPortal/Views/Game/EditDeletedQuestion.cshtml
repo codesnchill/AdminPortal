@@ -292,7 +292,7 @@
 
 
             // check if employee name is valid
-            var choice1Obj = txtInputIsValid($('#choice1').val());
+            var choice1Obj = txtInputIsValid($('.choice1').val());
             if (!choice1Obj.isValid) {
                 valid = choice1Obj.isValid;
                 console.log(choice1Obj.errorMsg.toString())
@@ -304,7 +304,7 @@
                 console.log("no more error msg for description")
             }
 
-                var choice2Obj = txtInputIsValid($('#choice2').val());
+            var choice2Obj = txtInputIsValid($('.choice2').val());
             if (!choice2Obj.isValid) {
                 valid = choice2Obj.isValid;
                 console.log(choice2Obj.errorMsg.toString())
@@ -316,7 +316,7 @@
                 console.log("no more error msg for description")
             }
 
-                     var choice3Obj = txtInputIsValid($('#choice3').val());
+            var choice3Obj = txtInputIsValid($('.choice3').val());
             if (!choice3Obj.isValid) {
                 valid = choice3Obj.isValid;
                 console.log(choice3Obj.errorMsg.toString())
@@ -328,7 +328,7 @@
                 console.log("no more error msg for description")
             }
 
-                     var choice4Obj = txtInputIsValid($('#choice4').val());
+            var choice4Obj = txtInputIsValid($('.choice4').val());
             if (!choice4Obj.isValid) {
                 valid = choice4Obj.isValid;
                 console.log(choice4Obj.errorMsg.toString())
@@ -379,26 +379,26 @@
     font-size: 12px; color: red;"></span>
         <div class="row2-choice1">
             <label class="normal-weight" for="choice1">Choice 1:</label>
-            <input type='text' name='choice1' id="choice1" />
+            <input type='text' name='choice1' id="choice1" class="choice1"/>
         </div>
         <span id="hiddenField2" style="display: none; text-align: center;
     font-size: 12px; color: red;"></span>
         <div class="row3-choice2">
             <label class="normal-weight" for="choice2">Choice 2:</label>
-            <input type='text' name='choice2' id="choice2" />
+            <input type='text' name='choice2' id="choice2" class="choice2"/>
 
         </div>
         <span id="hiddenField3" style="display: none; text-align: center;
     font-size: 12px; color: red;"></span>
         <div class="row4-choice3">
             <label class="normal-weight" for="choice3">Choice 3:</label>
-            <input type='text' name='choice3' id="choice3" />
+            <input type='text' name='choice3' id="choice3" class="choice3"/>
         </div>
         <span id="hiddenField4" style="display: none; text-align: center;
     font-size: 12px; color: red;"></span>
         <div class="row5-choice4">
             <label class="normal-weight" for="choice4">Choice 4:</label>
-            <input type='text' name='choice4' id="choice4" />
+            <input type='text' name='choice4' id="choice4" class="choice4" />
         </div>
         <span id="hiddenField5" style="display: none; text-align: center;
     font-size: 12px; color: red;"></span>
