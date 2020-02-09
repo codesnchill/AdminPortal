@@ -5,13 +5,13 @@
 @model IEnumerable<AdminPortal.Models.Event>
 
 @section Scripts {
-    <script src="~/lib/noty.min.js"></script>
     <script src="~/Script/select2.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.7.0/moment.min.js" type="text/javascript"></script>
     <script type="text/javascript" src="~/Script/tokenHelper.js"></script>
     <script type="text/javascript" src="~/Script/baseURL.js"></script>
     <script type="text/javascript" src="~/Script/formValidator.js"></script>
-    <link href="~/lib/noty.css" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.js" type="text/javascript"></script>
     <script>
 
         $(document).ready(function () {
@@ -20,16 +20,28 @@
 
         });
 
+         let show = true;
+     function showBG() {
+         show = !show;
+         if (show) {
+             document.getElementsByClassName("black-overlay")[0].style.display = "block";
+             document.getElementsByClassName("left-section")[0].style.display = "block";
+         } else {
+             document.getElementsByClassName("black-overlay")[0].style.display = "none";
+             document.getElementsByClassName("left-section")[0].style.display = "none";
+         }
+     }
+
         var baseURL = getBaseURL();
-       
+
         function loadDepartments(sessionObject) {
-             bearerToken = sessionObject.Token1;
+            bearerToken = sessionObject.Token1;
             var url = baseURL + "/api/v1/departments"
             var $loadhandler = jQuery.ajax({
                 type: 'GET',
-                   beforeSend: function (request) {
-                        request.setRequestHeader("Authorization", "Bearer " + bearerToken);
-                    },
+                beforeSend: function (request) {
+                    request.setRequestHeader("Authorization", "Bearer " + bearerToken);
+                },
                 url: url,
                 contentType: "application/json",
                 dataType: 'json',
@@ -47,7 +59,7 @@
                 });
             });
         }
-       $.when(tokenIsValid, getTokenSession(loadDepartments));
+        $.when(tokenIsValid, getTokenSession(loadDepartments));
 
 
         // Start of getting eventId from addressbar
@@ -62,11 +74,11 @@
         function getEventDetails(sessionObject) {
             bearerToken = sessionObject.Token1;
             var url = baseURL + "/api/v1/events/" + g_eventId
-                $loadUserDataHandler = jQuery.ajax({
-                    type: 'GET',
-                    beforeSend: function (request) {
-                        request.setRequestHeader("Authorization", "Bearer " + bearerToken);
-                    },
+            $loadUserDataHandler = jQuery.ajax({
+                type: 'GET',
+                beforeSend: function (request) {
+                    request.setRequestHeader("Authorization", "Bearer " + bearerToken);
+                },
                 url: url,
                 contentType: "application/json",
                 dataType: 'json',
@@ -114,7 +126,7 @@
 
             }) //end of done
         }
-                     $.when(tokenIsValid, getTokenSession(getEventDetails));
+        $.when(tokenIsValid, getTokenSession(getEventDetails));
 
 
 
@@ -163,10 +175,10 @@
             console.log("Event Details: " + webFormDataInString);
 
             var url = baseURL + "/api/v1/events/" + g_eventId;
-                 $updateCourseHandler = jQuery.ajax({
+            $updateCourseHandler = jQuery.ajax({
                 type: 'PUT',
-                 beforeSend: function(request) {
-                  request.setRequestHeader("Authorization", "Bearer " + bearerToken);
+                beforeSend: function (request) {
+                    request.setRequestHeader("Authorization", "Bearer " + bearerToken);
                 },
                 url: url,
                 dataType: 'json',
@@ -186,7 +198,7 @@
 
         function saveEvent() {
             if (formIsValid()) {
-                 $.when(tokenIsValid, getTokenSession(save));
+                $.when(tokenIsValid, getTokenSession(save));
             }
         }
 
@@ -203,10 +215,11 @@
         }
 
         function WebFormDataForDelete(inCUDBy) {
-               this.CUDBy = inCUDBy;
+            this.CUDBy = inCUDBy;
         }
 
         function deleteEvent(sessionObject) {
+             showBG();
             bearerToken = sessionObject.Token1; // this
             var collectedCUDBy = $('#employeeId').text();
             var webFormData = new WebFormDataForDelete(collectedCUDBy);
@@ -222,30 +235,30 @@
 
                     Noty.button('Delete', 'btn btn-danger', function () {
                         var url = baseURL + "/api/v1/events/markdelete/" + g_eventId;
-                            $deleteHandler = jQuery.ajax({
-                                type: 'DELETE',
-                                beforeSend: function (request) {
-                                    request.setRequestHeader("Authorization", "Bearer " + bearerToken);
-                                },
-                                url: url,
-                                dataType: 'json',
-                                contentType: 'application/json;',
-                                data: "'" + webFormDataInString + "'"
-                            })//end of jQuery.ajax() call
+                        $deleteHandler = jQuery.ajax({
+                            type: 'DELETE',
+                            beforeSend: function (request) {
+                                request.setRequestHeader("Authorization", "Bearer " + bearerToken);
+                            },
+                            url: url,
+                            dataType: 'json',
+                            contentType: 'application/json;',
+                            data: "'" + webFormDataInString + "'"
+                        })//end of jQuery.ajax() call
 
-                            $deleteHandler.done(function (data, textStatus, jqXHR) {
-                                $('body').fadeOut(500, redirectPage);
-                                noty.close();
-                            })
+                        $deleteHandler.done(function (data, textStatus, jqXHR) {
+                            $('body').fadeOut(500, redirectPage);
+                            noty.close();
+                        })
 
-                            $deleteHandler.fail(function (data, textStatus, jqXHR) {
-                                console.log(data);
-                                new Noty({
-                                    text: data.responseJSON.message, type: 'error',
-                                    layout: 'center',
-                                    template: '<div class="noty_message"><span class="noty_text"></span>'
-                                }).show();//end of noty()
-                            });//end of $deleteCourseHandler.fail()
+                        $deleteHandler.fail(function (data, textStatus, jqXHR) {
+                            console.log(data);
+                            new Noty({
+                                text: data.responseJSON.message, type: 'error',
+                                layout: 'center',
+                                template: '<div class="noty_message"><span class="noty_text"></span>'
+                            }).show();//end of noty()
+                        });//end of $deleteCourseHandler.fail()
                     })
                 ]
             }).show();
@@ -264,54 +277,54 @@
                 valid = dateTimeObj.isValid;
                 console.log(dateTimeObj.errorMsg.toString())
                 // show error msg here
-                   $('#hiddenField').show().text(dateTimeObj.errorMsg.toString());
+                $('#hiddenField').show().text(dateTimeObj.errorMsg.toString());
             } else {
                 // make the error msg disappear
-                  $('#hiddenField').hide();
+                $('#hiddenField').hide();
                 console.log("no more error msg for datetime")
             }
 
-              //check if startDate, startTime, endDate, endTime are valid
+            //check if startDate, startTime, endDate, endTime are valid
             var dateTimeObj2 = dateTimeIsNotEmpty($('#endDate').val())
             if (!dateTimeObj2.isValid) {
                 valid = dateTimeObj2.isValid;
                 console.log(dateTimeObj2.errorMsg.toString())
                 // show error msg here
-                  $('#hiddenField2').show().text(dateTimeObj2.errorMsg.toString());
+                $('#hiddenField2').show().text(dateTimeObj2.errorMsg.toString());
             } else {
                 // make the error msg disappear
-                  $('#hiddenField2').hide();
+                $('#hiddenField2').hide();
                 console.log("no more error msg for datetime")
             }
 
-                 //check if startDate, startTime, endDate, endTime are valid
+            //check if startDate, startTime, endDate, endTime are valid
             var dateTimeObj3 = dateTimeIsNotEmpty($('#startTime').val())
             if (!dateTimeObj3.isValid) {
                 valid = dateTimeObj3.isValid;
                 console.log(dateTimeObj3.errorMsg.toString())
                 // show error msg here
-                   $('#hiddenField3').show().text(dateTimeObj3.errorMsg.toString());
+                $('#hiddenField3').show().text(dateTimeObj3.errorMsg.toString());
             } else {
                 // make the error msg disappear
-                  $('#hiddenField3').hide();
+                $('#hiddenField3').hide();
                 console.log("no more error msg for datetime")
             }
 
-            
-                 //check if startDate, startTime, endDate, endTime are valid
+
+            //check if startDate, startTime, endDate, endTime are valid
             var dateTimeObj4 = dateTimeIsNotEmpty($('#endTime').val())
             if (!dateTimeObj4.isValid) {
                 valid = dateTimeObj4.isValid;
                 console.log(dateTimeObj4.errorMsg.toString())
                 // show error msg here
-                   $('#hiddenField4').show().text(dateTimeObj4.errorMsg.toString());
+                $('#hiddenField4').show().text(dateTimeObj4.errorMsg.toString());
             } else {
                 // make the error msg disappear
-                 $('#hiddenField4').hide();
+                $('#hiddenField4').hide();
                 console.log("no more error msg for datetime")
             }
 
-                      //check if startDate, startTime, endDate, endTime are valid
+            //check if startDate, startTime, endDate, endTime are valid
             var checkAllTimeObj = dateTimeIsValid($('#startDate').val(),
                 $('#startTime').val(),
                 $('#endDate').val(),
@@ -320,14 +333,14 @@
                 valid = checkAllTimeObj.isValid;
                 console.log(checkAllTimeObj.errorMsg.toString())
                 // show error msg here
-                   $('#hiddenField8').show().text(checkAllTimeObj.errorMsg.toString());
+                $('#hiddenField8').show().text(checkAllTimeObj.errorMsg.toString());
             } else {
                 // make the error msg disappear
-                 $('#hiddenField8').hide();
+                $('#hiddenField8').hide();
                 console.log("no more error msg for datetime")
             }
 
-            
+
             // check if event name is valid
             var obj = txtInputIsValid($('#name').val());
             //if valid == false
@@ -335,10 +348,10 @@
                 valid = obj.isValid;
                 console.log(obj.errorMsg.toString());
                 // show error msg here
-               $('#hiddenField5').show().text(obj.errorMsg.toString());
+                $('#hiddenField5').show().text(obj.errorMsg.toString());
             } else {
                 // make the error msg disappear
-               $('#hiddenField5').hide();
+                $('#hiddenField5').hide();
                 console.log("no more error msg for datetime")
             }
 
@@ -349,10 +362,10 @@
                 valid = descriptionObj.isValid;
                 console.log(descriptionObj.errorMsg.toString())
                 // show error msg here
-                  $('#hiddenField6').show().text(descriptionObj.errorMsg.toString());
+                $('#hiddenField6').show().text(descriptionObj.errorMsg.toString());
             } else {
                 // make the error msg disappear
-                  $('#hiddenField6').hide();
+                $('#hiddenField6').hide();
                 console.log("no more error msg for description")
             }
 
@@ -362,10 +375,10 @@
                 valid = departmentObj.isValid;
                 console.log(departmentObj.errorMsg.toString())
                 // show error msg here
-                   $('#hiddenField7').show().text(departmentObj.errorMsg.toString());
+                $('#hiddenField7').show().text(departmentObj.errorMsg.toString());
             } else {
                 // make the error msg disappear
-                  $('#hiddenField7').hide();
+                $('#hiddenField7').hide();
                 console.log("no more error msg for department")
             }
 
@@ -375,8 +388,8 @@
         }
 
         function deleteE() {
-            
-              $.when(tokenIsValid, getTokenSession(deleteEvent));
+
+            $.when(tokenIsValid, getTokenSession(deleteEvent));
         }
 
         function redirectPage() {

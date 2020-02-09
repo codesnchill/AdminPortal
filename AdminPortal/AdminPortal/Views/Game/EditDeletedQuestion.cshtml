@@ -8,6 +8,54 @@
     <script type="text/javascript" src="~/Script/formValidator.js"></script>
     <script src="~/lib/noty.min.js"></script>
     <script>
+
+               $(document).ready(function() {
+            checkId();
+           
+        });
+
+        //loadEmployeeList
+        function loadEmployeeList(sessionObject) {
+             console.log(sessionObject);
+            bearerToken = sessionObject.Token1;
+            var url = baseURL + "/api/v1/users?deleted=false"
+            var $loadhandler = jQuery.ajax({
+                type: 'GET',
+                beforeSend: function (request) {
+                    request.setRequestHeader("Authorization", "Bearer " + bearerToken);
+                },
+                url: url,
+                contentType: "application/json",
+                dataType: 'json',
+                crossDomain: true,
+            });
+            $loadhandler.done(function (data, textStatus, jqXHR) {
+                console.log(data);
+                $.each(data, function (key, obj) {
+                    //console.log(key)
+                    console.log(obj)
+                    console.log(obj.departmentName)
+                    $("#list").append($("<option></option>")
+                        .attr("value", obj.employeeId)
+                        .text(obj.employeeName));
+                });
+            });
+        }
+
+
+        // check whether to show Employee List Dropdown or Question Textbox
+        function checkId() {
+            if (gameId == 1) {
+                 $.when(tokenIsValid, getTokenSession(loadEmployeeList));
+                $('#empList').show();
+            }
+            else {
+               $('#questionText').show();
+            }
+
+        }
+
+
         // Start of getting gameId from addressbar
 
         var choiceId1;
@@ -52,6 +100,16 @@
                 Question1 = game[0].question1;
                 answer = game[0].answer
                 Choices = game[0].choices;
+                EmployeeId = game[0].employeeId;
+
+                console.log("Question: " + Question1);
+                console.log("EmployeeId: " + EmployeeId);
+                if (gameId == 1) {
+                    $('#list option').filter(function () {
+                        return $(this).val() == EmployeeId;
+                    }).prop('selected', true);
+                   
+                } 
 
                 console.log("Question: " + Question1);
                 $('#question').val(Question1);
@@ -99,22 +157,33 @@
 
 
         //Using a function technique to define a JavaScript class, WebFormData
-        function WebFormData(inCollectedQuestion1, inCollectedAnswer, inCollectedChoices, inCUDBy) {
+        function WebFormData(inCollectedQuestion1, inCollectedAnswer, inCollectedChoices, inCollectedEmployeeId, inCUDBy) {
             this.Question = inCollectedQuestion1;
             this.Answer = inCollectedAnswer;
             this.Choices = inCollectedChoices;
+             this.EmployeeId = inCollectedEmployeeId;
             this.CUDBy = inCUDBy;
         }
 
         function clickSave(sessionObject) {
 
-            var collectedQuestion = $('#question').val();
+            var collectedQuestion = "";
+            var employeeID = "";
+            // checking which game, so the system knows which value to take for Question1
+            if (gameId == 1) {
+                var selectedName = $('#list').val();
+                employeeID = selectedName;
+                collectedQuestion = "";
+            } else {
+                 collectedQuestion = $('#question').val();
+            }
             var collectedChoices = [];
             bearerToken = sessionObject.Token1; // this
             var collectedCUDBy = $('#employeeId').text();
             //get the text input of the choice using the val of answer (choiceId)
             var selectedChoiceId = $('#answer').val();
             var collectedAnswer = $('#' + selectedChoiceId).val();
+               var collectedEmployeeId = employeeID;
 
             var collectedChoicesArray1 = {
                 ChoiceId: choiceId1,
@@ -141,7 +210,7 @@
             //Create a WebFormData object, webFormData. Have its field values
             //populated with the collected course data
             var webFormData = new WebFormData(collectedQuestion,
-                collectedAnswer, collectedChoices, collectedCUDBy);
+                collectedAnswer, collectedChoices, collectedEmployeeId, collectedCUDBy);
             //Convert the webFromData into a JSON string
             var webFormDataInString = JSON.stringify(webFormData);
 
@@ -178,20 +247,31 @@
 
 
         //Using a function technique to define a JavaScript class, WebFormData
-        function WebFormData2(inCollectedQuestion1, inCollectedAnswer, inCollectedChoices, inCollectedReEnable, inCUDBy) {
+        function WebFormData2(inCollectedQuestion1, inCollectedAnswer, inCollectedChoices, inCollectedReEnable, inCollectedEmployeeId, inCUDBy) {
             this.Question = inCollectedQuestion1;
             this.Answer = inCollectedAnswer;
           //  this.Points = inCollectedPoints;
             this.Choices = inCollectedChoices;
             this.ReEnable = inCollectedReEnable;
+               this.EmployeeId = inCollectedEmployeeId;
             this.CUDBy = inCUDBy;
         }
 
         function retrieveQuestion(sessionObject) {
-            var collectedQuestion = $('#question').val();
+            var collectedQuestion = "";
+            var employeeID = "";
+            // checking which game, so the system knows which value to take for Question1
+            if (gameId == 1) {
+                var selectedName = $('#list').val();
+                employeeID = selectedName;
+                collectedQuestion = "";
+            } else {
+                 collectedQuestion = $('#question').val();
+            }
         //    var collectedPoint = 2;
             var collectedReEnable = true;
             var collectedChoices = [];
+              var collectedEmployeeId = employeeID;
             bearerToken = sessionObject.Token1; // this
             var collectedCUDBy = $('#employeeId').text();
             //get the text input of the choice using the val of answer (choiceId)
@@ -223,7 +303,7 @@
             //Create a WebFormData object, webFormData. Have its field values
             //populated with the collected course data
             var webFormData = new WebFormData2(collectedQuestion,
-                collectedAnswer, collectedChoices, collectedReEnable, collectedCUDBy);
+                collectedAnswer, collectedChoices, collectedReEnable, collectedEmployeeId, collectedCUDBy);
             //Convert the webFromData into a JSON string
             var webFormDataInString = JSON.stringify(webFormData);
 
@@ -276,18 +356,36 @@
             var valid = true;
             var errorMsg = "";
 
-            // check if employee id is valid
-            var questionObj = txtInputIsValid($('#question').val());
-            //if valid == false
-            if (!questionObj.isValid) {
-                valid = questionObj.isValid;
-                console.log(questionObj.errorMsg.toString());
+           if (gameId == 2) {
+                // check if employee id is valid
+                var questionObj = txtInputIsValid($('#question').val());
+                //if valid == false
+                if (!questionObj.isValid) {
+                    valid = questionObj.isValid;
+                    console.log(questionObj.errorMsg.toString());
+                    // show error msg here
+                    $('#hiddenField').show().text(questionObj.errorMsg.toString());
+                } else {
+                    // make the error msg disappear
+                    $('#hiddenField').hide();
+                    console.log("no more error msg for datetime")
+                }
+
+            }
+
+            //check if employeeList is valid
+            if (gameId == 1) {
+                   var empListObj = departmentDropdownIsValid($('#list').val());
+            if (!empListObj.isValid) {
+                valid = empListObj.isValid;
+                console.log(empListObj.errorMsg.toString())
                 // show error msg here
-            $('#hiddenField').show().text(questionObj.errorMsg.toString());
+                  $('#hiddenField').show().text(empListObj.errorMsg.toString());
             } else {
                 // make the error msg disappear
-                $('#hiddenField').hide();
-                console.log("no more error msg for datetime")
+                  $('#hiddenField').hide();
+                console.log("no more error msg for department")
+            }
             }
 
 
@@ -371,7 +469,13 @@
             <p class="panel-header">Edit Deleted Questions</p>
 
         </div>
-        <div class="row1-question">
+        <div id="empList" class="row1-question" style="display: none;">
+            <label class="normal-weight" for="list">Employee:</label>
+            <select class="form-control" id="list">
+                <option value="" selected disabled hidden>Select an employee...</option>
+            </select>
+        </div>
+        <div id="questionText" class="row1-question" style="display: none;">
             <label class="normal-weight" for="question">Question:</label>
             <input type="text" name="question" id="question">
         </div>
@@ -379,20 +483,20 @@
     font-size: 12px; color: red;"></span>
         <div class="row2-choice1">
             <label class="normal-weight" for="choice1">Choice 1:</label>
-            <input type='text' name='choice1' id="choice1" class="choice1"/>
+            <input type='text' name='choice1' id="choice1" class="choice1" />
         </div>
         <span id="hiddenField2" style="display: none; text-align: center;
     font-size: 12px; color: red;"></span>
         <div class="row3-choice2">
             <label class="normal-weight" for="choice2">Choice 2:</label>
-            <input type='text' name='choice2' id="choice2" class="choice2"/>
+            <input type='text' name='choice2' id="choice2" class="choice2" />
 
         </div>
         <span id="hiddenField3" style="display: none; text-align: center;
     font-size: 12px; color: red;"></span>
         <div class="row4-choice3">
             <label class="normal-weight" for="choice3">Choice 3:</label>
-            <input type='text' name='choice3' id="choice3" class="choice3"/>
+            <input type='text' name='choice3' id="choice3" class="choice3" />
         </div>
         <span id="hiddenField4" style="display: none; text-align: center;
     font-size: 12px; color: red;"></span>

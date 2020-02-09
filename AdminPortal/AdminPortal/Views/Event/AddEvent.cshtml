@@ -67,11 +67,15 @@
             var collectedDepartment = $('#department').val();
             bearerToken = sessionObject.Token1; // this
             var collectedCUDBy = $('#employeeId').text();
+
+
             var collectedStartDateTime = new Date(collectedStartDate + ' ' + collectedStartTime);
-            var collectedStartDateTime2 = collectedStartDateTime.toISOString().replace('Z', '').replace('.000', '');
+            var collectedStartDateTime2 = convertUTCDateToLocalDate(new Date(collectedStartDateTime));
+            collectedStartDateTime2 = moment(collectedStartDateTime).format("YYYY-MM-DD[T]HH:mm:ss");
 
             var collectedEndDateTime = new Date(collectedEndDate + ' ' + collectedEndTime);
-            var collectedEndDateTime2 = collectedEndDateTime.toISOString().replace('Z', '').replace('.000', '');
+            var collectedEndDateTime2 = convertUTCDateToLocalDate(new Date(collectedEndDateTime));
+               collectedEndDateTime2 = moment(collectedEndDateTime).format("YYYY-MM-DD[T]HH:mm:ss");
             //Create a WebFormData object, webFormData. Have its field values
             //populated with the collected course data
             var webFormData = new WebFormData(collectedStartDateTime2, collectedEndDateTime2,
@@ -102,6 +106,18 @@
                 console.log(data.responseJSON.message);
             });//end of $updateCourseHandler.error()*/
         }
+
+          function convertUTCDateToLocalDate(date) {
+            var newDate = new Date(date.getTime() + date.getTimezoneOffset() * 60 * 1000);
+
+            var offset = date.getTimezoneOffset() / 60;
+            var hours = date.getHours();
+
+            newDate.setHours(hours - offset);
+
+            return newDate;
+        }
+
 
         // check if all the fields in the form is valid
         function formIsValid() {

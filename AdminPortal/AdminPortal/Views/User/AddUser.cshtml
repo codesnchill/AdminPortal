@@ -273,7 +273,7 @@
             }
 
 
-                var emailObj = txtInputIsValid($('#email').val());
+                var emailObj = emailIsValid($('#email').val());
             if (!emailObj.isValid) {
                 valid = emailObj.isValid;
                 console.log(emailObj.errorMsg.toString())

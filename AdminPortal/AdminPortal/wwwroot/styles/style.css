@@ -55,10 +55,11 @@ input[type=password] {
     background: transparent;
     border: none;
     border-bottom: 2px solid #fff;
-    width: 100%;
+    width: 50%;
     padding-top: 18px;
     display: block;
     margin-bottom: 40px;
+    color: #fff;
 }
 
 .login-button {

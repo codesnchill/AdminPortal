@@ -6,8 +6,8 @@
     <script type="text/javascript" src="~/Script/tokenHelper.js"></script>
     <script type="text/javascript" src="~/Script/baseURL.js"></script>
     <script type="text/javascript" src="~/Script/formValidator.js"></script>
-    <link href="~/lib/noty.css" rel="stylesheet">
-    <script src="~/lib/noty.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.js" type="text/javascript"></script>
     <script>
 
         var g_rewardId = getIdFromAddressBar();
@@ -91,7 +91,7 @@
 
         function save() {
             if (formIsValid()) {
-                   $.when(tokenIsValid, getTokenSession(clickSave));
+                $.when(tokenIsValid, getTokenSession(clickSave));
             }
         }
 
@@ -161,7 +161,7 @@
             location.href = "/Milestone/ManageMilestones";
         }
 
-                      // check if all the fields in the form is valid
+        // check if all the fields in the form is valid
         function formIsValid() {
 
             var valid = true;
@@ -174,7 +174,7 @@
                 valid = obj.isValid;
                 console.log(obj.errorMsg.toString());
                 // show error msg here
-            $('#hiddenField').show().text(obj.errorMsg.toString());
+                $('#hiddenField').show().text(obj.errorMsg.toString());
             } else {
                 // make the error msg disappear
                 $('#hiddenField').hide();
@@ -188,10 +188,10 @@
                 valid = descriptionObj.isValid;
                 console.log(descriptionObj.errorMsg.toString())
                 // show error msg here
-             $('#hiddenField2').show().text(descriptionObj.errorMsg.toString());
+                $('#hiddenField2').show().text(descriptionObj.errorMsg.toString());
             } else {
                 // make the error msg disappear
-                  $('#hiddenField2').hide();
+                $('#hiddenField2').hide();
                 console.log("no more error msg for description")
             }
 
