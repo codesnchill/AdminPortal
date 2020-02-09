@@ -20,6 +20,17 @@
 
         });
 
+        let show = true;
+        function showBG() {
+            show = !show;
+            if (show) {
+                document.getElementsByClassName("black-overlay")[0].style.display = "block";
+                document.getElementsByClassName("left-section")[0].style.display = "block";
+            } else {
+                document.getElementsByClassName("black-overlay")[0].style.display = "none";
+                document.getElementsByClassName("left-section")[0].style.display = "none";
+            }
+        }
 
         var baseURL = getBaseURL();
 
@@ -37,15 +48,14 @@
                 crossDomain: true,
             });
             $loadhandler.done(function (data, textStatus, jqXHR) {
-                console.log(data);
                 $.each(data, function (key, obj) {
-                    //console.log(key)
-                    console.log(obj)
-                    console.log(obj.departmentName)
                     $("#department").append($("<option></option>")
                         .attr("value", obj.departmentId)
                         .text(obj.departmentName));
                 });
+
+                // only call getEventDetails when dropdown has finished loading so select2 can pre-select the departments
+                $.when(tokenIsValid, getTokenSession(getEventDetails));
             });
         }
         $.when(tokenIsValid, getTokenSession(loadDepartments));
@@ -105,7 +115,7 @@
                 $('#endTime').val(endTime);
                 $('#eventName').val(eventName);
                 $('#eventDescription').val(eventDescription);
-                $("#department").val(departmentId).select2();
+                $("#department").val(departmentId).select2().trigger('change');;
 
 
 
@@ -115,7 +125,7 @@
 
             }) //end of done
         }
-        $.when(tokenIsValid, getTokenSession(getEventDetails));
+        //$.when(tokenIsValid, getTokenSession(getEventDetails));
 
 
 
@@ -208,6 +218,7 @@
         }
 
         function deleteEvent(sessionObject) {
+            showBG();
             bearerToken = sessionObject.Token1; // this
             var collectedCUDBy = $('#employeeId').text();
             var webFormData = new WebFormDataForDelete(collectedCUDBy);
