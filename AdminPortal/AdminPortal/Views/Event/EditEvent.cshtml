@@ -10,6 +10,7 @@
     <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.7.0/moment.min.js" type="text/javascript"></script>
     <script type="text/javascript" src="~/Script/tokenHelper.js"></script>
     <script type="text/javascript" src="~/Script/baseURL.js"></script>
+    <script type="text/javascript" src="~/Script/formValidator.js"></script>
     <link href="~/lib/noty.css" />
     <script>
 
@@ -182,7 +183,9 @@
         }
 
         function saveEvent() {
-              $.when(tokenIsValid, getTokenSession(save));
+            if (formIsValid()) {
+                 $.when(tokenIsValid, getTokenSession(save));
+            }
         }
 
 
@@ -246,7 +249,131 @@
             }).show();
         }//end of on click
 
+
+        // check if all the fields in the form is valid
+        function formIsValid() {
+
+            var valid = true;
+            var errorMsg = "";
+
+            //check if startDate, startTime, endDate, endTime are valid
+            var dateTimeObj = dateTimeIsValid($('#startDate').val())
+            if (!dateTimeObj.isValid) {
+                valid = dateTimeObj.isValid;
+                console.log(dateTimeObj.errorMsg.toString())
+                // show error msg here
+                   $('#hiddenField').show().text(dateTimeObj.errorMsg.toString());
+            } else {
+                // make the error msg disappear
+                  $('#hiddenField').hide();
+                console.log("no more error msg for datetime")
+            }
+
+              //check if startDate, startTime, endDate, endTime are valid
+            var dateTimeObj2 = dateTimeIsValid($('#endDate').val())
+            if (!dateTimeObj2.isValid) {
+                valid = dateTimeObj2.isValid;
+                console.log(dateTimeObj2.errorMsg.toString())
+                // show error msg here
+                  $('#hiddenField2').show().text(dateTimeObj2.errorMsg.toString());
+            } else {
+                // make the error msg disappear
+                  $('#hiddenField2').hide();
+                console.log("no more error msg for datetime")
+            }
+
+                 //check if startDate, startTime, endDate, endTime are valid
+            var dateTimeObj3 = dateTimeIsValid($('#startTime').val())
+            if (!dateTimeObj3.isValid) {
+                valid = dateTimeObj3.isValid;
+                console.log(dateTimeObj3.errorMsg.toString())
+                // show error msg here
+                   $('#hiddenField3').show().text(dateTimeObj3.errorMsg.toString());
+            } else {
+                // make the error msg disappear
+                  $('#hiddenField3').hide();
+                console.log("no more error msg for datetime")
+            }
+
+            
+                 //check if startDate, startTime, endDate, endTime are valid
+            var dateTimeObj4 = dateTimeIsValid($('#endTime').val())
+            if (!dateTimeObj4.isValid) {
+                valid = dateTimeObj4.isValid;
+                console.log(dateTimeObj4.errorMsg.toString())
+                // show error msg here
+                   $('#hiddenField4').show().text(dateTimeObj4.errorMsg.toString());
+            } else {
+                // make the error msg disappear
+                 $('#hiddenField4').hide();
+                console.log("no more error msg for datetime")
+            }
+
+                      //check if startDate, startTime, endDate, endTime are valid
+            var checkAllTimeObj = dateTimeIsValid($('#startDate').val(),
+                $('#startTime').val(),
+                $('#endDate').val(),
+                $('#endTime').val())
+            if (!checkAllTimeObj.isValid) {
+                valid = checkAllTimeObj.isValid;
+                console.log(checkAllTimeObj.errorMsg.toString())
+                // show error msg here
+                   $('#hiddenField8').show().text(checkAllTimeObj.errorMsg.toString());
+            } else {
+                // make the error msg disappear
+                 $('#hiddenField8').hide();
+                console.log("no more error msg for datetime")
+            }
+
+            
+            // check if event name is valid
+            var obj = txtInputIsValid($('#name').val());
+            //if valid == false
+            if (!obj.isValid) {
+                valid = obj.isValid;
+                console.log(obj.errorMsg.toString());
+                // show error msg here
+               $('#hiddenField5').show().text(obj.errorMsg.toString());
+            } else {
+                // make the error msg disappear
+               $('#hiddenField5').hide();
+                console.log("no more error msg for datetime")
+            }
+
+
+            // check if event description is valid
+            var descriptionObj = txtInputIsValid($('#description').val());
+            if (!descriptionObj.isValid) {
+                valid = descriptionObj.isValid;
+                console.log(descriptionObj.errorMsg.toString())
+                // show error msg here
+                  $('#hiddenField6').show().text(descriptionObj.errorMsg.toString());
+            } else {
+                // make the error msg disappear
+                  $('#hiddenField6').hide();
+                console.log("no more error msg for description")
+            }
+
+            // check if event department is valid
+            var departmentObj = departmentDropdownIsValid($('#department').val());
+            if (!departmentObj.isValid) {
+                valid = departmentObj.isValid;
+                console.log(departmentObj.errorMsg.toString())
+                // show error msg here
+                   $('#hiddenField7').show().text(departmentObj.errorMsg.toString());
+            } else {
+                // make the error msg disappear
+                  $('#hiddenField7').hide();
+                console.log("no more error msg for department")
+            }
+
+            console.log(errorMsg);
+
+            return valid;
+        }
+
         function deleteE() {
+            
               $.when(tokenIsValid, getTokenSession(deleteEvent));
         }
 
@@ -295,36 +422,50 @@
             <label class="normal-weight" for="startDate">Start Date:</label>
             <input type="date" class="form-control" name="startDate" id="startDate">
         </div>
+        <span id="hiddenField" style="display: none; text-align: center;
+    font-size: 12px; color: red;"></span>
         <div class="row2-endDate">
             <label class="normal-weight" for="endDate">End Date:</label>
             <input type="date" class="form-control" name="endDate" id="endDate">
         </div>
-
+        <span id="hiddenField2" style="display: none; text-align: center;
+    font-size: 12px; color: red;"></span>
         <div class="row3-startTime">
             <label class="normal-weight" for="startTime">Start Time:</label>
             <input type="time" class="form-control" name="startTime" id="startTime">
 
         </div>
+        <span id="hiddenField3" style="display: none; text-align: center;
+    font-size: 12px; color: red;"></span>
         <div class="row4-endTime">
             <label class="normal-weight" for="endTime">End Time:</label>
             <input type="time" class="form-control" name="endTime" id="endTime">
 
         </div>
+        <span id="hiddenField4" style="display: none; text-align: center;
+    font-size: 12px; color: red;"></span>
         <div class="row5-eventName">
             <label class="normal-weight" for="eventName">Event Name:</label>
             <input type="text" class="form-control" name="eventName" id="eventName">
         </div>
+        <span id="hiddenField5" style="display: none; text-align: center;
+    font-size: 12px; color: red;"></span>
         <div class="row6-eventDescription">
             <label class="normal-weight" for="eventDescription">Event Description:</label>
             <input type="text" class="form-control" name="eventDescription" id="eventDescription">
         </div>
 
-
+        <span id="hiddenField6" style="display: none; text-align: center;
+    font-size: 12px; color: red;"></span>
         <div class="row7-department">
             <label class="normal-weight" for="department">Department:</label>
             <select class="mySelect2" multiple id="department">
             </select>
         </div>
+        <span id="hiddenField7" style="display: none; text-align: center;
+    font-size: 12px; color: red;"></span>
+        <span id="hiddenField8" style="display: none; text-align: center;
+    font-size: 12px; color: red;"></span>
         <div class="row8-buttons">
             <button onclick="deleteE()" class="delete">Delete</button>
             <button onclick="saveEvent()" class="save">Save</button>
