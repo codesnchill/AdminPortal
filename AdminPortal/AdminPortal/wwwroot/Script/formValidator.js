@@ -42,6 +42,22 @@ function emailIsValid(email) {
     return { errorMsg: errorMsg, isValid: isValid };
 }
 
+function employeeIdIsValid(input) {
+
+    isValid = true;
+    errorMsg = "";
+
+    // check if input is not ONLY digits
+    // and if input is not 8 chars lng
+    if (input.length != 8) {
+        errorMsg = "Please enter a valid Employee ID";
+        isValid = false;
+        return { errorMsg: errorMsg, isValid: isValid };
+    }
+
+    return { errorMsg: errorMsg, isValid: isValid };
+}
+
 function dateTimeIsNotEmpty(input) {
 
     isValid = true;
