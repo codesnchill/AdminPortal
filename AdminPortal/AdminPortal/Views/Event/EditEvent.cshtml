@@ -145,12 +145,14 @@
 
             var collectedStartDateTime = collectedStartDate + ' ' + collectedStartTime;
             var collectedStartDateTime2 = convertUTCDateToLocalDate(new Date(collectedStartDateTime));
-            collectedStartDateTime2 = collectedStartDateTime.replace('Z', '').replace('.000', '').replace(/\s+/, 'T');
-
+            //collectedStartDateTime2 = collectedStartDateTime.replace('Z', '').replace('.000', '').replace(/\s+/, 'T');
+            collectedStartDateTime2 = moment(collectedStartDateTime).format("YYYY-MM-DD[T]HH:mm:ss");
 
             var collectedEndDateTime = collectedEndDate + ' ' + collectedEndTime;
             var collectedEndDateTime2 = convertUTCDateToLocalDate(new Date(collectedEndDateTime));
-            collectedEndDateTime2 = collectedEndDateTime.replace('Z', '').replace('.000', '').replace(/\s+/, 'T');
+            //collectedEndDateTime2 = collectedEndDateTime.replace('Z', '').replace('.000', '').replace(/\s+/, 'T');
+            collectedEndDateTime2 = moment(collectedEndDateTime).format("YYYY-MM-DD[T]HH:mm:ss");
+
             //Create a WebFormData object, webFormData. Have its field values
             //populated with the collected course data
             var webFormData = new WebFormData(collectedStartDateTime2, collectedEndDateTime2,
