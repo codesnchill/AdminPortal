@@ -82,6 +82,7 @@
             this.Choice2 = inCollectedChoice2;
             this.Choice3 = inCollectedChoice3;
             this.Choice4 = inCollectedChoice4;
+            this.EmployeeId = inCollectedEmployeeId;
             // added this emp id for u
            // this.EmployeeId = inCollectedEmployeeId;
             this.CUDBy = inCUDBy;
@@ -92,11 +93,12 @@
             var collectedCUDBy = $('#employeeId').text();
             console.log("CUDBY: " + collectedCUDBy);
             var collectedQuestion = "";
+            var employeeID = "";
             // checking which game, so the system knows which value to take for Question1
             if (gameId == 1) {
                 var selectedName = $('#list').val();
-                // getting text input of from employee list
-                collectedQuestion = $('#' + selectedName).val();
+                employeeID = selectedName;
+                collectedQuestion = "";
             } else {
                  collectedQuestion = $('#question').val();
             }
@@ -111,12 +113,12 @@
             var collectedChoice2 = $('#choice2').val();
             var collectedChoice3 = $('#choice3').val();
             var collectedChoice4 = $('#choice4').val();
-
+            var collectedEmployeeId = employeeID;
 
 
             //Create a WebFormData object, webFormData. Have its field values
             //populated with the collected course data
-            var webFormData = new WebFormData(collectedQuestion, collectedImageUrl, collectedAnswer, collectedChoice1, collectedChoice2, collectedChoice3, collectedChoice4, collectedCUDBy);
+            var webFormData = new WebFormData(collectedQuestion, collectedImageUrl, collectedAnswer, collectedChoice1, collectedChoice2, collectedChoice3, collectedChoice4, collectedEmployeeId, collectedCUDBy);
             //Convert the webFromData into a JSON string
             var webFormDataInString = JSON.stringify(webFormData);
 
