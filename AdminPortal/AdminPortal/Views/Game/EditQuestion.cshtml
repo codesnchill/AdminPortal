@@ -7,6 +7,7 @@
     <script type="text/javascript" src="~/Script/baseURL.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.js" type="text/javascript"></script>
+    <script type="text/javascript" src="~/Script/formValidator.js"></script>
     <script>
         // Start of getting gameId from addressbar
         var choiceId1;
@@ -106,7 +107,9 @@
         }
 
         function save() {
-              $.when(tokenIsValid, getTokenSession(clickSave));
+             if (formIsValid()) {
+            $.when(tokenIsValid, getTokenSession(clickSave));
+            }
         }
 
         function clickSave(sessionObject) {
@@ -151,24 +154,24 @@
             console.log(webFormDataInString);
 
             var url = baseURL + "/api/v1/games/" + gameId + "/questions/" + questionId
-                $updateCourseHandler = jQuery.ajax({
-                    type: 'PUT',
-                    beforeSend: function (request) {
-                        request.setRequestHeader("Authorization", "Bearer " + bearerToken);
-                    },
-                    url: url,
-                    dataType: 'json',
-                    contentType: 'application/json;',
-                    data: "'" + webFormDataInString + "'"
-                })//end of jQuery.ajax() call
-                $updateCourseHandler.done(function (data, textStatus, jqXHR) {
-                    alert("Question Info Updated Successfully");
-                    location.href =  "/Game/EditQuestion/?gameid=" + gameId + "&questionid=" + questionId;
-                });//end of $updateCourseHandler.done()
+            $updateCourseHandler = jQuery.ajax({
+                type: 'PUT',
+                beforeSend: function (request) {
+                    request.setRequestHeader("Authorization", "Bearer " + bearerToken);
+                },
+                url: url,
+                dataType: 'json',
+                contentType: 'application/json;',
+                data: "'" + webFormDataInString + "'"
+            })//end of jQuery.ajax() call
+            $updateCourseHandler.done(function (data, textStatus, jqXHR) {
+                alert("Question Info Updated Successfully");
+                location.href = "/Game/EditQuestion/?gameid=" + gameId + "&questionid=" + questionId;
+            });//end of $updateCourseHandler.done()
 
-                $updateCourseHandler.error(function (data, textStatus, jqXHR) {
+            $updateCourseHandler.error(function (data, textStatus, jqXHR) {
 
-                });//end of $updateCourseHandler.error()*/
+            });//end of $updateCourseHandler.error()*/
         }
 
         function WebFormDataForDelete(inCUDBy) {
@@ -242,12 +245,86 @@
         function view() {
             location.href = "/Game/ManageGames";
         }
+
+           // check if all the fields in the form is valid
+        function formIsValid() {
+
+            var valid = true;
+            var errorMsg = "";
+
+            // check if employee id is valid
+            var questionObj = txtInputIsValid($('#question').val());
+            //if valid == false
+            if (!questionObj.isValid) {
+                valid = questionObj.isValid;
+                console.log(questionObj.errorMsg.toString());
+                // show error msg here
+            $('#hiddenField').show().text(questionObj.errorMsg.toString());
+            } else {
+                // make the error msg disappear
+                $('#hiddenField').hide();
+                console.log("no more error msg for datetime")
+            }
+
+
+            // check if employee name is valid
+            var choice1Obj = txtInputIsValid($('#choice1').val());
+            if (!choice1Obj.isValid) {
+                valid = choice1Obj.isValid;
+                console.log(choice1Obj.errorMsg.toString())
+                // show error msg here
+             $('#hiddenField2').show().text(choice1Obj.errorMsg.toString());
+            } else {
+                // make the error msg disappear
+                  $('#hiddenField2').hide();
+                console.log("no more error msg for description")
+            }
+
+                var choice2Obj = txtInputIsValid($('#choice2').val());
+            if (!choice2Obj.isValid) {
+                valid = choice2Obj.isValid;
+                console.log(choice2Obj.errorMsg.toString())
+                // show error msg here
+             $('#hiddenField3').show().text(choice2Obj.errorMsg.toString());
+            } else {
+                // make the error msg disappear
+                  $('#hiddenField3').hide();
+                console.log("no more error msg for description")
+            }
+
+                     var choice3Obj = txtInputIsValid($('#choice3').val());
+            if (!choice3Obj.isValid) {
+                valid = choice3Obj.isValid;
+                console.log(choice3Obj.errorMsg.toString())
+                // show error msg here
+             $('#hiddenField4').show().text(choice3Obj.errorMsg.toString());
+            } else {
+                // make the error msg disappear
+                  $('#hiddenField4').hide();
+                console.log("no more error msg for description")
+            }
+
+                     var choice4Obj = txtInputIsValid($('#choice4').val());
+            if (!choice4Obj.isValid) {
+                valid = choice4Obj.isValid;
+                console.log(choice4Obj.errorMsg.toString())
+                // show error msg here
+             $('#hiddenField5').show().text(choice4Obj.errorMsg.toString());
+            } else {
+                // make the error msg disappear
+                  $('#hiddenField5').hide();
+                console.log("no more error msg for description")
+            }
+            console.log(errorMsg);
+
+            return valid;
+        }
     </script>
 }
 
 @section CSS {
     <link rel="stylesheet" href="~/styles/editquestion.css">
-@*  *@}
+    @*  *@}
 
 <div class="right-section white-background">
     <div class="title">
@@ -273,29 +350,38 @@
             <label class="normal-weight" for="question">Question:</label>
             <input type="text" name="question" id="question">
         </div>
+        <span id="hiddenField" style="display: none; text-align: center;
+    font-size: 12px; color: red;"></span>
         <div class="row2-choice1">
             <label class="normal-weight" for="choice1">Choice 1:</label>
             <input type='text' name='choice1' id="choice1" />
         </div>
+        <span id="hiddenField2" style="display: none; text-align: center;
+    font-size: 12px; color: red;"></span>
         <div class="row3-choice2">
             <label class="normal-weight" for="choice2">Choice 2:</label>
             <input type='text' name='choice2' id="choice2" />
 
         </div>
+        <span id="hiddenField3" style="display: none; text-align: center;
+    font-size: 12px; color: red;"></span>
         <div class="row4-choice3">
             <label class="normal-weight" for="choice3">Choice 3:</label>
             <input type='text' name='choice3' id="choice3" />
         </div>
+        <span id="hiddenField4" style="display: none; text-align: center;
+    font-size: 12px; color: red;"></span>
         <div class="row5-choice4">
             <label class="normal-weight" for="choice4">Choice 4:</label>
             <input type='text' name='choice4' id="choice4" />
         </div>
+        <span id="hiddenField5" style="display: none; text-align: center;
+    font-size: 12px; color: red;"></span>
         <div class="row6-answer">
             <label class="normal-weight" for="answer">Answer:</label>
             <select class="form-control" id="answer">
             </select>
         </div>
-
         <div class="row7-buttons">
             <button onclick="onClickDelete()" class="delete">Delete</button>
             <button onclick="save()" class="save">Save</button>
