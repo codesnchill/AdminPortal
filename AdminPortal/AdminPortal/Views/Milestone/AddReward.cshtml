@@ -6,20 +6,21 @@
 @section Scripts{
     <script type="text/javascript" src="~/Script/tokenHelper.js"></script>
     <script type="text/javascript" src="~/Script/baseURL.js"></script>
+    <script type="text/javascript" src="~/Script/formValidator.js"></script>
     <script>
-             var baseURL = getBaseURL();
+        var baseURL = getBaseURL();
 
         //Using a function technique to define a JavaScript class, WebFormData
         function WebFormData(inCollectedReward, inCollectedPointNeeded, inCUDBy) {
             this.Reward = inCollectedReward;
             this.PointNeeded = inCollectedPointNeeded;
-             this.CUDBy = inCUDBy;
+            this.CUDBy = inCUDBy;
         }
 
         function clickSave(sessionObject) {
             var collectedReward = $('#reward').val();
             var collectedPoints = $('#points').val();
-             bearerToken = sessionObject.Token1; // this
+            bearerToken = sessionObject.Token1; // this
             var collectedCUDBy = $('#employeeId').text();
             //Create a WebFormData object, webFormData. Have its field values
             //populated with the collected course data
@@ -29,41 +30,83 @@
 
             console.log("JSON RESULTS for add: " + webFormDataInString);
 
-            var url = baseURL +  "/api/v1/milestone"
-                $updateCourseHandler = jQuery.ajax({
-                    type: 'POST',
-                    beforeSend: function (request) {
-                        request.setRequestHeader("Authorization", "Bearer " + bearerToken);
-                    },
-                    url: url,
-                    dataType: 'json',
-                    contentType: 'application/json;',
-                    data: "'" + webFormDataInString + "'"
-                })//end of jQuery.ajax() call
-                $updateCourseHandler.done(function (data, textStatus, jqXHR) {
-                    alert("Reward Added Successfully");
-                    location.href = "/Milestone/AddReward";
-                });//end of $updateCourseHandler.done()
+            var url = baseURL + "/api/v1/milestone"
+            $updateCourseHandler = jQuery.ajax({
+                type: 'POST',
+                beforeSend: function (request) {
+                    request.setRequestHeader("Authorization", "Bearer " + bearerToken);
+                },
+                url: url,
+                dataType: 'json',
+                contentType: 'application/json;',
+                data: "'" + webFormDataInString + "'"
+            })//end of jQuery.ajax() call
+            $updateCourseHandler.done(function (data, textStatus, jqXHR) {
+                alert("Reward Added Successfully");
+                location.href = "/Milestone/AddReward";
+            });//end of $updateCourseHandler.done()
 
-                $updateCourseHandler.error(function (data, textStatus, jqXHR) {
-                    console.log(data.responseJSON.message);
-                });//end of $updateCourseHandler.error()*/
+            $updateCourseHandler.error(function (data, textStatus, jqXHR) {
+                console.log(data.responseJSON.message);
+            });//end of $updateCourseHandler.error()*/
         }
 
         function save() {
-               $.when(tokenIsValid, getTokenSession(clickSave));
+            if (formIsValid()) {
+                  $.when(tokenIsValid, getTokenSession(clickSave));
+            }
+          
         }
 
         function clickback() {
             location.href = "/Milestone/ManageMilestones";
         }
 
-           function view() {
-               location.href = "/Milestone/ManageMilestones";
+        function view() {
+            location.href = "/Milestone/ManageMilestones";
         }
 
-         function viewDeleted() {
+        function viewDeleted() {
             location.href = "/Milestone/ManageDeletedMilestones";
+        }
+
+                 // check if all the fields in the form is valid
+        function formIsValid() {
+
+            var valid = true;
+            var errorMsg = "";
+
+            // check if employee id is valid
+            var obj = txtInputIsValid($('#reward').val());
+            //if valid == false
+            if (!obj.isValid) {
+                valid = obj.isValid;
+                console.log(obj.errorMsg.toString());
+                // show error msg here
+            $('#hiddenField').show().text(obj.errorMsg.toString());
+            } else {
+                // make the error msg disappear
+                $('#hiddenField').hide();
+                console.log("no more error msg for datetime")
+            }
+
+
+            // check if employee name is valid
+            var descriptionObj = txtInputIsValid($('#points').val());
+            if (!descriptionObj.isValid) {
+                valid = descriptionObj.isValid;
+                console.log(descriptionObj.errorMsg.toString())
+                // show error msg here
+             $('#hiddenField2').show().text(descriptionObj.errorMsg.toString());
+            } else {
+                // make the error msg disappear
+                  $('#hiddenField2').hide();
+                console.log("no more error msg for description")
+            }
+
+            console.log(errorMsg);
+
+            return valid;
         }
     </script>
 }
@@ -83,28 +126,31 @@
         <button class="view-deleted" type="button">
             View Deleted Reward
         </button>
-        </div>
-        <hr class="divider">
-
-        <div class="edit-container">
-            <div class="title-bar orange-background">
-                <p class="panel-header">Add Reward</p>
-
-            </div>
-            <div class="row1-reward">
-                <label class="normal-weight" for="reward">Name of Reward:</label>
-                <input type="text" name="reward" id="reward">
-            </div>
-            <div class="row2-points">
-                <label class="normal-weight" for="points">Points Needed:</label>
-                <input type='text' name='points' id="points" />
-            </div>
-
-            <div class="row3-buttons">
-                <button class="save" onclick="save()">Save</button>
-                <button onclick="clickback()" class="cancel">Cancel</button>
-            </div>
-        </div>
-
-
     </div>
+    <hr class="divider">
+
+    <div class="edit-container">
+        <div class="title-bar orange-background">
+            <p class="panel-header">Add Reward</p>
+
+        </div>
+        <div class="row1-reward">
+            <label class="normal-weight" for="reward">Name of Reward:</label>
+            <input type="text" name="reward" id="reward">
+        </div>
+        <span id="hiddenField" style="display: none; text-align: center;
+    font-size: 12px; color: red;"></span>
+        <div class="row2-points">
+            <label class="normal-weight" for="points">Points Needed:</label>
+            <input type='number' name='points' id="points" />
+        </div>
+        <span id="hiddenField2" style="display: none; text-align: center;
+    font-size: 12px; color: red;"></span>
+        <div class="row3-buttons">
+            <button class="save" onclick="save()">Save</button>
+            <button onclick="clickback()" class="cancel">Cancel</button>
+        </div>
+    </div>
+
+
+</div>

@@ -268,7 +268,10 @@
         }
 
         function retrieve() {
+            if (formIsValid()) {
             $.when(tokenIsValid, getTokenSession(retrieveEvent));
+
+            }
         }
 
         function redirectPage() {
