@@ -16,9 +16,29 @@
         var endDate = '';
         var report = '';
 
+        //if (formIsValid()) {
+        //    $('#generate').on('click', function () {
+        //        selectedReportType = $('#report :selected').text();
+        //        startDate = new Date($('#startDate').val());
+        //        //startDate = startDate.getDate() + "/" + (startDate.getMonth() + 1) + "/" + startDate.getFullYear() + " " + startDate.getHours() + ':' + startDate.getMinutes() + ':' + startDate.getSeconds();
+        //        startDate = startDate.getFullYear() + "-" + ("0" + (startDate.getMonth() + 1)).slice(-2) + "-" + ("0" + startDate.getDate()).slice(-2);
+        //        endDate = new Date($('#endDate').val());
+        //        endDate = endDate.getFullYear() + "-" + ("0" + (endDate.getMonth() + 1)).slice(-2) + "-" + ("0" + endDate.getDate()).slice(-2);
+        //        console.log(selectedReportType);
+        //        console.log("FROM " + startDate + " TO " + endDate);
+
+        //        localStorage.setItem('start', startDate);
+        //        localStorage.setItem('end', endDate);
+        //    });
+        //}
+
         if (formIsValid()) {
-            $('#generate').on('click', function () {
-                selectedReportType = $('#report :selected').text();
+            generate();
+        }
+
+
+        function generate() {
+             selectedReportType = $('#report :selected').text();
                 startDate = new Date($('#startDate').val());
                 //startDate = startDate.getDate() + "/" + (startDate.getMonth() + 1) + "/" + startDate.getFullYear() + " " + startDate.getHours() + ':' + startDate.getMinutes() + ':' + startDate.getSeconds();
                 startDate = startDate.getFullYear() + "-" + ("0" + (startDate.getMonth() + 1)).slice(-2) + "-" + ("0" + startDate.getDate()).slice(-2);
@@ -29,8 +49,8 @@
 
                 localStorage.setItem('start', startDate);
                 localStorage.setItem('end', endDate);
-            });
         }
+
         // Function to change form action.
         $("#report").change(function () {
             var selected = $(this).children(":selected").text();
@@ -134,7 +154,7 @@
             </div>
 
             <div class="generate-report-button">
-                <button id="generate" class="orange-background" name="Generate" type="submit">Generate</button>
+                <button id="generate" onclick="generate()"class="orange-background" name="Generate" type="submit">Generate</button>
             </div>
         </div>
 
