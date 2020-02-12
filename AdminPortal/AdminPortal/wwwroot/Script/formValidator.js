@@ -21,6 +21,24 @@ function dateTimeIsValid(startDate, startTime, endDate, endTime) {
     return { errorMsg: errorMsg, isValid: isValid };
 }
 
+function dateIsValid(startDate, endDate) {
+
+    isValid = true;
+    errorMsg = "";
+
+
+    if (startDate !== ""  && endDate !== "" ) {
+        if (moment(startDate).isAfter(endDate)) {
+            errorMsg += "start datetime should be earlier than end datetime";
+            isValid = false;
+        }
+    }
+
+    //check if startdatetime is later than enddatetime
+
+    return { errorMsg: errorMsg, isValid: isValid };
+}
+
 function emailIsValid(email) {
 
     isValid = true;
@@ -35,6 +53,22 @@ function emailIsValid(email) {
     //if email is not valid
     if (!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email))) {
         errorMsg = "Please enter a valid email address";
+        isValid = false;
+        return { errorMsg: errorMsg, isValid: isValid };
+    }
+
+    return { errorMsg: errorMsg, isValid: isValid };
+}
+
+function employeeIdIsValid(input) {
+
+    isValid = true;
+    errorMsg = "";
+
+    // check if input is not ONLY digits
+    // and if input is not 8 chars lng
+    if (input.length != 8) {
+        errorMsg = "Please enter a valid Employee ID";
         isValid = false;
         return { errorMsg: errorMsg, isValid: isValid };
     }
@@ -90,4 +124,20 @@ function txtInputIsValid(input) {
     }
 
     return { errorMsg: errorMsg, isValid: isValid };
+}
+function passwordValidation(input) {
+    isValid = true;
+    errorMsg = "";
+
+    //regex for / \ ' "
+    var format = /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
+
+    //Check input Contain(/ \ ' ")
+    
+    if (!format.test(input)) {
+        errorMsg += "Password must Contain at least 1 Uppercase,1 lowercase,1 number and 1 special character and Password length must contain minimum 8 characters.";
+        isValid = false;
+    }
+    return { errorMsg: errorMsg, isValid: isValid };
+
 }
