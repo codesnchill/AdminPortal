@@ -91,9 +91,9 @@
     height: 30px;
 }
 
-    .left-section .features button:hover {
-        text-decoration: underline;
-    }
+.left-section .features button:hover {
+    text-decoration: underline;
+}
 
 .left-section .features {
     width: 100%;
@@ -253,7 +253,7 @@ label {
 .left-selection select {
     width: 65%;
     height: 35px;
-    margin-left:10px;
+    margin-left: 10px;
 }
 
 .left-selection label {
@@ -356,7 +356,35 @@ label {
     display: none;
 }
 
+@media only screen and (max-width: 1165px) {
+    .left-selection select {
+        margin-left: 5px;
+    }
+}
+
+@media only screen and (max-width: 1126px) {
+    .left-selection select {
+        margin-top: 7.5px;
+    }
+}
+
+@media only screen and (max-width: 930px) {
+    .new-game-button button {
+        font-size: 12px;
+    }
+}
+
+@media only screen and (max-width: 900px) {
+    body {
+        width: 900px;
+    }
+}
+
 @media only screen and (max-width: 800px) {
+    body {
+        width: 800px;
+    }
+
     .bottom-section .left-section {
         display: none;
         z-index: 5;
@@ -368,5 +396,11 @@ label {
 
     .line {
         background-color: #fff;
+    }
+}
+
+@media only screen and (max-width: 700px) {
+    body {
+        width: 700px;
     }
 }

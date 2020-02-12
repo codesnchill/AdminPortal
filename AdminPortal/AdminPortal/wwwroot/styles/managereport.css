@@ -95,9 +95,9 @@
     height: 30px;
 }
 
-    .left-section .features button:hover {
-        text-decoration: underline;
-    }
+.left-section .features button:hover {
+    text-decoration: underline;
+}
 
 .left-section .features {
     width: 100%;
@@ -247,6 +247,7 @@ p.title-control {
 .left-selection {
     display: flex;
     flex: 2.5;
+    margin-left: 10px;
 }
 
 .left-section select,
@@ -258,7 +259,7 @@ label {
 .left-selection select {
     width: 65%;
     height: 35px;
-    margin-left: 10px;
+    margin-left: 5px;
 }
 
 .left-selection label {
@@ -336,7 +337,7 @@ input {
 
 .startDateColumn input {
     height: 40px;
-    width: 15vw;
+    width: 20vw;
     margin-left: 55px;
 }
 
@@ -363,11 +364,11 @@ input {
     display: flex;
 }
 
-    .endDateColumn input {
-        height: 40px;
-        width: 15vw;
-        margin-left: 60px;
-    }
+.endDateColumn input {
+    height: 40px;
+    width: 20vw;
+    margin-left: 60px;
+}
 
 .dropdown {
     position: relative;

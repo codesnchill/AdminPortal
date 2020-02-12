@@ -423,7 +423,23 @@ select {
     display: none;
 }
 
+@media only screen and (max-width: 1321px) {
+    .right-section .search-bar .input-field-search2 label {
+        padding-top: 0px;
+    }
+}
+
+@media only screen and (max-width: 900px) {
+    body {
+        width: 900px
+    }
+}
+
 @media only screen and (max-width: 800px) {
+    body {
+        width: 800px
+    }
+
     .bottom-section .left-section {
         display: none;
         z-index: 5;
@@ -435,5 +451,11 @@ select {
 
     .line {
         background-color: #fff;
+    }
+}
+
+@media only screen and (max-width: 700px) {
+    body {
+        width: 700px
     }
 }

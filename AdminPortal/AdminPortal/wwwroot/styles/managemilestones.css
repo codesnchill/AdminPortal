@@ -327,7 +327,17 @@ p.title-control {
     display: none;
 }
 
+@media only screen and (max-width: 900px) {
+    body {
+        width: 900px
+    }
+}
+
 @media only screen and (max-width: 800px) {
+    body {
+        width: 800px
+    }
+
     .bottom-section .left-section {
         display: none;
         z-index: 5;
@@ -342,4 +352,9 @@ p.title-control {
     }
 }
 
+@media only screen and (max-width: 700px) {
+    body {
+        width: 700px
+    }
+}
 

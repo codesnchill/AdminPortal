@@ -91,9 +91,9 @@
     height: 30px;
 }
 
-    .left-section .features button:hover {
-        text-decoration: underline;
-    }
+.left-section .features button:hover {
+    text-decoration: underline;
+}
 
 .left-section .features {
     width: 100%;
@@ -454,7 +454,12 @@ p.panel-header {
     display: none;
 }
 
+
 @media only screen and (max-width: 800px) {
+    body {
+        width: 800px
+    }
+
     .bottom-section .left-section {
         display: none;
         z-index: 5;
