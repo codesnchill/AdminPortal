@@ -98,89 +98,89 @@
     padding-top: 1%;
 }
 
-.features img{
-    height:30px;
+.features img {
+    height: 30px;
 }
 
-    .left-section .features .manage-users {
-        display: flex;
-        height: 80px;
-        padding-left: 45px;
-        padding-top: 15px;
-        margin-bottom: 12px;
+.left-section .features .manage-users {
+    display: flex;
+    height: 80px;
+    padding-left: 45px;
+    padding-top: 15px;
+    margin-bottom: 12px;
+}
+
+
+
+    .left-section .features .manage-users button {
+        flex: 1;
+        padding-bottom: 30px;
+        padding-right: 60px;
     }
 
+.left-section .features .manage-games {
+    display: flex;
+    height: 80px;
+    padding-left: 45px;
+}
 
-
-        .left-section .features .manage-users button {
-            flex: 1;
-            padding-bottom: 30px;
-            padding-right: 60px;
-        }
-
-    .left-section .features .manage-games {
-        display: flex;
-        height: 80px;
-        padding-left: 45px;
+    .left-section .features .manage-games button {
+        flex: 1;
+        padding-bottom: 42px;
+        padding-right: 50px;
     }
 
-        .left-section .features .manage-games button {
-            flex: 1;
-            padding-bottom: 42px;
-            padding-right: 50px;
-        }
+.left-section .features .manage-events {
+    display: flex;
+    height: 80px;
+    padding-left: 45px;
+}
 
-    .left-section .features .manage-events {
-        display: flex;
-        height: 80px;
-        padding-left: 45px;
+
+    .left-section .features .manage-events button {
+        flex: 1;
+        padding-bottom: 42px;
+        padding-right: 50px;
     }
 
+.left-section .features .manage-points {
+    display: flex;
+    height: 80px;
+    padding-left: 45px;
+}
 
-        .left-section .features .manage-events button {
-            flex: 1;
-            padding-bottom: 42px;
-            padding-right: 50px;
-        }
 
-    .left-section .features .manage-points {
-        display: flex;
-        height: 80px;
-        padding-left: 45px;
+
+    .left-section .features .manage-points button {
+        flex: 1;
+        padding-bottom: 40px;
+        padding-right: 52px;
     }
 
+.left-section .features .manage-milestone {
+    display: flex;
+    height: 80px;
+    padding-left: 45px;
+}
 
-
-        .left-section .features .manage-points button {
-            flex: 1;
-            padding-bottom: 40px;
-            padding-right: 52px;
-        }
-
-    .left-section .features .manage-milestone {
-        display: flex;
-        height: 80px;
-        padding-left: 45px;
+    .left-section .features .manage-milestone button {
+        flex: 1;
+        padding-bottom: 40px;
+        padding-right: 16px;
     }
 
-        .left-section .features .manage-milestone button {
-            flex: 1;
-            padding-bottom: 40px;
-            padding-right: 16px;
-        }
+.left-section .features .manage-report {
+    display: flex;
+    height: 80px;
+    padding-left: 45px;
+}
 
-    .left-section .features .manage-report {
-        display: flex;
-        height: 80px;
-        padding-left: 45px;
+
+    .left-section .features .manage-report button {
+        flex: 1;
+        padding-bottom: 40px;
+        padding-right: 37px;
     }
-
-
-        .left-section .features .manage-report button {
-            flex: 1;
-            padding-bottom: 40px;
-            padding-right: 37px;
-        }
 
 .right-section {
     flex: 4;
@@ -244,8 +244,21 @@ p.title-control {
     display: block;
 }
 
-.storage{
-    display:none;
+.storage {
+    display: none;
+}
+
+
+@media only screen and (max-width: 800px) {
+    .left-section.blue-background.responsive {
+        display: block;
+        z-index: 5;
+    }
+
+    .container.responsive {
+        position: absolute;
+        height: 100%;
+    }
 }
 
 @media only screen and (max-width: 800px) {
