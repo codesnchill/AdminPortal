@@ -8,7 +8,6 @@
     <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
-    <script type="text/javascript" src="~/Script/formValidator.js"></script>
     <script>
 
         var selectedReportType = '';
@@ -16,48 +15,26 @@
         var endDate = '';
         var report = '';
 
-        //if (formIsValid()) {
-        //    $('#generate').on('click', function () {
-        //        selectedReportType = $('#report :selected').text();
-        //        startDate = new Date($('#startDate').val());
-        //        //startDate = startDate.getDate() + "/" + (startDate.getMonth() + 1) + "/" + startDate.getFullYear() + " " + startDate.getHours() + ':' + startDate.getMinutes() + ':' + startDate.getSeconds();
-        //        startDate = startDate.getFullYear() + "-" + ("0" + (startDate.getMonth() + 1)).slice(-2) + "-" + ("0" + startDate.getDate()).slice(-2);
-        //        endDate = new Date($('#endDate').val());
-        //        endDate = endDate.getFullYear() + "-" + ("0" + (endDate.getMonth() + 1)).slice(-2) + "-" + ("0" + endDate.getDate()).slice(-2);
-        //        console.log(selectedReportType);
-        //        console.log("FROM " + startDate + " TO " + endDate);
+        $('#generate').on('click', function () {
+            selectedReportType = $('#report :selected').text();
+            startDate = new Date($('#startDate').val());
+            //startDate = startDate.getDate() + "/" + (startDate.getMonth() + 1) + "/" + startDate.getFullYear() + " " + startDate.getHours() + ':' + startDate.getMinutes() + ':' + startDate.getSeconds();
+            startDate = startDate.getFullYear() + "-" + ("0" + (startDate.getMonth() + 1)).slice(-2) + "-" + ("0" + startDate.getDate()).slice(-2);
+            endDate = new Date($('#endDate').val());
+            endDate = endDate.getFullYear() + "-" + ("0" + (endDate.getMonth() + 1)).slice(-2) + "-" + ("0" + endDate.getDate()).slice(-2);
+            console.log(selectedReportType);
+            console.log("FROM " + startDate + " TO " + endDate);
 
-        //        localStorage.setItem('start', startDate);
-        //        localStorage.setItem('end', endDate);
-        //    });
-        //}
-
-        if (formIsValid()) {
-            generate();
-        }
-
-
-        function generate() {
-             selectedReportType = $('#report :selected').text();
-                startDate = new Date($('#startDate').val());
-                //startDate = startDate.getDate() + "/" + (startDate.getMonth() + 1) + "/" + startDate.getFullYear() + " " + startDate.getHours() + ':' + startDate.getMinutes() + ':' + startDate.getSeconds();
-                startDate = startDate.getFullYear() + "-" + ("0" + (startDate.getMonth() + 1)).slice(-2) + "-" + ("0" + startDate.getDate()).slice(-2);
-                endDate = new Date($('#endDate').val());
-                endDate = endDate.getFullYear() + "-" + ("0" + (endDate.getMonth() + 1)).slice(-2) + "-" + ("0" + endDate.getDate()).slice(-2);
-                console.log(selectedReportType);
-                console.log("FROM " + startDate + " TO " + endDate);
-
-                localStorage.setItem('start', startDate);
-                localStorage.setItem('end', endDate);
-        }
-
+            localStorage.setItem('start', startDate);
+            localStorage.setItem('end', endDate);
+        });
         // Function to change form action.
         $("#report").change(function () {
             var selected = $(this).children(":selected").text();
             switch (selected) {
                 case "Milestone Report":
                     $("#myform").attr('action', 'MilestoneReport');
-                   //alert("Form Action is Changed to 'MilestoneReport'n Press Submit to Confirm");
+                    //alert("Form Action is Changed to 'MilestoneReport'n Press Submit to Confirm");
                     break;
                 case "Audit Log Report":
                     $("#myform").attr('action', 'AuditReport');
@@ -71,62 +48,6 @@
                     $("#myform").attr('action', 'MilestoneReport');
             }
         });
-
-
-        // check if all the fields in the form is valid
-        function formIsValid() {
-
-            var valid = true;
-            var errorMsg = "";
-
-            //check if startDate, startTime, endDate, endTime are valid
-            var dateTimeObj = dateTimeIsNotEmpty($('#startDate').val())
-            if (!dateTimeObj.isValid) {
-                valid = dateTimeObj.isValid;
-                console.log(dateTimeObj.errorMsg.toString())
-                // show error msg here
-                $('#hiddenField').show().text(dateTimeObj.errorMsg.toString());
-            } else {
-                // make the error msg disappear
-                $('#hiddenField').hide();
-                console.log("no more error msg for datetime")
-            }
-
-            //check if startDate, startTime, endDate, endTime are valid
-            var dateTimeObj2 = dateTimeIsNotEmpty($('#endDate').val())
-            if (!dateTimeObj2.isValid) {
-                valid = dateTimeObj2.isValid;
-                console.log(dateTimeObj2.errorMsg.toString())
-                // show error msg here
-                $('#hiddenField2').show().text(dateTimeObj2.errorMsg.toString());
-            } else {
-                // make the error msg disappear
-                $('#hiddenField2').hide();
-                console.log("no more error msg for datetime")
-            }
-
-
-            //check if startDate, startTime, endDate, endTime are valid
-            var checkAllTimeObj = dateIsValid($('#startDate').val(),
-                $('#endDate').val())
-            if (!checkAllTimeObj.isValid) {
-                valid = checkAllTimeObj.isValid;
-                console.log(checkAllTimeObj.errorMsg.toString())
-                // show error msg here
-                $('#hiddenField3').show().text(checkAllTimeObj.errorMsg.toString());
-            } else {
-                // make the error msg disappear
-                $('#hiddenField3').hide();
-                console.log("no more error msg for datetime")
-            }
-
-
-
-
-            console.log(errorMsg);
-
-            return valid;
-        }
     </script>
 }
 
@@ -154,7 +75,7 @@
             </div>
 
             <div class="generate-report-button">
-                <button id="generate" onclick="generate()"class="orange-background" name="Generate" type="submit">Generate</button>
+                <button id="generate" onclick="generate()" class="orange-background" name="Generate" type="submit">Generate</button>
             </div>
         </div>
 

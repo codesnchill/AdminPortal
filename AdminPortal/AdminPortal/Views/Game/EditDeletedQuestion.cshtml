@@ -39,6 +39,7 @@
                         .attr("value", obj.employeeId)
                         .text(obj.employeeName));
                 });
+                    $.when(tokenIsValid, getTokenSession(getGameDetails));
             });
         }
 
@@ -153,7 +154,7 @@
 
             }) //end of done
         }
-        $.when(tokenIsValid, getTokenSession(getGameDetails));
+    
 
 
         //Using a function technique to define a JavaScript class, WebFormData

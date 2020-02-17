@@ -403,6 +403,18 @@ input {
 }
 
 @media only screen and (max-width: 800px) {
+    .left-section.blue-background.responsive {
+        display: block;
+        z-index: 5;
+    }
+
+    .container.responsive {
+        position: absolute;
+        height: 100%;
+    }
+}
+
+@media only screen and (max-width: 800px) {
     .bottom-section .left-section {
         display: none;
         z-index: 5;
@@ -416,3 +428,4 @@ input {
         background-color: #fff;
     }
 }
+

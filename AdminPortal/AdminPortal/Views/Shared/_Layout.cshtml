@@ -15,7 +15,7 @@
 
 
     <div class="top-section blue-bar blue-background">
-        <div class="hamburger" onclick="showBG()">
+        <div class="hamburger" onclick="showBG();">
             <div class="line"></div>
             <div class="line"></div>
             <div class="line"></div>
@@ -33,7 +33,7 @@
     </div>
 
     <div class="bottom-section">
-        <div class="left-section blue-background">
+        <div id="leftNav" class="left-section blue-background">
             <div class="image-banner">
                 <img src="/images/logo.png" alt="wartsilla logo">
             </div>
@@ -68,7 +68,7 @@
                 </div>
             </div>
         </div>
-        <div class="container">
+        <div id="mainContent" class="container" onclick="showContents()">
             <main role="main" class="pb-3">
                 @RenderBody()
             </main>
@@ -81,6 +81,48 @@
     <script>
         getEmployeeSession(appendToHtmlStorage);
 
+        function hideContents() {
+            var x = document.getElementById("mainContent");
+            if (x.className === "container") {
+                x.className += " responsive";
+            } else {
+                x.className = "container";
+            }
+        }
+
+        function openDrawer() {
+            var x = document.getElementById("leftNav");
+            if (x.className === "left-section blue-background") {
+                x.className += " responsive";
+            } else {
+                x.className = "left-section blue-background";
+            }
+        }
+
+        function closeDrawer() {
+            var x = document.getElementById("leftNav");
+            if (x.className === "left-section blue-background responsive") {
+                x.className = "left-section blue-background";
+            }
+        }
+
+        function reshowContents() {
+            var x = document.getElementById("mainContent");
+            if (x.className === "container responsive") {
+                x.className = "container";
+            }
+        }
+
+        function showBG() {
+            openDrawer();
+            hideContents();
+        }
+
+        function showContents() {
+            closeDrawer();
+            reshowContents();
+        }
+
         function appendToHtmlStorage(employeeSessionObj) {
             $('#employeeId').text(employeeSessionObj.EmployeeId)
         }
@@ -89,6 +131,18 @@
             clearSession();
             location.href = "/Account/Login";
         }
+
+        $(document).on("click", function (e) {
+            if (
+                $(e.target).closest(".left-section blue-background").length == 0 &&
+                $(".left-section blue-background").hasClass("responsive") &&
+                $(e.target).closest(".hamburger").length == 0
+            ) {
+                $('.responsive-menu').removeClass('responsive');
+            }
+        });
+
+
         $(document).ready(function () {
             $("#manageUser").click(function () {
                 location.href = "/User/ManageUser";
@@ -114,7 +168,6 @@
             $("#manageReport").click(function () {
                 location.href = "/Report/GenerateReport";
             })
-
 
 
         })
