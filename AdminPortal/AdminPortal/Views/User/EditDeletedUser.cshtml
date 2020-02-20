@@ -48,7 +48,7 @@
                 });
             });
         }
-        $.when(tokenIsValid, getTokenSession(loadDepartments));
+           $.when(tokenIsValid, getTokenSession(loadDepartments), getTokenSession(loadRoles));
 
 
         function loadRoles(sessionObject) {
@@ -74,9 +74,9 @@
                         .attr("value", obj.roleId)
                         .text(obj.roleName));
                 });
+                  $.when(tokenIsValid, getTokenSession(getUserDetails));
             });
         }
-        $.when(tokenIsValid, getTokenSession(loadRoles));
 
 
         // Start of getting userId from addressbar
@@ -141,7 +141,7 @@
 
             }) //end of done
         }
-        $.when(tokenIsValid, getTokenSession(getUserDetails));
+
 
         //Using a function technique to define a JavaScript class, WebFormData
         function WebFormData(inCollectedEmployeeName, inCollectedDepartmentId, inCollectedRole, inCollectedStatus, inCollectedAdmin, inCollectCUDBy) {

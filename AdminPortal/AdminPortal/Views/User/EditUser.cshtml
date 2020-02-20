@@ -45,9 +45,11 @@
                         .attr("value", obj.departmentId)
                         .text(obj.departmentName));
                 });
+                //$.when(tokenIsValid, getTokenSession(loadRoles));
+
             });
         }
-        $.when(tokenIsValid, getTokenSession(loadDepartments));
+        $.when(tokenIsValid, getTokenSession(loadDepartments), getTokenSession(loadRoles));
 
         function loadRoles(sessionObject) {
             bearerToken = sessionObject.Token1;
@@ -72,9 +74,11 @@
                         .attr("value", obj.roleId)
                         .text(obj.roleName));
                 });
+
+                $.when(tokenIsValid, getTokenSession(getUserDetails));
+
             });
         }
-        $.when(tokenIsValid, getTokenSession(loadRoles));
 
 
         // Start of getting userId from addressbar
@@ -138,7 +142,6 @@
 
             }) //end of done
         }
-        $.when(tokenIsValid, getTokenSession(getUserDetails));
 
         //Using a function technique to define a JavaScript class, WebFormData
         function WebFormData(inCollectedEmployeeName, inCollectedDepartmentId, inCollectedRole, inCollectedStatus, inCollectedAdmin, inCollectedCUDBy) {
@@ -159,9 +162,9 @@
             var collectedStatus = $('#status').val();
             var collectedAdmin = $('#admin').val();
 
-         
-    
-            
+
+
+
 
             //Create a WebFormData object, webFormData. Have its field values
             //populated with the collected course data
@@ -252,7 +255,7 @@
             redirectPage();
         }
 
-                   // check if all the fields in the form is valid
+        // check if all the fields in the form is valid
         function formIsValid() {
 
             var valid = true;
@@ -265,7 +268,7 @@
                 valid = obj.isValid;
                 console.log(obj.errorMsg.toString());
                 // show error msg here
-            $('#hiddenField').show().text(obj.errorMsg.toString());
+                $('#hiddenField').show().text(obj.errorMsg.toString());
             } else {
                 // make the error msg disappear
                 $('#hiddenField').hide();
@@ -279,10 +282,10 @@
                 valid = descriptionObj.isValid;
                 console.log(descriptionObj.errorMsg.toString())
                 // show error msg here
-             $('#hiddenField2').show().text(descriptionObj.errorMsg.toString());
+                $('#hiddenField2').show().text(descriptionObj.errorMsg.toString());
             } else {
                 // make the error msg disappear
-                  $('#hiddenField2').hide();
+                $('#hiddenField2').hide();
                 console.log("no more error msg for description")
             }
 
@@ -292,53 +295,53 @@
                 valid = departmentObj.isValid;
                 console.log(departmentObj.errorMsg.toString())
                 // show error msg here
-                  $('#hiddenField3').show().text(departmentObj.errorMsg.toString());
+                $('#hiddenField3').show().text(departmentObj.errorMsg.toString());
             } else {
                 // make the error msg disappear
-                  $('#hiddenField3').hide();
+                $('#hiddenField3').hide();
                 console.log("no more error msg for department")
             }
 
-               // check if user roles is valid
+            // check if user roles is valid
             var roleObj = departmentDropdownIsValid($('#rights').val());
             if (!roleObj.isValid) {
                 valid = roleObj.isValid;
                 console.log(roleObj.errorMsg.toString())
                 // show error msg here
-                  $('#hiddenField4').show().text(roleObj.errorMsg.toString());
+                $('#hiddenField4').show().text(roleObj.errorMsg.toString());
             } else {
                 // make the error msg disappear
-                  $('#hiddenField4').hide();
+                $('#hiddenField4').hide();
                 console.log("no more error msg for department")
             }
 
-              var rightsObj = departmentDropdownIsValid($('#admin').val());
+            var rightsObj = departmentDropdownIsValid($('#admin').val());
             if (!rightsObj.isValid) {
                 valid = rightsObj.isValid;
                 console.log(rightsObj.errorMsg.toString())
                 // show error msg here
-                  $('#hiddenField5').show().text(rightsObj.errorMsg.toString());
+                $('#hiddenField5').show().text(rightsObj.errorMsg.toString());
             } else {
                 // make the error msg disappear
-                  $('#hiddenField5').hide();
+                $('#hiddenField5').hide();
                 console.log("no more error msg for department")
             }
 
-               var statusObj = departmentDropdownIsValid($('#status').val());
+            var statusObj = departmentDropdownIsValid($('#status').val());
             if (!statusObj.isValid) {
                 valid = statusObj.isValid;
                 console.log(statusObj.errorMsg.toString())
                 // show error msg here
-                  $('#hiddenField6').show().text(statusObj.errorMsg.toString());
+                $('#hiddenField6').show().text(statusObj.errorMsg.toString());
             } else {
                 // make the error msg disappear
-                  $('#hiddenField6').hide();
+                $('#hiddenField6').hide();
                 console.log("no more error msg for department")
             }
 
             // When changing status to Inactive, marking a user as delete
             var descriptionObj = txtInputIsValid($('#reason').val());
-             if ($('#status').val() == "true") {
+            if ($('#status').val() == "true") {
                 if (!descriptionObj.isValid) {
                     valid = descriptionObj.isValid;
                     $('#hiddenField7').show().text("Please include the reason for changing the status");
