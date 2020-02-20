@@ -84,12 +84,12 @@ namespace AdminPortal.Controllers
             }
                 return new ViewAsPdf(auditreportList);
             }
-        
         public async Task<IActionResult> MilestoneReport(string ReportType, string StartDate, string EndDate)
         {
             // check if user goes into a page without logging in
             if (HttpContext.Session.GetString(tokenSession) == null)
                 return RedirectToAction("Login", "Account");
+
 
             List<Milestone> reportList = new List<Milestone>();
             var tokenObj = JsonConvert.DeserializeObject<Token>(HttpContext.Session.GetString(tokenSession));
@@ -109,6 +109,7 @@ namespace AdminPortal.Controllers
                     client.BaseAddress = new Uri(baseUrl + "/api/v1/");
                     client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
                     //HTTP GET
+
                     var responseTask = client.GetAsync("report?ReportType=" + type + "&StartDate=" + start + "&EndDate=" + end);
                     responseTask.Wait();
 
@@ -125,6 +126,7 @@ namespace AdminPortal.Controllers
                             i.startDate = start;
                             i.endDate = end;
                         }
+
                     }
                     else //web api sent error response 
                     {
@@ -136,7 +138,69 @@ namespace AdminPortal.Controllers
                     }
                 }
             }
-                return new ViewAsPdf(reportList);
+
+            return new ViewAsPdf(reportList);
+        }
+
+        [Produces("application/vnd.ms-excel")]
+        public async Task<IActionResult> MilestoneReport2(string ReportType, string StartDate, string EndDate)
+        {
+            // check if user goes into a page without logging in
+            if (HttpContext.Session.GetString(tokenSession) == null)
+                return RedirectToAction("Login", "Account");
+
+
+            List<Milestone> reportList = new List<Milestone>();
+            var tokenObj = JsonConvert.DeserializeObject<Token>(HttpContext.Session.GetString(tokenSession));
+            var token = tokenObj.Token1;
+            //var type = employeeQuery.ReportType;
+            //var start = employeeQuery.StartDate;
+            //var end = employeeQuery.EndDate;
+            var type = ReportType;
+            var start = StartDate;
+            var end = EndDate;
+            AccountController account = new AccountController();
+            bool tokenIsValid = await account.tokenIsValid(tokenObj, HttpContext);
+            if (tokenIsValid)
+            {
+                using (var client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(baseUrl + "/api/v1/");
+                    client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
+                    //HTTP GET
+                    
+                    var responseTask = client.GetAsync("report?ReportType=" + type + "&StartDate=" + start + "&EndDate=" + end);
+                    responseTask.Wait();
+
+                    var result = responseTask.Result;
+                    if (result.IsSuccessStatusCode)
+                    {
+                        var readTask = result.Content.ReadAsAsync<IList<Milestone>>();
+                        readTask.Wait();
+
+                        report = readTask.Result;
+                        reportList = report.ToList();
+                        foreach (var i in reportList)
+                        {
+                            i.startDate = start;
+                            i.endDate = end;
+                        }
+
+                    }
+                    else //web api sent error response 
+                    {
+                        //log response status here..
+
+                        report = Enumerable.Empty<Milestone>();
+
+                        ModelState.AddModelError(string.Empty, "Server error. Please contact administrator.");
+                    }
+                }
+            }
+            Response.Clear();
+            Response.Headers.Add("content-disposition","attachment;filename=MilestoneReport.xls");
+            
+            return View(reportList);
             }
 
         public async Task<IActionResult> RankingReport(string ReportType, string StartDate, string EndDate)

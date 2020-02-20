@@ -36,6 +36,10 @@
                     $("#myform").attr('action', 'MilestoneReport');
                     //alert("Form Action is Changed to 'MilestoneReport'n Press Submit to Confirm");
                     break;
+                case "Milestone Report(Excel)":
+                    $("#myform").attr('action', 'MilestoneReport2');
+                    //alert("Form Action is Changed to 'MilestoneReport'n Press Submit to Confirm");
+                    break;
                 case "Audit Log Report":
                     $("#myform").attr('action', 'AuditReport');
                     //alert("Form Action is Changed to 'AuditReport'n Press Submit to Confirm");
@@ -69,6 +73,7 @@
                 <select class="form-control" id="report" asp-for="ReportType">
                     <option selected hidden>Choose here</option>
                     <option value="milestone">Milestone Report</option>
+                    <option value="milestone">Milestone Report(Excel)</option>
                     <option value="audit">Audit Log Report</option>
                     <option value="ranking">Department Ranking Report</option>
                 </select>
