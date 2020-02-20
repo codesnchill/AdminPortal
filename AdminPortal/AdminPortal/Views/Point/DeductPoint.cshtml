@@ -5,6 +5,8 @@
 @model IEnumerable<AdminPortal.Models.Employee>
 
 @section Scripts {
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.js" type="text/javascript"></script>
     <script type="text/javascript" src="~/Script/tokenHelper.js"></script>
     <script type="text/javascript" src="~/Script/baseURL.js"></script>
     <script type="text/javascript" src="~/Script/formValidator.js"></script>
@@ -17,38 +19,38 @@
             return id;
         }
 
-           var baseURL = getBaseURL();
+        var baseURL = getBaseURL();
 
         function getUserDetails(sessionObject) {
-                bearerToken = sessionObject.Token1;
-                var url = baseURL + "/api/v1/users/" + g_userId
-                $loadUserDataHandler = jQuery.ajax({
-                    type: 'GET',
-                     beforeSend: function (request) {
-                        request.setRequestHeader("Authorization", "Bearer " + bearerToken);
-                    },
-                    url: url,
-                    contentType: "application/json",
-                    dataType: 'json',
-                    crossDomain: true,
-                })
-                $loadUserDataHandler.done(function (data, textStatus, jqXHR) {
-                    console.log(data);
-                    var user = data;
-                    employeeId = user[0].employeeId
-                    employeeName = user[0].employeeName;
-                    departmentName = user[0].departmentName;
-                    totalPoints = user[0].totalPoints;
+            bearerToken = sessionObject.Token1;
+            var url = baseURL + "/api/v1/users/" + g_userId
+            $loadUserDataHandler = jQuery.ajax({
+                type: 'GET',
+                beforeSend: function (request) {
+                    request.setRequestHeader("Authorization", "Bearer " + bearerToken);
+                },
+                url: url,
+                contentType: "application/json",
+                dataType: 'json',
+                crossDomain: true,
+            })
+            $loadUserDataHandler.done(function (data, textStatus, jqXHR) {
+                console.log(data);
+                var user = data;
+                employeeId = user[0].employeeId
+                employeeName = user[0].employeeName;
+                departmentName = user[0].departmentName;
+                totalPoints = user[0].totalPoints;
 
 
 
-                    $('#employeeID').val(employeeId);
-                    $('#employeeName').val(employeeName);
-                    $('#department').val(departmentName);
-                    $('#points').val(totalPoints);
+                $('#employeeID').val(employeeId);
+                $('#employeeName').val(employeeName);
+                $('#department').val(departmentName);
+                $('#points').val(totalPoints);
 
 
-                }) //end of done
+            }) //end of done
         }
 
         $.when(tokenIsValid, getTokenSession(getUserDetails));
@@ -58,14 +60,14 @@
         function WebFormData(inCollectedPoints, inCollectedComments, inCUDBy) {
             this.Point = inCollectedPoints;
             this.Comments = inCollectedComments;
-              this.CUDBy = inCUDBy;
+            this.CUDBy = inCUDBy;
         }
 
         function save(sessionObject) {
 
             var collectedPoints = $('#deductingPoints').val();
             var collectedComments = $('#reason').val();
-           bearerToken = sessionObject.Token1; // this
+            bearerToken = sessionObject.Token1; // this
             var collectedCUDBy = $('#employeeId').text();
             //Create a WebFormData object, webFormData. Have its field values
             //populated with the collected course data
@@ -75,31 +77,49 @@
             var webFormDataInString = JSON.stringify(webFormData);
 
             console.log(webFormDataInString);
+    var noty = new Noty({
+                text: 'Do you want to continue?',
+                layout: 'center',
+                //template: '<div class="noty_message" style="height:50px;"><span class="noty_text"></span>',
+                buttons: [
+                    Noty.button('Cancel', 'btn btn-default', function () {
+                        noty.close();
+                    }),
+                    Noty.button('Confirm', 'btn btn-primary', function () {
+                       var url = baseURL + "/api/v1/points/deduct/" + g_userId
+            $deleteHandler = jQuery.ajax({
+                type: 'POST',
+                beforeSend: function (request) {
+                    request.setRequestHeader("Authorization", "Bearer " + bearerToken);
+                },
+                url: url,
+                dataType: 'json',
+                contentType: 'application/json;',
+                data: "'" + webFormDataInString + "'"
+                        })//end of jQuery.ajax() call
 
-            var url = baseURL + "/api/v1/points/deduct/" + g_userId
-                $updateCourseHandler = jQuery.ajax({
-                    type: 'POST',
-                     beforeSend: function (request) {
-                        request.setRequestHeader("Authorization", "Bearer " + bearerToken);
-                    },
-                    url: url,
-                    dataType: 'json',
-                    contentType: 'application/json;',
-                    data: "'" + webFormDataInString + "'"
-                })//end of jQuery.ajax() call
-                $updateCourseHandler.done(function (data, textStatus, jqXHR) {
-                    alert("Points Deducted Successfully");
-                    location.href = "/Point/DeductPoint/" + g_userId;
-                });//end of $updateCourseHandler.done()
+                        $deleteHandler.done(function (data, textStatus, jqXHR) {
+                          alert("Points Deducted Successfully");
+                location.href = "/Point/DeductPoint/" + g_userId;
+                            noty.close();
+                        })
 
-                $updateCourseHandler.error(function (data, textStatus, jqXHR) {
-                    console.log(data.responseJSON.message);
-                });//end of $updateCourseHandler.error()*/
+                        $deleteHandler.fail(function (data, textStatus, jqXHR) {
+                            console.log(data);
+                            new Noty({
+                                text: data.responseJSON.message, type: 'error',
+                                layout: 'center',
+                                template: '<div class="noty_message"><span class="noty_text"></span>'
+                            }).show();//end of noty()
+                        });//end of $deleteCourseHandler.fail()
+                    })
+                ]
+            }).show();
         }
 
         function savePoint() {
             if (formIsValid()) {
-              $.when(tokenIsValid, getTokenSession(save));
+                $.when(tokenIsValid, getTokenSession(save));
             }
         }
 
@@ -111,13 +131,13 @@
             redirectPage();
         }
 
-                 // check if all the fields in the form is valid
+        // check if all the fields in the form is valid
         function formIsValid() {
 
             var valid = true;
             var errorMsg = "";
 
-            
+
             // check if event name is valid
             var obj = txtInputIsValid($('#deductingPoints').val());
             //if valid == false
@@ -125,10 +145,10 @@
                 valid = obj.isValid;
                 console.log(obj.errorMsg.toString());
                 // show error msg here
-               $('#hiddenField').show().text(obj.errorMsg.toString());
+                $('#hiddenField').show().text(obj.errorMsg.toString());
             } else {
                 // make the error msg disappear
-               $('#hiddenField').hide();
+                $('#hiddenField').hide();
                 console.log("no more error msg for datetime")
             }
 
@@ -139,10 +159,10 @@
                 valid = descriptionObj.isValid;
                 console.log(descriptionObj.errorMsg.toString())
                 // show error msg here
-                  $('#hiddenField2').show().text(descriptionObj.errorMsg.toString());
+                $('#hiddenField2').show().text(descriptionObj.errorMsg.toString());
             } else {
                 // make the error msg disappear
-                  $('#hiddenField2').hide();
+                $('#hiddenField2').hide();
                 console.log("no more error msg for description")
             }
 
